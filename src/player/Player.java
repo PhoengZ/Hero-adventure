@@ -1,15 +1,20 @@
 package player;
 
+
 public class Player {
 	private int hp;
-	private int attack; 
+	private int atk; 
 	private int speed;
 	private int defense;
-	public Player(int hp , int attack , int speed , int defense) {
+	public Player(int hp , int atk , int speed , int defense) {
 		this.setHp(hp);
-		this.setAttack(attack);
+		this.setAtk(atk);
 		this.setSpeed(speed);
 		this.setDefense(defense);
+	}
+	
+	public void attack() {
+		
 	}
 	public int getHp() {
 		return hp;
@@ -17,11 +22,11 @@ public class Player {
 	public void setHp(int hp) {
 		this.hp = Math.max(0, hp);
 	}
-	public int getAttack() {
-		return attack;
+	public int getAtk() {
+		return atk;
 	}
-	public void setAttack(int attack) {
-		this.attack = Math.max(0, attack);
+	public void setAtk(int atk) {
+		this.atk = Math.max(0, atk);
 	}
 	public int getSpeed() {
 		return speed;
@@ -35,5 +40,7 @@ public class Player {
 	public void setDefense(int defense) {
 		this.defense = Math.max(0,defense);
 	}
+
+
 	
 }
