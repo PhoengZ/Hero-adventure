@@ -6,7 +6,7 @@ import player.Player;
 public class Wizard extends Enemy implements Magicable{
 	private int MagicAtk;
 	public Wizard() {
-		super(80,20,20); //hp atk speed
+		super(80,20,20,10,""); //hp atk speed
 		this.setMagicAtk(60);
 	}
 	public void decreaseHp(Player player) {

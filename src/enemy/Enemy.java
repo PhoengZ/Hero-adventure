@@ -1,13 +1,39 @@
 package enemy;
 
-public class Enemy {
+import base.Attackable;
+import base.Unit;
+import javafx.scene.image.Image;
+import player.Player;
+
+public class Enemy extends Unit implements Attackable{
 	private int hp;
 	private int atk; 
 	private int speed;
-	public Enemy(int hp ,int atk , int speed) {
+	private int defense;
+	private Image image;
+	private boolean alive;
+	public Enemy(int hp ,int atk , int speed ,int defense,String imagePath ) {
 		this.setHp(hp);
 		this.setAtk(atk);
 		this.setSpeed(speed);
+		this.setDefense(defense);
+		this.setImageByPath(imagePath);
+		this.setAlive(true);
+	}
+	public void attack(Unit other) {
+		if(!IsSameTeam(other)) {
+			Player player = (Player) other;
+			player.setHp(player.getHp()-atk);
+			if(player.getHp() == 0) {
+				player.setAlive(false);
+			}
+		}
+	}
+	public boolean IsSameTeam(Unit other) {
+		if(other instanceof Enemy) {
+			return true;
+		}
+		return false;
 	}
 	public int getHp() {
 		return hp;
@@ -27,6 +53,31 @@ public class Enemy {
 	public void setSpeed(int speed) {
 		this.speed = Math.max(0, speed);
 	}
+	public boolean isAlive() {
+		return alive;
+	}
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+	public int getDefense() {
+		return defense;
+	}
+	public void setDefense(int defense) {
+		this.defense = Math.max(0,defense);
+	}
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImageByPath(String imagePath) {
+    	try {
+            String classLoaderPath = ClassLoader.getSystemResource(imagePath).toString();
+            this.image=new Image(classLoaderPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            
+        }
+    }
 	
 	
 	

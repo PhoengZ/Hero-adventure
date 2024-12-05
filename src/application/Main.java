@@ -40,8 +40,9 @@ public class Main extends Application{
 	private int temp_hp = 3;//
 
 	public void start(Stage primaryStage)  throws Exception {
-		this.initContent(0);
-		this.setRound(0);
+		setScore(0);
+		initContent(0);
+		setRound(0);
 		Scene scene = new Scene(appRoot);
 		scene.setOnKeyPressed(e->{
 			keys.put(e.getCode(), true);
@@ -184,7 +185,6 @@ public class Main extends Application{
 		appRoot.getChildren().addAll(Bg,gameRoot,uiRoot);
 	}
 	private void initUi() {
-		setScore(0);
 		ArrayList<Node> health = new ArrayList<Node>();
 		int hp = (getRound() == 0 ? 2:3);// real is hp = player.gethp;
 		for (int i = 0;i<hp;i++) {
@@ -192,7 +192,6 @@ public class Main extends Application{
 			health.add(bar);
 		}
 		UI.add(health);
-		ArrayList<Node> Score = new ArrayList<Node>();
 		Score_on_screne = Scoreboard();
 		uiRoot.getChildren().add(Score_on_screne);
 	  	
