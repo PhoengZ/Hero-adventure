@@ -153,7 +153,9 @@ public class Main extends Application{
 		appRoot.getChildren().addAll(Bg,gameRoot,uiRoot);
 	}
 	private void initUi() {
-		
+		ArrayList<Node> health = new ArrayList<Node>();
+		int hp = 3;// real is hp = player.gethp;
+		for (int i = 0;i<)
 	}
 	private Node CreateEntity(int x,int y,int w,int h,Color color) {
 		Rectangle ob = new Rectangle(w,h);
