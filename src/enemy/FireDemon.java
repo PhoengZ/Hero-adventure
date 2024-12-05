@@ -6,7 +6,7 @@ import player.Player;
 public class FireDemon extends Enemy implements Magicable{
 	private int MagicAtk;
 	public FireDemon() {
-		super(100,80,60); //hp atk speed
+		super(100,80,60,20,""); //hp atk speed
 		this.setMagicAtk(40);
 	}
 	public void decreaseHp(Player player) {
