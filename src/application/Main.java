@@ -110,7 +110,7 @@ public class Main extends Application{
 			}
 			player.setTranslateY(player.getTranslateY() + (moveDown ? 1:-1)); // if moveRight set translate x to oldX + 1 or oldX -1 when moveLeft 
 			
-		}
+		}//777
 	}
 	private void jumpPlayer() {
 		if (!isJump) {
