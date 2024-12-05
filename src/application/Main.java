@@ -68,6 +68,8 @@ public class Main extends Application{
 	private void clear() {
 		gameRoot.getChildren().clear();
 		platform.clear();
+		uiRoot.getChildren().clear();
+		UI.clear();
  		appRoot.getChildren().clear();
 	}
 	private void update() {
@@ -88,7 +90,11 @@ public class Main extends Application{
 		if (isPressed(KeyCode.E) && player.getBoundsInParent().intersects(getDoor().getBoundsInParent())) {
 			clear();
 			setRound(getRound() + 1);
-			initContent(getRound() + 1);
+			if (getRound() == 2) {
+				//Goto หน้าบอส
+			}else {
+				initContent(getRound());
+			}
 		}
 		if (playerVelocity.getY() < 10) {
 			playerVelocity = playerVelocity.add(0,1);
@@ -129,7 +135,7 @@ public class Main extends Application{
 					if (moveDown) {
 						if (player.getTranslateY() + 40 == pt.getTranslateY()) {
 							player.setTranslateY(player.getTranslateY() - 1);
-							isJump = false;
+							setJump(false);
 							return;
 						}
 					}else {
@@ -145,7 +151,7 @@ public class Main extends Application{
 	private void jumpPlayer() {
 		if (!isJump) {
 			playerVelocity = playerVelocity.add(0,-30);
-			isJump = true; //prohibit to double jump
+			setJump(true); //prohibit to double jump
 		}
 	}
 	private void initContent(int level) {
@@ -207,9 +213,13 @@ public class Main extends Application{
 	}
 	private void editUi(int idx) { // idx indicate behavior of this method
 		if (idx == 0) {
-			//reduce hp
+			if (temp_hp != 0) {
+				UI.get(idx).removeLast();
+				uiRoot.getChildren().removeFirst();
+			}else {
+				//บอกว่า player ตายแล้วก็ขึ้นว่า แพ้แล้วไปหน้า start
+			}
 		}else {
-			//update coin
 			Score_on_screne.setText("Score: "+Integer.toString(getScore()));
 		}
 	}
