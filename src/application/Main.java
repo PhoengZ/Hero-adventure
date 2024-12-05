@@ -2,7 +2,7 @@ package application;
 
 import javafx.stage.Stage;
 import player.Player;
-import processgame.Platform;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +10,15 @@ import java.util.HashMap;
 import Data.DataLevel;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -40,27 +45,47 @@ public class Main extends Application{
 	private int temp_hp = 3;//
 
 	public void start(Stage primaryStage)  throws Exception {
-		setScore(0);
-		initContent(0);
-		setRound(0);
 		Scene scene = new Scene(appRoot);
-		scene.setOnKeyPressed(e->{
-			keys.put(e.getCode(), true);
+		Button Start = new Button("Start");
+		Start.setFont(new Font(25));
+		Button Exit = new Button("Exit");
+		Exit.setFont(new Font(25));
+		Rectangle Bg = new Rectangle(1280,720);
+		Bg.setFill(Color.LIGHTYELLOW);
+		Start.setBackground(new Background(new BackgroundFill(Color.BLACK,null,null)));
+		Exit.setBackground(new Background(new BackgroundFill(Color.BLACK,null,null)));
+		Start.setOnMouseClicked(e->{
+			clear();
+			setScore(0);
+			initContent(0);
+			setRound(0);
+			scene.setOnKeyPressed(event->{
+				keys.put(event.getCode(), true);
+			});
+			scene.setOnKeyReleased(event->{
+				keys.put(event.getCode(),false);
+			});
+			AnimationTimer timer = new AnimationTimer() {
+				public void handle(long now) {
+					update();
+				}
+			};
+			timer.start();
 		});
-		scene.setOnKeyReleased(e->{
-			keys.put(e.getCode(),false);
+		Exit.setOnMouseClicked(e->{
+			//ออกเกม
+			Platform.exit();
 		});
-		primaryStage.setTitle("Collos");
-		primaryStage.setScene(scene);
-		primaryStage.setResizable(false);
-		primaryStage.show();
 		
-		AnimationTimer timer = new AnimationTimer() {
-			public void handle(long now) {
-				update();
-			}
-		};
-		timer.start();
+		Start.setTranslateX(640);
+		Start.setTranslateY(300);
+		Exit.setTranslateX(640);
+		Exit.setTranslateY(400);
+		appRoot.getChildren().addAll(Bg,Start,Exit);
+		primaryStage.setTitle("Collosium");
+		primaryStage.setResizable(false);
+		primaryStage.setScene(scene);
+		primaryStage.show();
 	}
 	public static void main(String[] args) {
 		launch(args);
