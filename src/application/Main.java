@@ -29,6 +29,7 @@ public class Main extends Application{
 	private Node player;
 	private int levelWidth;
 	private ArrayList<Node> platform = new ArrayList<Node>();
+	private ArrayList<ArrayList<Node>> UI = new ArrayList<ArrayList<Node>>();
 	private Point2D playerVelocity = new Point2D(0,0);
 
 	public void start(Stage primaryStage)  throws Exception {
@@ -52,15 +53,21 @@ public class Main extends Application{
 		};
 		timer.start();
 	}
+	public static void main(String[] args) {
+		launch(args);
+	}
 	private void update() {
-		if (isPressed(KeyCode.W) && player.getTranslateY()  >=5) {
+		if (isPressed(KeyCode.SPACE) && player.getTranslateY()  >=5) {
 			jumpPlayer();
 		}
-		if (isPressed(KeyCode.A) && player.getTranslateX() >= 5) {
+		if (isPressed(KeyCode.LEFT) && player.getTranslateX() >= 5) {
 			movePlayerX(-5);
 		}
-		if (isPressed(KeyCode.D) && player.getTranslateX() + 40  <= levelWidth - 5) {
+		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 40  <= levelWidth - 5) {
 			movePlayerX(5);
+		}
+		if (isPressed(KeyCode.Z)) {
+			//Do damage
 		}
 		if (playerVelocity.getY() < 10) {
 			playerVelocity = playerVelocity.add(0,1);
@@ -69,6 +76,9 @@ public class Main extends Application{
 	}
 	private boolean isPressed(KeyCode key) {
 		return keys.getOrDefault(key, false);
+	}
+	private void doDamage(Node player,Node Enemy) {
+		//change Node to class of each 
 	}
 	private void movePlayerX(int value) {
 		boolean moveRight = value > 0;
@@ -109,7 +119,6 @@ public class Main extends Application{
 				}
 			}
 			player.setTranslateY(player.getTranslateY() + (moveDown ? 1:-1)); // if moveRight set translate x to oldX + 1 or oldX -1 when moveLeft 
-			
 		}//777
 	}
 	private void jumpPlayer() {
@@ -132,6 +141,8 @@ public class Main extends Application{
 				}
 			}
 		}
+		
+		
 		player = this.CreateEntity(0, 600, 40, 40, Color.BLUE);
 		player.translateXProperty().addListener((obs,old,newValue)->{
 			int offset = newValue.intValue();
@@ -140,6 +151,9 @@ public class Main extends Application{
 			}
 		});
 		appRoot.getChildren().addAll(Bg,gameRoot,uiRoot);
+	}
+	private void initUi() {
+		
 	}
 	private Node CreateEntity(int x,int y,int w,int h,Color color) {
 		Rectangle ob = new Rectangle(w,h);
@@ -150,7 +164,18 @@ public class Main extends Application{
 		gameRoot.getChildren().add(ob);
 		return ob;
 	}
-	public static void main(String[] args) {
-		launch(args);
+	
+	public Node getPlayer() {
+		return player;
 	}
+	public void setPlayer(Node player) {
+		this.player = player;
+	}
+	public boolean isJump() {
+		return isJump;
+	}
+	public void setJump(boolean isJump) {
+		this.isJump = isJump;
+	}
+	
 }
