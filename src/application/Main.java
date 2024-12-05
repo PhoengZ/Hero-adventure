@@ -18,6 +18,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 
 public class Main extends Application{
@@ -28,12 +30,18 @@ public class Main extends Application{
 	private boolean isJump;
 	private Node player;
 	private int levelWidth;
+	private Node Door;
+	private int Score;
+	private Text Score_on_screne;
 	private ArrayList<Node> platform = new ArrayList<Node>();
 	private ArrayList<ArrayList<Node>> UI = new ArrayList<ArrayList<Node>>();
 	private Point2D playerVelocity = new Point2D(0,0);
+	private int Round = 0;
+	private int temp_hp = 3;//
 
 	public void start(Stage primaryStage)  throws Exception {
-		this.initContent();
+		this.initContent(0);
+		this.setRound(0);
 		Scene scene = new Scene(appRoot);
 		scene.setOnKeyPressed(e->{
 			keys.put(e.getCode(), true);
@@ -56,6 +64,11 @@ public class Main extends Application{
 	public static void main(String[] args) {
 		launch(args);
 	}
+	private void clear() {
+		gameRoot.getChildren().clear();
+		platform.clear();
+ 		appRoot.getChildren().clear();
+	}
 	private void update() {
 		if (isPressed(KeyCode.SPACE) && player.getTranslateY()  >=5) {
 			jumpPlayer();
@@ -68,6 +81,13 @@ public class Main extends Application{
 		}
 		if (isPressed(KeyCode.Z)) {
 			//Do damage
+			setScore(getScore()+1);
+			editUi(1);
+		}
+		if (isPressed(KeyCode.E) && player.getBoundsInParent().intersects(getDoor().getBoundsInParent())) {
+			clear();
+			setRound(getRound() + 1);
+			initContent(getRound() + 1);
 		}
 		if (playerVelocity.getY() < 10) {
 			playerVelocity = playerVelocity.add(0,1);
@@ -127,23 +147,34 @@ public class Main extends Application{
 			isJump = true; //prohibit to double jump
 		}
 	}
-	private void initContent() {
+	private void initContent(int level) {
 		Rectangle Bg = new Rectangle(1280,720);
 		Bg.setFill(Color.LIGHTYELLOW);
-		levelWidth = DataLevel.Level1[0].length() * 60;
-		for (int i = 0 ;i<DataLevel.Level1.length;i++) {
-			String line = DataLevel.Level1[i];
+		levelWidth = DataLevel.Level1[level].length() * 60;
+		String[] arr;
+		if (level == 0) {
+			arr = DataLevel.Level1;
+		}else {
+			arr = DataLevel.Level2;
+		}
+ 		for (int i = 0 ;i<arr.length;i++) {
+			String line = arr[i];
 			for (int j = 0;j<line.length();j++) {
 				if (line.charAt(j) == '1') {
-					Node pt = this.CreateEntity(j*60, i*60, 60, 60, Color.BROWN);
+					Node pt = this.CreateEntity(j*60, i*60, 60, 60, Color.BROWN,gameRoot);
 					platform.add(pt);
-					
+				}
+				else if (line.charAt(j) == '2') {
+					Node door = CreateEntity(j*60, i*60, 60, 60, Color.BLACK,gameRoot);
+					setDoor(door);
+					platform.add(door);
 				}
 			}
 		}
-		
-		
-		player = this.CreateEntity(0, 600, 40, 40, Color.BLUE);
+		initUi();
+		gameRoot.setLayoutX(0); //reset มุมกล้อง
+	    gameRoot.setLayoutY(0); //reset มุมกล้อง 
+		player = this.CreateEntity(0, 600, 40, 40, Color.BLUE,gameRoot);
 		player.translateXProperty().addListener((obs,old,newValue)->{
 			int offset = newValue.intValue();
 			if (offset > 640 && offset < levelWidth - 640) {
@@ -153,17 +184,43 @@ public class Main extends Application{
 		appRoot.getChildren().addAll(Bg,gameRoot,uiRoot);
 	}
 	private void initUi() {
+		setScore(0);
 		ArrayList<Node> health = new ArrayList<Node>();
-		int hp = 3;// real is hp = player.gethp;
-		for (int i = 0;i<)
+		int hp = (getRound() == 0 ? 2:3);// real is hp = player.gethp;
+		for (int i = 0;i<hp;i++) {
+			Node bar = CreateEntity(20 + (10*i*5),10,30,30,Color.RED,uiRoot);
+			health.add(bar);
+		}
+		UI.add(health);
+		ArrayList<Node> Score = new ArrayList<Node>();
+		Score_on_screne = Scoreboard();
+		uiRoot.getChildren().add(Score_on_screne);
+	  	
 	}
-	private Node CreateEntity(int x,int y,int w,int h,Color color) {
+	private Text Scoreboard() {
+		Text t = new Text("Score: " + Integer.toString(getScore()));
+		t.setFont(new Font(22));
+		t.prefHeight(40);
+		t.prefWidth(40);
+		t.setTranslateX(1180);
+		t.setTranslateY(30);
+		return t;
+	}
+	private void editUi(int idx) { // idx indicate behavior of this method
+		if (idx == 0) {
+			//reduce hp
+		}else {
+			//update coin
+			Score_on_screne.setText("Score: "+Integer.toString(getScore()));
+		}
+	}
+	private Node CreateEntity(int x,int y,int w,int h,Color color,Pane p) {
 		Rectangle ob = new Rectangle(w,h);
 		ob.setTranslateX(x);
 		ob.setTranslateY(y);
 		
 		ob.setFill(color);
-		gameRoot.getChildren().add(ob);
+		p.getChildren().add(ob);
 		return ob;
 	}
 	
@@ -178,6 +235,24 @@ public class Main extends Application{
 	}
 	public void setJump(boolean isJump) {
 		this.isJump = isJump;
+	}
+	public Node getDoor() {
+		return Door;
+	}
+	public void setDoor(Node door) {
+		Door = door;
+	}
+	public int getRound() {
+		return Round;
+	}
+	public void setRound(int round) {
+		Round = round;
+	}
+	public int getScore() {
+		return Score;
+	}
+	public void setScore(int score) {
+		Score = score;
 	}
 	
 }
