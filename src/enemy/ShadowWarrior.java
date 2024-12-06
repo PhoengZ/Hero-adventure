@@ -2,12 +2,13 @@ package enemy;
 
 import base.Armorable;
 import base.Unit;
+import player.Player;
 
 public class ShadowWarrior extends Enemy implements Armorable{
 	public ShadowWarrior() {
 		super(100,60,100,20,"");
 	}
-	public void attack(Unit other) {
+	public void attack(Player other) {
 		super.attack(other);
 		this.increaseDefense(5);
 	}

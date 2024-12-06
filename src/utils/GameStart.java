@@ -1,6 +1,7 @@
 package utils;
 
 import javafx.stage.Stage;
+import player.Knight;
 import player.Player;
 
 
@@ -45,6 +46,28 @@ public class GameStart {
 	private static Point2D playerVelocity = new Point2D(0,0);
 	private static int Round = 0;
 	private static int temp_hp = 3;//
+	
+	
+	public static void GameStart() {
+		Node py = new Knight();
+		setPlayer(py);
+		GameStart.clear();
+		GameStart.setScore(0);
+		GameStart.initContent(0);
+		GameStart.setRound(0);
+		appRoot.setOnKeyPressed(event->{
+			GameStart.keys.put(event.getCode(), true);
+		});
+		appRoot.setOnKeyReleased(event->{
+			GameStart.keys.put(event.getCode(),false);
+		});
+		AnimationTimer timer = new AnimationTimer() {
+			public void handle(long now) {
+				GameStart.update();
+			}
+		};
+		timer.start();
+	}
 	
 	public static StartPane getAppRoot() {
 		return appRoot;
@@ -120,7 +143,7 @@ public class GameStart {
 			for (Node pt:platform) {
 				if (player.getBoundsInParent().intersects(pt.getBoundsInParent())) {
 					if (moveDown) {
-						if (player.getTranslateY() + 40 == pt.getTranslateY()) {
+						if (player.getTranslateY() + 80 == pt.getTranslateY()) {
 							player.setTranslateY(player.getTranslateY() - 1);
 							setJump(false);
 							return;
@@ -168,7 +191,9 @@ public class GameStart {
 		initUi();
 		gameRoot.setLayoutX(0); //reset มุมกล้อง
 	    gameRoot.setLayoutY(0); //reset มุมกล้อง 
-		player = CreateEntity(0, 600, 40, 40, Color.BLUE,gameRoot);
+		player.setTranslateX(0);
+		player.setTranslateY(500);
+		gameRoot.getChildren().add(player);
 		player.translateXProperty().addListener((obs,old,newValue)->{
 			int offset = newValue.intValue();
 			if (offset > 640 && offset < levelWidth - 640) {

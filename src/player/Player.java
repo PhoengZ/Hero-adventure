@@ -4,14 +4,17 @@ import base.Attackable;
 import base.Unit;
 import enemy.Enemy;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 
-public class Player extends Unit implements Attackable{
+public class Player extends Pane {
 	private int hp;
 	private int atk; 
 	private int speed;
 	private int defense;
 	private boolean alive;
 	private Image image;
+	private ImageView imageView;
 	public Player(int hp , int atk , int speed , int defense , String imagePath) {
 		this.setHp(hp);
 		this.setAtk(atk);
@@ -19,23 +22,17 @@ public class Player extends Unit implements Attackable{
 		this.setDefense(defense);
 		this.setAlive(true);
 		this.setImageByPath(imagePath);
+		
 	}
 	
-	public void attack(Unit other) {
-		if(!IsSameTeam(other)) {
-			Enemy enemy = (Enemy) other;
-			enemy.setHp(enemy.getHp()-atk);
-			if(enemy.getHp() == 0) {
-				enemy.setAlive(false);
-			}
+	public void attack(Enemy enemy) {
+		enemy.setHp(enemy.getHp()-atk);
+		if(enemy.getHp() == 0) {
+			enemy.setAlive(false);
 		}
+		
 	}
-	public boolean IsSameTeam(Unit other) {
-		if(other instanceof Player) {
-			return true;
-		}
-		return false;
-	}
+	
 	public int getHp() {
 		return hp;
 	}
@@ -77,11 +74,23 @@ public class Player extends Unit implements Attackable{
     	try {
             String classLoaderPath = ClassLoader.getSystemResource(imagePath).toString();
             this.image=new Image(classLoaderPath);
+            setImageView(new ImageView(getImage()));
+            this.getChildren().clear();
+            this.getChildren().add(this.imageView);
         } catch (Exception e) {
             e.printStackTrace();
-            
         }
     }
+
+	public ImageView getImageView() {
+		return imageView;
+	}
+
+	public void setImageView(ImageView imageView) {
+		imageView.setFitHeight(80);
+		imageView.setFitWidth(80);
+		this.imageView = imageView;
+	}
 	
 	
 

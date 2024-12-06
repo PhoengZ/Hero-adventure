@@ -1,33 +1,9 @@
 package application;
 
 import javafx.stage.Stage;
-import player.Player;
-
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import Data.DataLevel;
 import SPane.StartPane;
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 
 public class Main extends Application{
@@ -48,11 +24,16 @@ public class Main extends Application{
 	private int temp_hp = 3;//*/
 
 	public void start(Stage primaryStage)  throws Exception {
-		Scene scene = new Scene(StartPane.getPane());
-		primaryStage.setTitle("Collosium");
-		primaryStage.setResizable(false);
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		StartPane startPane = (StartPane) StartPane.getPane();
+        Scene startScene = new Scene(startPane, 1280, 720);
+
+        primaryStage.setTitle("Colosseum");
+        primaryStage.setResizable(false);
+        primaryStage.setScene(startScene);
+        primaryStage.show();
+
+        // Request focus for the StartPane
+        startPane.requestFocus();
 	}
 	public static void main(String[] args) {
 		launch(args);

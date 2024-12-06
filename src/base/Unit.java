@@ -1,5 +1,8 @@
 package base;
 
-public abstract class Unit {
-	public abstract boolean IsSameTeam(Unit other);
+import javafx.scene.layout.Pane;
+import player.Player;
+
+public abstract class Unit extends Pane{
+	public abstract void attack(Player player);
 }

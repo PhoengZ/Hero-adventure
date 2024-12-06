@@ -5,7 +5,7 @@ import base.Unit;
 import javafx.scene.image.Image;
 import player.Player;
 
-public class Enemy  implements Attackable{
+public class Enemy  extends Unit {
 	private int hp;
 	private int atk; 
 	private int speed;
