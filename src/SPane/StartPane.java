@@ -40,22 +40,7 @@ public class StartPane extends Pane{
 		Bg.setFill(Color.LIGHTYELLOW);
 		GameStart.setAppRoot(this);
 		Start.setOnMouseClicked(e->{
-			GameStart.clear();
-			GameStart.setScore(0);
-			GameStart.initContent(0);
-			GameStart.setRound(0);
-			this.setOnKeyPressed(event->{
-				GameStart.keys.put(event.getCode(), true);
-			});
-			this.setOnKeyReleased(event->{
-				GameStart.keys.put(event.getCode(),false);
-			});
-			AnimationTimer timer = new AnimationTimer() {
-				public void handle(long now) {
-					GameStart.update();
-				}
-			};
-			timer.start();
+			GameStart.GameStart();
 		});
 		Exit.setOnMouseClicked(e->{
 			//Exit the game

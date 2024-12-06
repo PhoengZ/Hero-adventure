@@ -46,6 +46,26 @@ public class GameStart {
 	private static int Round = 0;
 	private static int temp_hp = 3;//
 	
+	
+	public static void GameStart() {
+		GameStart.clear();
+		GameStart.setScore(0);
+		GameStart.initContent(0);
+		GameStart.setRound(0);
+		appRoot.setOnKeyPressed(event->{
+			GameStart.keys.put(event.getCode(), true);
+		});
+		appRoot.setOnKeyReleased(event->{
+			GameStart.keys.put(event.getCode(),false);
+		});
+		AnimationTimer timer = new AnimationTimer() {
+			public void handle(long now) {
+				GameStart.update();
+			}
+		};
+		timer.start();
+	}
+	
 	public static StartPane getAppRoot() {
 		return appRoot;
 	}

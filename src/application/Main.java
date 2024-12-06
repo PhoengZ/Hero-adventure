@@ -2,7 +2,7 @@ package application;
 
 import javafx.stage.Stage;
 import player.Player;
-
+import utils.GameStart;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,11 +48,16 @@ public class Main extends Application{
 	private int temp_hp = 3;//*/
 
 	public void start(Stage primaryStage)  throws Exception {
-		Scene scene = new Scene(StartPane.getPane());
-		primaryStage.setTitle("Collosium");
-		primaryStage.setResizable(false);
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		StartPane startPane = (StartPane) StartPane.getPane();
+        Scene startScene = new Scene(startPane, 1280, 720);
+
+        primaryStage.setTitle("Colosseum");
+        primaryStage.setResizable(false);
+        primaryStage.setScene(startScene);
+        primaryStage.show();
+
+        // Request focus for the StartPane
+        startPane.requestFocus();
 	}
 	public static void main(String[] args) {
 		launch(args);
