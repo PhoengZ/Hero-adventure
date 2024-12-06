@@ -8,14 +8,12 @@ public class Obstacle extends Unit{
 	private int hp;
 	private int atk; 
 	private int speed;
-	private int defense;
 	private Image image;
 	private boolean alive;
-	public Obstacle(int hp ,int atk , int speed ,int defense,String imagePath ) {
+	public Obstacle(int hp ,int atk , int speed ,String imagePath ) {
 		this.setHp(hp);
 		this.setAtk(atk);
 		this.setSpeed(speed);
-		this.setDefense(defense);
 		this.setImageByPath(imagePath);
 		this.setAlive(true);
 	}
@@ -49,12 +47,6 @@ public class Obstacle extends Unit{
 	}
 	public void setAlive(boolean alive) {
 		this.alive = alive;
-	}
-	public int getDefense() {
-		return defense;
-	}
-	public void setDefense(int defense) {
-		this.defense = Math.max(0,defense);
 	}
 	public Image getImage() {
 		return image;

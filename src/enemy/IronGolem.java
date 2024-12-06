@@ -1,7 +1,6 @@
 package enemy;
 
 import base.Armorable;
-import base.Attackable;
 import base.Unit;
 import player.Player;
 

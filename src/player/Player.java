@@ -1,6 +1,5 @@
 package player;
 
-import base.Attackable;
 import base.Unit;
 import enemy.Enemy;
 import javafx.scene.image.Image;
