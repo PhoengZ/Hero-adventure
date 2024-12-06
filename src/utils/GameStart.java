@@ -4,7 +4,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import player.Knight;
 import player.Player;
-
+import player.Warrior;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,9 +53,8 @@ public class GameStart {
 	private static int Round = 0;
 	private static int temp_hp = 3;//
 	
-	
 	public static void GameStart() {
-		Node py = new Knight();
+		Node py = new Warrior();
 		setPlayer(py);
 		GameStart.clear();
 		GameStart.setScore(0);
@@ -66,6 +65,10 @@ public class GameStart {
 		});
 		appRoot.setOnKeyReleased(event->{
 			GameStart.keys.put(event.getCode(),false);
+			if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) {
+		        ((Player) player).stopWalking();
+		        isWalk = false;
+		    }
 		});
 		AnimationTimer timer = new AnimationTimer() {
 			public void handle(long now) {
@@ -93,10 +96,17 @@ public class GameStart {
 			jumpPlayer();
 		}
 		if (isPressed(KeyCode.LEFT) && player.getTranslateX() >= 5) {
+			if (!isWalk) {
+				((Player)player).startWalkingLeft();
+				isWalk = true;
+			}
 			movePlayerX(-5);
 		}
 		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 40  <= levelWidth - 5) {
-			((Player)player).startWalkingRight();
+			if (!isWalk) {
+				((Player)player).startWalkingRight();
+				isWalk = true;
+			}
 			movePlayerX(5);
 		}
 		if (isPressed(KeyCode.Z)) {
@@ -110,8 +120,9 @@ public class GameStart {
 			if (getRound() == 2) {
 				//Goto หน้าบอส
 			}else {
-				TurnBasePane turnbasepane = new TurnBasePane();
-				turnbasepane.requestFocus();
+				//((Player)player).stopWalking();
+				TurnBasePane tb = new TurnBasePane();
+				tb.requestFocus();
 			}
 		}
 		if (playerVelocity.getY() < 10) {
