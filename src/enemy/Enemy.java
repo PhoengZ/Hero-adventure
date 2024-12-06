@@ -5,7 +5,7 @@ import base.Unit;
 import javafx.scene.image.Image;
 import player.Player;
 
-public class Enemy extends Unit implements Attackable{
+public class Enemy  implements Attackable{
 	private int hp;
 	private int atk; 
 	private int speed;
@@ -20,21 +20,14 @@ public class Enemy extends Unit implements Attackable{
 		this.setImageByPath(imagePath);
 		this.setAlive(true);
 	}
-	public void attack(Unit other) {
-		if(!IsSameTeam(other)) {
-			Player player = (Player) other;
-			player.setHp(player.getHp()-atk);
-			if(player.getHp() == 0) {
-				player.setAlive(false);
-			}
+	public void attack(Player player) {
+		player.setHp(player.getHp()-atk);
+		if(player.getHp() == 0) {
+			player.setAlive(false);
 		}
+		
 	}
-	public boolean IsSameTeam(Unit other) {
-		if(other instanceof Enemy) {
-			return true;
-		}
-		return false;
-	}
+
 	public int getHp() {
 		return hp;
 	}
