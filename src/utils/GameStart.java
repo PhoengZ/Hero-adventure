@@ -1,6 +1,7 @@
 package utils;
 
 import javafx.stage.Stage;
+import player.Knight;
 import player.Player;
 
 
@@ -48,6 +49,8 @@ public class GameStart {
 	
 	
 	public static void GameStart() {
+		Node py = new Knight();
+		setPlayer(py);
 		GameStart.clear();
 		GameStart.setScore(0);
 		GameStart.initContent(0);
@@ -140,7 +143,7 @@ public class GameStart {
 			for (Node pt:platform) {
 				if (player.getBoundsInParent().intersects(pt.getBoundsInParent())) {
 					if (moveDown) {
-						if (player.getTranslateY() + 40 == pt.getTranslateY()) {
+						if (player.getTranslateY() + 80 == pt.getTranslateY()) {
 							player.setTranslateY(player.getTranslateY() - 1);
 							setJump(false);
 							return;
@@ -188,7 +191,9 @@ public class GameStart {
 		initUi();
 		gameRoot.setLayoutX(0); //reset มุมกล้อง
 	    gameRoot.setLayoutY(0); //reset มุมกล้อง 
-		player = CreateEntity(0, 600, 40, 40, Color.BLUE,gameRoot);
+		player.setTranslateX(0);
+		player.setTranslateY(500);
+		gameRoot.getChildren().add(player);
 		player.translateXProperty().addListener((obs,old,newValue)->{
 			int offset = newValue.intValue();
 			if (offset > 640 && offset < levelWidth - 640) {

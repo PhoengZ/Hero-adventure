@@ -15,7 +15,7 @@ public class StartPane extends Pane{
 	private static Pane instance;
 
 	private StartPane() {
-		Image st = null,ex = null;
+		Image st = null,ex = null,bg = null;
 		try {
             String classLoaderPath = ClassLoader.getSystemResource("startButton.png").toString();
             st = new Image(classLoaderPath);
@@ -30,14 +30,22 @@ public class StartPane extends Pane{
             e.printStackTrace();
             System.out.println("Not fount ExitButton");
         }
+		try {
+            String classLoaderPath = ClassLoader.getSystemResource("Background_Mainmenu.jpg").toString();
+            bg = new Image(classLoaderPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Not fount Background_Mainmenu");
+        }
 		ImageView Start = new ImageView(st);
 		ImageView Exit = new ImageView(ex);
-		Start.setFitWidth(30);
-		Start.setFitHeight(30);
-		Exit.setFitHeight(30);
-		Exit.setFitWidth(30);
-		Rectangle Bg = new Rectangle(1280,720);
-		Bg.setFill(Color.LIGHTYELLOW);
+		ImageView Bg = new ImageView(bg);
+		Start.setFitWidth(150);
+		Start.setFitHeight(150);
+		Exit.setFitHeight(150);
+		Exit.setFitWidth(150);
+		Bg.setFitHeight(720);
+		Bg.setFitWidth(1280);
 		GameStart.setAppRoot(this);
 		Start.setOnMouseClicked(e->{
 			GameStart.GameStart();
@@ -46,10 +54,10 @@ public class StartPane extends Pane{
 			//Exit the game
 			Platform.exit();
 		});
-		Start.setTranslateX(640);
-		Start.setTranslateY(300);
-		Exit.setTranslateX(640);
-		Exit.setTranslateY(400);
+		Start.setTranslateX(565);
+		Start.setTranslateY(350);
+		Exit.setTranslateX(565);
+		Exit.setTranslateY(500);
 		System.out.println("Successfull Created pane");
 		this.getChildren().addAll(Bg,Start,Exit);
 	}
