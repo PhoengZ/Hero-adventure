@@ -1,6 +1,5 @@
 package player;
 
-import base.Attackable;
 import base.Unit;
 import enemy.Enemy;
 import javafx.animation.KeyFrame;
@@ -11,7 +10,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
-public class Player extends Unit implements Attackable{
+
+public class Player extends Unit{
+
 	private int hp;
 	private int atk; 
 	private int speed;
@@ -37,9 +38,7 @@ public class Player extends Unit implements Attackable{
 		
 	}
 	
-	public void attack(Unit other) {
-	
-		Enemy enemy = (Enemy) other;
+	public void attack(Enemy enemy) {
 		enemy.setHp(enemy.getHp()-atk);
 		if(enemy.getHp() == 0) {
 			enemy.setAlive(false);
@@ -107,11 +106,8 @@ public class Player extends Unit implements Attackable{
 		this.imageView = imageView;
 	}
 
-	@Override
-	public boolean IsSameTeam(Unit other) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
+	
 	private void createWalkRightAnimation() {
         walkRightAnimation = new Timeline();
         for (int i = 0; i < SPRITE_COUNT; i++) {
@@ -140,6 +136,12 @@ public class Player extends Unit implements Attackable{
         // Optionally, set back to the idle state (first frame)
         imageView.setViewport(new Rectangle2D(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT));
     }
+
+	@Override
+	public void attack(Player player) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 

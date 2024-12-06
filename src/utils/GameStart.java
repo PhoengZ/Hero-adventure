@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import Data.DataLevel;
 import SPane.StartPane;
+import SPane.TurnBasePane;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -109,7 +110,8 @@ public class GameStart {
 			if (getRound() == 2) {
 				//Goto หน้าบอส
 			}else {
-				initContent(getRound());
+				TurnBasePane turnbasepane = new TurnBasePane();
+				turnbasepane.requestFocus();
 			}
 		}
 		if (playerVelocity.getY() < 10) {

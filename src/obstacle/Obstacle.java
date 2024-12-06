@@ -1,22 +1,19 @@
-package enemy;
-
+package obstacle;
 
 import base.Unit;
 import javafx.scene.image.Image;
 import player.Player;
 
-public class Enemy  extends Unit {
+public class Obstacle extends Unit{
 	private int hp;
 	private int atk; 
 	private int speed;
-	private int defense;
 	private Image image;
 	private boolean alive;
-	public Enemy(int hp ,int atk , int speed ,int defense,String imagePath ) {
+	public Obstacle(int hp ,int atk , int speed ,String imagePath ) {
 		this.setHp(hp);
 		this.setAtk(atk);
 		this.setSpeed(speed);
-		this.setDefense(defense);
 		this.setImageByPath(imagePath);
 		this.setAlive(true);
 	}
@@ -27,7 +24,6 @@ public class Enemy  extends Unit {
 		}
 		
 	}
-
 	public int getHp() {
 		return hp;
 	}
@@ -52,12 +48,6 @@ public class Enemy  extends Unit {
 	public void setAlive(boolean alive) {
 		this.alive = alive;
 	}
-	public int getDefense() {
-		return defense;
-	}
-	public void setDefense(int defense) {
-		this.defense = Math.max(0,defense);
-	}
 	public Image getImage() {
 		return image;
 	}
@@ -71,7 +61,4 @@ public class Enemy  extends Unit {
             
         }
     }
-	
-	
-	
 }

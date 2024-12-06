@@ -1,14 +1,14 @@
 package enemy;
 
 import base.Armorable;
-import base.Attackable;
 import base.Unit;
+import player.Player;
 
-public class IronGolem extends Enemy implements Armorable,Attackable{
+public class IronGolem extends Enemy implements Armorable{
 	public IronGolem() {
 		super(300,70,10,100,"");
 	}
-	public void attack(Unit other) {
+	public void attack(Player other) {
 		super.attack(other);
 		this.increaseDefense(5);
 	}
