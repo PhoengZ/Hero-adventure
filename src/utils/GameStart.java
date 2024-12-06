@@ -1,6 +1,7 @@
 package utils;
 
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import player.Knight;
 import player.Player;
 
@@ -11,10 +12,13 @@ import java.util.HashMap;
 import Data.DataLevel;
 import SPane.StartPane;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -36,6 +40,7 @@ public class GameStart {
 	private static Pane gameRoot = new Pane();
 	private static Pane uiRoot = new Pane();
 	private static boolean isJump;
+	private static boolean isWalk;
 	private static Node player;
 	private static int levelWidth;
 	private static Node Door;
@@ -90,6 +95,7 @@ public class GameStart {
 			movePlayerX(-5);
 		}
 		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 40  <= levelWidth - 5) {
+			((Player)player).startWalkingRight();
 			movePlayerX(5);
 		}
 		if (isPressed(KeyCode.Z)) {
