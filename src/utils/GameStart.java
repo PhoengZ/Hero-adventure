@@ -1,4 +1,4 @@
-package application;
+package utils;
 
 import javafx.stage.Stage;
 import player.Player;
@@ -29,42 +29,37 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-
-public class Main extends Application{
-	/*private HashMap<KeyCode,Boolean> keys = new HashMap<KeyCode,Boolean>();
-	private Pane appRoot = new Pane();
-	private Pane gameRoot = new Pane();
-	private Pane uiRoot = new Pane();
-	private boolean isJump;
-	private Node player;
-	private int levelWidth;
-	private Node Door;
-	private int Score;
-	private Text Score_on_screne;
-	private ArrayList<Node> platform = new ArrayList<Node>();
-	private ArrayList<ArrayList<Node>> UI = new ArrayList<ArrayList<Node>>();
-	private Point2D playerVelocity = new Point2D(0,0);
-	private int Round = 0;
-	private int temp_hp = 3;//*/
-
-	public void start(Stage primaryStage)  throws Exception {
-		Scene scene = new Scene(StartPane.getPane());
-		primaryStage.setTitle("Collosium");
-		primaryStage.setResizable(false);
-		primaryStage.setScene(scene);
-		primaryStage.show();
+public class GameStart {
+	public static HashMap<KeyCode,Boolean> keys = new HashMap<KeyCode,Boolean>();
+	private static StartPane appRoot;
+	private static Pane gameRoot = new Pane();
+	private static Pane uiRoot = new Pane();
+	private static boolean isJump;
+	private static Node player;
+	private static int levelWidth;
+	private static Node Door;
+	private static int Score;
+	private static Text Score_on_screne;
+	private static ArrayList<Node> platform = new ArrayList<Node>();
+	private static ArrayList<ArrayList<Node>> UI = new ArrayList<ArrayList<Node>>();
+	private static Point2D playerVelocity = new Point2D(0,0);
+	private static int Round = 0;
+	private static int temp_hp = 3;//
+	
+	public static StartPane getAppRoot() {
+		return appRoot;
 	}
-	public static void main(String[] args) {
-		launch(args);
+	public static void setAppRoot(StartPane appRoot) {
+		GameStart.appRoot = appRoot;
 	}
-	/*private void clear() {
+	public static void clear() {
 		gameRoot.getChildren().clear();
 		platform.clear();
 		uiRoot.getChildren().clear();
 		UI.clear();
  		appRoot.getChildren().clear();
 	}
-	private void update() {
+	public static void update() {
 		if (isPressed(KeyCode.SPACE) && player.getTranslateY()  >=5) {
 			jumpPlayer();
 		}
@@ -93,13 +88,13 @@ public class Main extends Application{
 		}
 		movePlayerY((int)playerVelocity.getY());
 	}
-	private boolean isPressed(KeyCode key) {
+	private static boolean isPressed(KeyCode key) {
 		return keys.getOrDefault(key, false);
 	}
-	private void doDamage(Node player,Node Enemy) {
+	private static void doDamage(Node player,Node Enemy) {
 		//change Node to class of each 
 	}
-	private void movePlayerX(int value) {
+	private static void movePlayerX(int value) {
 		boolean moveRight = value > 0;
 		for (int i = 0;i<Math.abs(value);i++) {
 			for (Node pt:platform) {
@@ -119,7 +114,7 @@ public class Main extends Application{
 			
 		}
 	}
-	private void movePlayerY(int value) {
+	private static void movePlayerY(int value) {
 		boolean moveDown = value > 0; // - is mean up + is mean down
 		for (int i = 0;i<Math.abs(value);i++) {
 			for (Node pt:platform) {
@@ -140,13 +135,13 @@ public class Main extends Application{
 			player.setTranslateY(player.getTranslateY() + (moveDown ? 1:-1)); // if moveRight set translate x to oldX + 1 or oldX -1 when moveLeft 
 		}//777
 	}
-	private void jumpPlayer() {
+	private static void jumpPlayer() {
 		if (!isJump) {
 			playerVelocity = playerVelocity.add(0,-30);
 			setJump(true); //prohibit to double jump
 		}
 	}
-	private void initContent(int level) {
+	public static void initContent(int level) {
 		Rectangle Bg = new Rectangle(1280,720);
 		Bg.setFill(Color.LIGHTYELLOW);
 		levelWidth = DataLevel.Level1[level].length() * 60;
@@ -160,7 +155,7 @@ public class Main extends Application{
 			String line = arr[i];
 			for (int j = 0;j<line.length();j++) {
 				if (line.charAt(j) == '1') {
-					Node pt = this.CreateEntity(j*60, i*60, 60, 60, Color.BROWN,gameRoot);
+					Node pt = CreateEntity(j*60, i*60, 60, 60, Color.BROWN,gameRoot);
 					platform.add(pt);
 				}
 				else if (line.charAt(j) == '2') {
@@ -173,7 +168,7 @@ public class Main extends Application{
 		initUi();
 		gameRoot.setLayoutX(0); //reset มุมกล้อง
 	    gameRoot.setLayoutY(0); //reset มุมกล้อง 
-		player = this.CreateEntity(0, 600, 40, 40, Color.BLUE,gameRoot);
+		player = CreateEntity(0, 600, 40, 40, Color.BLUE,gameRoot);
 		player.translateXProperty().addListener((obs,old,newValue)->{
 			int offset = newValue.intValue();
 			if (offset > 640 && offset < levelWidth - 640) {
@@ -182,9 +177,9 @@ public class Main extends Application{
 		});
 		appRoot.getChildren().addAll(Bg,gameRoot,uiRoot);
 	}
-	private void initUi() {
+	private static void initUi() {
 		ArrayList<Node> health = new ArrayList<Node>();
-		int hp = (getRound() == 0 ? 2:3);// real is hp = player.gethp;
+		int hp = (getRound() == 0 ? 2:3); 
 		for (int i = 0;i<hp;i++) {
 			Node bar = CreateEntity(20 + (10*i*5),10,30,30,Color.RED,uiRoot);
 			health.add(bar);
@@ -193,7 +188,7 @@ public class Main extends Application{
 		Score_on_screne = Scoreboard();
 		uiRoot.getChildren().add(Score_on_screne);
 	}
-	private Text Scoreboard() {
+	private static Text Scoreboard() {
 		Text t = new Text("Score: " + Integer.toString(getScore()));
 		t.setFont(new Font(22));
 		t.prefHeight(40);
@@ -202,7 +197,7 @@ public class Main extends Application{
 		t.setTranslateY(30);
 		return t;
 	}
-	private void editUi(int idx) { // idx indicate behavior of this method
+	private static void editUi(int idx) { // idx indicate behavior of this method
 		if (idx == 0) {
 			if (temp_hp != 0) {
 				UI.get(idx).removeLast();
@@ -214,7 +209,7 @@ public class Main extends Application{
 			Score_on_screne.setText("Score: "+Integer.toString(getScore()));
 		}
 	}
-	private Node CreateEntity(int x,int y,int w,int h,Color color,Pane p) {
+	private static Node CreateEntity(int x,int y,int w,int h,Color color,Pane p) {
 		Rectangle ob = new Rectangle(w,h);
 		ob.setTranslateX(x);
 		ob.setTranslateY(y);
@@ -224,35 +219,36 @@ public class Main extends Application{
 		return ob;
 	}
 	
-	public Node getPlayer() {
+	public static Node getPlayer() {
 		return player;
 	}
-	public void setPlayer(Node player) {
-		this.player = player;
+	public static void setPlayer(Node py) {
+		player = py;
 	}
-	public boolean isJump() {
+	public static  boolean isJump() {
 		return isJump;
 	}
-	public void setJump(boolean isJump) {
-		this.isJump = isJump;
+	public static void setJump(boolean Jump) {
+		isJump = Jump;
 	}
-	public Node getDoor() {
+	public static Node getDoor() {
 		return Door;
 	}
-	public void setDoor(Node door) {
+	public static void setDoor(Node door) {
 		Door = door;
 	}
-	public int getRound() {
+	public static int getRound() {
 		return Round;
 	}
-	public void setRound(int round) {
+	public static void setRound(int round) {
 		Round = round;
 	}
-	public int getScore() {
+	public static int getScore() {
 		return Score;
 	}
-	public void setScore(int score) {
+	public static void setScore(int score) {
 		Score = score;
 	}
-	*/
+	
+	
 }
