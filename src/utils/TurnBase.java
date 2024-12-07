@@ -15,14 +15,16 @@ import SPane.TurnBasePane;
 public class TurnBase {
     private Player player;
     private List<Enemy> enemies;
-    private Pane gamePane;
+    private TurnBasePane gamePane;
     private boolean isPlayerTurn;
+    private static double chanceToMiss;
 
-    public TurnBase(Player player, List<Enemy> enemies, Pane gamePane) {
+    public TurnBase(Player player, List<Enemy> enemies, TurnBasePane gamePane) {
         this.player = player;
         this.enemies = enemies;
         this.gamePane = gamePane;
         this.isPlayerTurn = true; 
+        this.chanceToMiss = 0.6;
     }
 
     public boolean isPlayerTurn() {
@@ -32,10 +34,7 @@ public class TurnBase {
     public void startTurn() {
         if (player.isAlive() && enemies.stream().anyMatch(Enemy::isAlive)) { 
         	//stream anymatch for check if any enemies is alive
-        	if (gamePane instanceof TurnBasePane) {
-                TurnBasePane turnBasePane = (TurnBasePane) gamePane;
-                turnBasePane.updateTurnStatus(isPlayerTurn);
-            }
+            gamePane.updateTurnStatus(isPlayerTurn);
             if (isPlayerTurn) {
                 playerTurn();
             } else {
@@ -63,9 +62,16 @@ public class TurnBase {
         Enemy attackingEnemy = getRandomAliveEnemy();
         if (attackingEnemy != null) {
         	 int damage = attackingEnemy.getAtk();
-            attackingEnemy.attack(player); // ศัตรูโจมตีผู้เล่น
+        	 double chanceToMiss = this.getChanceToMiss();
+             if (Math.random() < chanceToMiss) { // ถ้าค่าที่สุ่มได้น้อยกว่าโอกาส miss
+                 gamePane.showMissText(this.player); // แสดงข้อความ miss
+             }
+             else {
+            	 attackingEnemy.attack(player); // ศัตรูโจมตีผู้เล่น
+            	 gamePane.showDamageText(this.player, attackingEnemy.getAtk());
+             }
             if (gamePane instanceof TurnBasePane) {
-                ((TurnBasePane) gamePane).updatePlayerStatus(); // อัปเดตสถานะผู้เล่น
+               gamePane.updatePlayerStatus(); // อัปเดตสถานะผู้เล่น
             }
             //showDamageText(playerImage, damage);
         }
@@ -95,4 +101,13 @@ public class TurnBase {
             System.out.println("Enemies Win!");
         }
     }
+
+	public static double getChanceToMiss() {
+		return chanceToMiss;
+	}
+
+	public static void setChanceToMiss(double chanceToMiss) {
+		TurnBase.chanceToMiss = chanceToMiss;
+	}
+    
 }

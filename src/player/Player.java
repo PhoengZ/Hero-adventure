@@ -115,7 +115,6 @@ public class Player extends Unit{
 	public Image getImageRight() {
 		return Right;
 	}
-
 	public void setImageRightByPath(String imagePath) {
     	try {
             String classLoaderPath = ClassLoader.getSystemResource(imagePath).toString();

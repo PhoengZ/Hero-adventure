@@ -28,6 +28,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -50,17 +51,17 @@ public class GameStart {
 	private static Node player;
 	private static int levelWidth;
 	private static Node Door;
+	private static ProgressBar H_bar;
 	private static int Score;
 	private static Text Score_on_screne;
 	private static ArrayList<Node> platform = new ArrayList<Node>();
-	private static ArrayList<ArrayList<Node>> UI = new ArrayList<ArrayList<Node>>();
+	private static ArrayList<Node> coins = new ArrayList<Node>();
 	private static Point2D playerVelocity = new Point2D(0,0);
 	private static String Path_Block;
 	private static int Round = 0;
-	private static int temp_hp = 3;//
 	
-	public static void GameStart() {
-		Node py = new Warrior();
+	public static void GameStart(Player player) {
+		Node py = player;
 		setPlayer(py);
 		GameStart.clear();
 		GameStart.setScore(0);
@@ -94,7 +95,7 @@ public class GameStart {
 		gameRoot.getChildren().clear();
 		platform.clear();
 		uiRoot.getChildren().clear();
-		UI.clear();
+		
  		appRoot.getChildren().clear();
 	}
 	public static void update() {
@@ -117,8 +118,8 @@ public class GameStart {
 		}
 		if (isPressed(KeyCode.Z)) {
 			//Do damage
-			setScore(getScore()+1);
-			editUi(1);
+			//setScore(getScore()+1);
+			//editUi(1);
 		}
 		if (isPressed(KeyCode.E) && player.getBoundsInParent().intersects(getDoor().getBoundsInParent())) {
 			clear();
@@ -135,6 +136,7 @@ public class GameStart {
 			playerVelocity = playerVelocity.add(0,1);
 		}
 		movePlayerY((int)playerVelocity.getY());
+		checkcollideCoin();
 	}
 	private static boolean isPressed(KeyCode key) {
 		return keys.getOrDefault(key, false);
@@ -162,6 +164,21 @@ public class GameStart {
 			
 		}
 	}
+	private static void checkcollideCoin() {
+		List<Node> collectedCoins = new ArrayList<>();
+	    for (Node coin : coins) {
+	        if (player.getBoundsInParent().intersects(coin.getBoundsInParent())) {
+	            collectedCoins.add(coin); // Mark coin for removal
+	            setScore(getScore() + 1); // Increment score
+	            editUi(1); // Update UI
+	        }
+	    }
+	    // Remove collected coins
+	    for (Node coin : collectedCoins) {
+	        gameRoot.getChildren().remove(coin);
+	        coins.remove(coin);
+	    }
+	}
 	private static void movePlayerY(int value) {
 		boolean moveDown = value > 0; // - is mean up + is mean down
 		for (int i = 0;i<Math.abs(value);i++) {
@@ -182,6 +199,14 @@ public class GameStart {
 			}
 			player.setTranslateY(player.getTranslateY() + (moveDown ? 1:-1)); // if moveRight set translate x to oldX + 1 or oldX -1 when moveLeft 
 		}//777
+		if (player.getTranslateY() >= 720) {
+			player.setTranslateX(0);
+			player.setTranslateY(500);
+			gameRoot.setLayoutX(0); //reset มุมกล้อง
+		    gameRoot.setLayoutY(0); //reset มุมกล้อง 
+		    ((Player)player).setHp(((Player)player).getHp() - 20);
+		    editUi(0);
+		}
 	}
 	private static void jumpPlayer() {
 		if (!isJump) {
@@ -214,6 +239,10 @@ public class GameStart {
 					Node door = CreateEntity(j*60-300, i*60-200, 300,300,gameRoot,block);
 					setDoor(door);
 					platform.add(door);
+				}else if (line.charAt(j) == '3') {
+					Image coin = SetImage("Coin.png");
+					Node Coin = CreateEntity(j*60, i*60, 60, 60,gameRoot,coin);
+					coins.add(Coin);
 				}
 			}
 		}
@@ -232,14 +261,16 @@ public class GameStart {
 		appRoot.getChildren().addAll(Bg,gameRoot,uiRoot);
 	}
 	private static void initUi() {
-		ArrayList<Node> health = new ArrayList<Node>();
-		int hp =((Player)player).getHp()/30;
-		for (int i = 0;i<hp;i++) {
-			Image heart =  SetImage("Heart.png");
-			Node bar = CreateEntity(20 + (10*i*5),10,30,30,uiRoot,heart);
-			health.add(bar);
-		}
-		UI.add(health);
+		int currentHealth =((Player)player).getHp();
+		ProgressBar healthBar = new ProgressBar();
+		healthBar.setProgress(currentHealth);
+		healthBar.setPrefWidth(200);
+		healthBar.setPrefHeight(30);
+		healthBar.setStyle("-fx-accent: green;");
+		healthBar.setTranslateX(30);
+		healthBar.setTranslateY(20);
+		H_bar = healthBar;
+		uiRoot.getChildren().add(healthBar);
 		Score_on_screne = Scoreboard();
 		uiRoot.getChildren().add(Score_on_screne);
 	}
@@ -265,11 +296,12 @@ public class GameStart {
 	}
 	private static void editUi(int idx) { // idx indicate behavior of this method
 		if (idx == 0) {
-			if (temp_hp != 0) {
-				UI.get(idx).removeLast();
-				uiRoot.getChildren().removeFirst();
+			if (((Player)player).getHp() != 0) {
+				H_bar.setProgress(((Player)player).getHp());
+				System.out.println(((Player)player).getHp());
 			}else {
 				//บอกว่า player ตายแล้วก็ขึ้นว่า แพ้แล้วไปหน้า start
+				
 			}
 		}else {
 			Score_on_screne.setText("Score: "+Integer.toString(getScore()));
