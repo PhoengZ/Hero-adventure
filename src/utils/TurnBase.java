@@ -2,6 +2,7 @@ package utils;
 
 import enemy.Enemy;
 import javafx.animation.PauseTransition;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import player.Player;
@@ -21,7 +22,7 @@ public class TurnBase {
         this.player = player;
         this.enemies = enemies;
         this.gamePane = gamePane;
-        this.isPlayerTurn = true; // Player starts first
+        this.isPlayerTurn = true; 
     }
 
     public boolean isPlayerTurn() {

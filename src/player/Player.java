@@ -128,7 +128,7 @@ public class Player extends Unit{
         }
     }
 	public Image getImageLeft() {
-		return Right;
+		return Left;
 	}
 
 	public void setImageLeftByPath(String imagePath) {

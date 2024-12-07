@@ -35,7 +35,7 @@ public class Main extends Application{
 	private int temp_hp = 3;//*/
 
 	public void start(Stage primaryStage)  throws Exception {
-		
+		/*
 		StartPane startPane = (StartPane) StartPane.getPane();
         Scene startScene = new Scene(startPane, 1280, 720);
         
@@ -46,8 +46,8 @@ public class Main extends Application{
 
         // Request focus for the StartPane
         startPane.requestFocus();
-        
-		/*
+        */
+		
 		Player player = new Knight();
 		List<Enemy> enemies = new ArrayList<Enemy>();
 		Enemy BeastMaster = new BeastMaster();
@@ -63,7 +63,7 @@ public class Main extends Application{
         primaryStage.setScene(turnbaseScene);
         primaryStage.show();
         turnbasePane.requestFocus();
-        */
+        
         
         
 	}

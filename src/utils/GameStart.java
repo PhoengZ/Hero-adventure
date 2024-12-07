@@ -190,7 +190,7 @@ public class GameStart {
 		}
 	}
 	public static void initContent(int level) {
-		Path_Block = level==0 ? "Block_03.png":"Block_02.png";
+		Path_Block = level==0 ? "Block_01.png":"Block_02.png";
 		ImageView Bg = new ImageView(SetImage("Level"+Integer.toString(level)+ ".png"));
 		Bg.setFitHeight(720);
 		Bg.setFitWidth(1280);

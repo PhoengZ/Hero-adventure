@@ -4,4 +4,7 @@ public class BeastMaster extends Enemy{ //นักรบสัตว์ป่�
 	public BeastMaster() {
 		super(200,80,100,20,"MagicianRight.png");
 	}
+	public String toString() {
+		return "BeastMaster";
+	}
 }

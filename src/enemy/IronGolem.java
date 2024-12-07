@@ -15,4 +15,7 @@ public class IronGolem extends Enemy implements Armorable{
 	public void increaseDefense(int adddefense) {
 		this.setDefense(this.getDefense()+adddefense);
 	}
+	public String toString() {
+		return "IronGolem";
+	}
 }
