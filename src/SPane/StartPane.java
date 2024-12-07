@@ -8,6 +8,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import player.Knight;
+import player.Magician;
+import player.Warrior;
 import utils.GameStart;
 
 
@@ -32,7 +35,36 @@ public class StartPane extends Pane{
 		Bg.setFitWidth(1280);
 		GameStart.setAppRoot(this);
 		Start.setOnMouseClicked(e->{
-			GameStart.GameStart();
+			this.getChildren().clear();
+			Image bt_knight = SetImage("Knight_button.png");
+			Image bt_warrior = SetImage("Warrior_button.png");
+			Image bt_magic = SetImage("Magician_button.png");
+			ImageView Button_knight = new ImageView(bt_knight);
+			ImageView Button_warrior = new ImageView(bt_warrior);
+			ImageView Button_magic = new ImageView(bt_magic);
+			Button_knight.setFitHeight(200);
+			Button_knight.setFitWidth(300);
+			Button_warrior.setFitHeight(200);
+			Button_warrior.setFitWidth(300);
+			Button_magic.setFitHeight(200);
+			Button_magic.setFitWidth(300);
+			Button_knight.setTranslateX(175);
+			Button_knight.setTranslateY(360);
+			Button_warrior.setTranslateX(475);
+			Button_warrior.setTranslateY(360);
+			Button_magic.setTranslateX(775);
+			Button_magic.setTranslateY(360);
+			
+			Button_knight.setOnMouseClicked(event->{
+				GameStart.GameStart(new Knight());
+			});
+			Button_warrior.setOnMouseClicked(event->{
+				GameStart.GameStart(new Warrior());
+			});
+			Button_magic.setOnMouseClicked(event->{
+				GameStart.GameStart(new Magician());
+			});
+			this.getChildren().addAll(Bg,Button_knight,Button_warrior,Button_magic);
 		});
 		Exit.setOnMouseClicked(e->{
 			//Exit the game

@@ -72,7 +72,7 @@ public class TurnBasePane extends Pane {
 
       
         // Set Player Image Position
-        ImageView playerImage = new ImageView(player.getImage());
+        ImageView playerImage = new ImageView(player.getImageLeft());
         playerImage.setPreserveRatio(true);
         playerImage.setFitHeight(250);
         playerImage.setLayoutX(1000);
