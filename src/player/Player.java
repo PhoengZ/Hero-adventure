@@ -54,10 +54,14 @@ public class Player extends Unit{
             String classLoaderPath3 = ClassLoader.getSystemResource(Left_2).toString();
             Image left2 = new Image(classLoaderPath3);
             walkRight.add(right1);
-            walkRight.add(this.Right);
+            if (!(this instanceof Magician)) {
+            	walkRight.add(this.Right);
+            }
             walkRight.add(right2);
             walkLeft.add(left1);
-            walkLeft.add(this.Left);
+            if (!(this instanceof Magician)) {
+            	walkLeft.add(this.Left);
+            }
             walkLeft.add(left2);
             System.out.println("found all image");
             
