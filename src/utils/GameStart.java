@@ -50,6 +50,7 @@ public class GameStart {
 	private static ArrayList<Node> platform = new ArrayList<Node>();
 	private static ArrayList<ArrayList<Node>> UI = new ArrayList<ArrayList<Node>>();
 	private static Point2D playerVelocity = new Point2D(0,0);
+	private static String Path_Block;
 	private static int Round = 0;
 	private static int temp_hp = 3;//
 	
@@ -100,14 +101,14 @@ public class GameStart {
 				((Player)player).startWalkingLeft();
 				isWalk = true;
 			}
-			movePlayerX(-5);
+			movePlayerX(-3);
 		}
 		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 40  <= levelWidth - 5) {
 			if (!isWalk) {
 				((Player)player).startWalkingRight();
 				isWalk = true;
 			}
-			movePlayerX(5);
+			movePlayerX(3);
 		}
 		if (isPressed(KeyCode.Z)) {
 			//Do damage
@@ -121,8 +122,7 @@ public class GameStart {
 				//Goto หน้าบอส
 			}else {
 				//((Player)player).stopWalking();
-				TurnBasePane tb = new TurnBasePane();
-				tb.requestFocus();
+				initContent(getRound());
 			}
 		}
 		if (playerVelocity.getY() < 10) {
@@ -184,8 +184,10 @@ public class GameStart {
 		}
 	}
 	public static void initContent(int level) {
-		Rectangle Bg = new Rectangle(1280,720);
-		Bg.setFill(Color.LIGHTYELLOW);
+		Path_Block = level==0 ? "Block_03.png":"Block_02.png";
+		ImageView Bg = new ImageView(SetImage("Level"+Integer.toString(level)+ ".png"));
+		Bg.setFitHeight(720);
+		Bg.setFitWidth(1280);
 		levelWidth = DataLevel.Level1[level].length() * 60;
 		String[] arr;
 		if (level == 0) {
@@ -197,11 +199,13 @@ public class GameStart {
 			String line = arr[i];
 			for (int j = 0;j<line.length();j++) {
 				if (line.charAt(j) == '1') {
-					Node pt = CreateEntity(j*60, i*60, 60, 60, Color.BROWN,gameRoot);
+					Image block =  SetImage(Path_Block);
+					Node pt = CreateEntity(j*60, i*60, 60, 60,gameRoot,block);
 					platform.add(pt);
 				}
 				else if (line.charAt(j) == '2') {
-					Node door = CreateEntity(j*60, i*60, 60, 60, Color.BLACK,gameRoot);
+					Image block =  SetImage("Portal.png");
+					Node door = CreateEntity(j*60-300, i*60-200, 300,300,gameRoot,block);
 					setDoor(door);
 					platform.add(door);
 				}
@@ -223,14 +227,26 @@ public class GameStart {
 	}
 	private static void initUi() {
 		ArrayList<Node> health = new ArrayList<Node>();
-		int hp = (getRound() == 0 ? 2:3); 
+		int hp =((Player)player).getHp()/30;
 		for (int i = 0;i<hp;i++) {
-			Node bar = CreateEntity(20 + (10*i*5),10,30,30,Color.RED,uiRoot);
+			Image heart =  SetImage("Heart.png");
+			Node bar = CreateEntity(20 + (10*i*5),10,30,30,uiRoot,heart);
 			health.add(bar);
 		}
 		UI.add(health);
 		Score_on_screne = Scoreboard();
 		uiRoot.getChildren().add(Score_on_screne);
+	}
+	private static Image SetImage(String imagePath) {
+		Image bg = null;
+		try {
+            String classLoaderPath = ClassLoader.getSystemResource(imagePath).toString();
+            bg = new Image(classLoaderPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Not fount: "+ imagePath);
+        }
+		return bg;
 	}
 	private static Text Scoreboard() {
 		Text t = new Text("Score: " + Integer.toString(getScore()));
@@ -253,12 +269,13 @@ public class GameStart {
 			Score_on_screne.setText("Score: "+Integer.toString(getScore()));
 		}
 	}
-	private static Node CreateEntity(int x,int y,int w,int h,Color color,Pane p) {
-		Rectangle ob = new Rectangle(w,h);
+	private static Node CreateEntity(int x,int y,int w,int h,Pane p,Image image) {
+		ImageView ob = new ImageView(image);
+		ob.setFitHeight(h);
+		ob.setFitWidth(w);
 		ob.setTranslateX(x);
 		ob.setTranslateY(y);
 		
-		ob.setFill(color);
 		p.getChildren().add(ob);
 		return ob;
 	}

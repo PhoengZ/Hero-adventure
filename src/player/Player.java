@@ -19,6 +19,8 @@ public class Player extends Unit{
 	private int atk; 
 	private int speed;
 	private int defense;
+	private int maxhp;
+	private int maxdefense;
 	private boolean alive;
 	private Image Right;
 	private Image Left;
@@ -30,7 +32,9 @@ public class Player extends Unit{
 	private boolean isWalkRight = false;
 	private boolean isWalkLeft = false;
 	
-	public Player(int hp , int atk , int speed , int defense , String Right,String Left ,String Right_1,String Right_2,String Left_1,String Left_2) {
+	public Player(int hp , int atk , int speed , int defense ,String Right,String Left ,String Right_1,String Right_2,String Left_1,String Left_2) {
+		this.setMaxhp(hp);
+		this.setMaxdefense(defense);
 		this.setHp(hp);
 		this.setAtk(atk);
 		this.setSpeed(speed);
@@ -200,6 +204,22 @@ public class Player extends Unit{
 	public void attack(Player player) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public int getMaxhp() {
+		return maxhp;
+	}
+
+	public void setMaxhp(int maxhp) {
+		this.maxhp = maxhp;
+	}
+
+	public int getMaxdefense() {
+		return maxdefense;
+	}
+
+	public void setMaxdefense(int maxdefense) {
+		this.maxdefense = maxdefense;
 	}
 	
 
