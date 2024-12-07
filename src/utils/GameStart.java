@@ -8,10 +8,15 @@ import player.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import Data.DataLevel;
 import SPane.StartPane;
 import SPane.TurnBasePane;
+import enemy.BeastMaster;
+import enemy.Enemy;
+import enemy.FireDemon;
+import enemy.IceQueen;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -110,8 +115,7 @@ public class GameStart {
 			if (getRound() == 2) {
 				//Goto หน้าบอส
 			}else {
-				TurnBasePane turnbasepane = new TurnBasePane();
-				turnbasepane.requestFocus();
+				
 			}
 		}
 		if (playerVelocity.getY() < 10) {

@@ -6,7 +6,7 @@ import player.Player;
 public class IceQueen extends Enemy implements Magicable{
 	private int MagicAtk;
 	public IceQueen() {
-		super(120,60,40,10,"");
+		super(120,60,40,10,"WarriorRight.png");
 		this.setMagicAtk(40);
 	}
 	public void decreaseHp(Player player) {
