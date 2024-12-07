@@ -15,35 +15,19 @@ public class StartPane extends Pane{
 	private static Pane instance;
 
 	private StartPane() {
-		Image st = null,ex = null,bg = null;
-		try {
-            String classLoaderPath = ClassLoader.getSystemResource("startButton.png").toString();
-            st = new Image(classLoaderPath);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Not fount StartButton");
-        }
-		try {
-            String classLoaderPath = ClassLoader.getSystemResource("Exit.png").toString();
-            ex = new Image(classLoaderPath);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Not fount ExitButton");
-        }
-		try {
-            String classLoaderPath = ClassLoader.getSystemResource("Background_Mainmenu.jpg").toString();
-            bg = new Image(classLoaderPath);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Not fount Background_Mainmenu");
-        }
+		Image st = SetImage("startButton.png");
+		Image ex = SetImage("Exit.png");
+		Image bg = SetImage("Background_Mainmenu_1.jpg");
+		
 		ImageView Start = new ImageView(st);
 		ImageView Exit = new ImageView(ex);
 		ImageView Bg = new ImageView(bg);
+		
 		Start.setFitWidth(150);
 		Start.setFitHeight(150);
 		Exit.setFitHeight(150);
 		Exit.setFitWidth(150);
+		
 		Bg.setFitHeight(720);
 		Bg.setFitWidth(1280);
 		GameStart.setAppRoot(this);
@@ -58,6 +42,7 @@ public class StartPane extends Pane{
 		Start.setTranslateY(350);
 		Exit.setTranslateX(565);
 		Exit.setTranslateY(500);
+		
 		System.out.println("Successfull Created pane");
 		this.getChildren().addAll(Bg,Start,Exit);
 	}
@@ -67,5 +52,16 @@ public class StartPane extends Pane{
             instance = new StartPane();
         return instance;
     }
+	private Image SetImage(String imagePath) {
+		Image bg = null;
+		try {
+            String classLoaderPath = ClassLoader.getSystemResource(imagePath).toString();
+            bg = new Image(classLoaderPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Not fount Background_Mainmenu");
+        }
+		return bg;
+	}
 	
 }
