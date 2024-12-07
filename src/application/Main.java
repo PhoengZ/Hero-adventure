@@ -32,7 +32,7 @@ public class Main extends Application{
         // Request focus for the StartPane
         startPane.requestFocus();
         */
-		/*
+		
 		Player player = new Knight();
 		List<Enemy> enemies = new ArrayList<Enemy>();
 		Enemy BeastMaster = new BeastMaster();
@@ -41,14 +41,14 @@ public class Main extends Application{
 		enemies.add(FireDemon);
 		Enemy IceQueen = new IceQueen();
 		enemies.add(IceQueen);
-		TurnBasePane turnbasePane = new TurnBasePane(player,enemies,"Background_Mainmenu.jpg");
+		TurnBasePane turnbasePane = new TurnBasePane(player,enemies,"ColossiumTurnBaseBackground.png");
 		Scene turnbaseScene = new Scene (turnbasePane , 1280 ,720);
 		primaryStage.setTitle("Colosseum");
         primaryStage.setResizable(false);
         primaryStage.setScene(turnbaseScene);
         primaryStage.show();
         turnbasePane.requestFocus();
-        */
+        
 		/*
 		GameOverPane gameoverPane = new GameOverPane();
 		Scene gameoverscene = new Scene (gameoverPane , 1280 ,720);
@@ -58,6 +58,7 @@ public class Main extends Application{
         primaryStage.show();
         gameoverPane.requestFocus();
         */
+		/*
         GameOverPane gameOverPane = new GameOverPane(primaryStage);
         Scene gameOverScene = new Scene(gameOverPane, 1280, 720);
         primaryStage.setScene(gameOverScene); // แสดง GameOverPane
@@ -65,7 +66,7 @@ public class Main extends Application{
         primaryStage.setResizable(false);
         primaryStage.show();
        // startPane.requestFocus();
-        
+        */
 	}
 	public static void main(String[] args) {
 		launch(args);

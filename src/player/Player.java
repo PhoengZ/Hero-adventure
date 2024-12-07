@@ -71,10 +71,13 @@ public class Player extends Unit{
 		
 	}
 	
-	public void attack(Enemy enemy) {
-		enemy.setHp(enemy.getHp()-atk);
-		if(enemy.getHp() == 0) {
-			enemy.setAlive(false);
+	public void attack(Unit other) {
+		if(other instanceof Enemy) {
+			Enemy enemy = (Enemy) other;
+			enemy.setHp(enemy.getHp()-atk);
+			if(enemy.getHp() == 0) {
+				enemy.setAlive(false);
+			}
 		}
 		
 	}
@@ -199,11 +202,6 @@ public class Player extends Unit{
     		isWalkLeft = false;
     	}
     }
-	@Override
-	public void attack(Player player) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public int getMaxhp() {
 		return maxhp;
