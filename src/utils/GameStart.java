@@ -23,6 +23,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -46,6 +48,7 @@ public class GameStart {
 	private static int levelWidth;
 	private static Node Door;
 	private static ProgressBar H_bar;
+	private static MediaPlayer media;
 	private static int Score;
 	private static Text Score_on_screne;
 	private static ArrayList<Node> platform = new ArrayList<Node>();
@@ -61,6 +64,11 @@ public class GameStart {
 	
 	public static void mainPage() {
 		clear();
+		Media md = SetMedia("Music_mainPage.mp3");
+		media = new MediaPlayer(md);
+		media.setCycleCount(MediaPlayer.INDEFINITE);
+		media.setVolume(0.2);
+		media.play();
 		Image st = SetImage("startButton.png");
 		Image ex = SetImage("Exit.png");
 		Image bg = SetImage("Background_Mainmenu_1.jpg");
@@ -544,6 +552,17 @@ public class GameStart {
         }
 		return bg;
 	}
+	private static Media SetMedia(String mediaPath) {
+		Media bg = null;
+		try {
+            String classLoaderPath = ClassLoader.getSystemResource(mediaPath).toString();
+            bg = new Media(classLoaderPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Not fount: "+ mediaPath);
+        }
+		return bg;
+	}
 	private static Text Scoreboard() {
 		Text t = new Text("Score: " + Integer.toString(getScore()));
 		t.setFont(font);
@@ -560,11 +579,9 @@ public class GameStart {
 			double maxHp = ((Player) player).getMaxhp();
 			if (currentHp > 0) {
 				H_bar.setProgress(currentHp / maxHp);
-				//System.out.println(currentHp);
 			}else {
 				H_bar.setProgress(0);
 				appRoot.getChildren().clear();
-				//บอกว่า player ตายแล้วก็ขึ้นว่า แพ้แล้วไปหน้า start
 			}
 		}else {
 			Platform.runLater(()->{
