@@ -28,6 +28,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import obstacle.Shot;
 import obstacle.ShotX;
 import obstacle.SlimeFire;
@@ -49,6 +50,8 @@ public class GameStart {
 	private static Node Door;
 	private static ProgressBar H_bar;
 	private static MediaPlayer media;
+	private static boolean isMusic = true;
+	//private static MediaPlayer hitSoundPlayer;
 	private static int Score;
 	private static Text Score_on_screne;
 	private static ArrayList<Node> platform = new ArrayList<Node>();
@@ -67,21 +70,24 @@ public class GameStart {
 		Media md = SetMedia("Music_mainPage.mp3");
 		media = new MediaPlayer(md);
 		media.setCycleCount(MediaPlayer.INDEFINITE);
-		media.setVolume(0.2);
+		media.setVolume(0.1);
 		media.play();
+		//hitSoundPlayer = new MediaPlayer(SetMedia("hit.mp3"));
+		//hitSoundPlayer.play();
 		Image st = SetImage("startButton.png");
 		Image ex = SetImage("Exit.png");
 		Image bg = SetImage("Background_Mainmenu_1.jpg");
-		
+		Image mu = SetImage("Music_open.png");
 		ImageView Start = new ImageView(st);
 		ImageView Exit = new ImageView(ex);
 		ImageView Bg = new ImageView(bg);
-		
+		ImageView Music = new ImageView(mu);
 		Start.setFitWidth(150);
 		Start.setFitHeight(150);
 		Exit.setFitHeight(150);
 		Exit.setFitWidth(150);
-		
+		Music.setFitWidth(50);
+		Music.setFitHeight(50);
 		Bg.setFitHeight(720);
 		Bg.setFitWidth(1280);
 		Start.setOnMouseEntered(e->{
@@ -118,6 +124,7 @@ public class GameStart {
 			Button_magic.setTranslateY(360);
 			
 			Button_knight.setOnMouseClicked(event->{
+				media.stop();
 				GameStart.GameStart(new Knight());
 			});
 			Button_knight.setOnMouseEntered(event->{
@@ -133,6 +140,7 @@ public class GameStart {
 				Button_knight.setTranslateY(360);
 			});
 			Button_warrior.setOnMouseClicked(event->{
+				media.stop();
 				GameStart.GameStart(new Warrior());
 			});
 			Button_warrior.setOnMouseEntered(event->{
@@ -148,6 +156,7 @@ public class GameStart {
 				Button_warrior.setTranslateY(360);
 			});
 			Button_magic.setOnMouseClicked(event->{
+				media.stop();
 				GameStart.GameStart(new Magician()); 
 			});
 			Button_magic.setOnMouseEntered(event->{
@@ -177,16 +186,40 @@ public class GameStart {
 			Exit.setTranslateY(500);
 		});
 		Exit.setOnMouseClicked(e->{
-			//Exit the game
 			Platform.exit();
+		});
+		Music.setOnMouseClicked(e->{
+			if (isMusic) {
+				isMusic = false;
+				media.pause();
+				Music.setImage(SetImage("Music_Close.png"));
+			}else {
+				isMusic = true;
+				Music.setImage(SetImage("Music_open.png"));
+				media.play();
+			}
+			
+		});
+		Music.setOnMouseEntered(e->{
+			Music.setFitWidth(70);
+			Music.setFitHeight(70);
+			Music.setTranslateX(1190);
+			Music.setTranslateY(640);
+		});
+		Music.setOnMouseExited(e->{
+			Music.setFitWidth(50);
+			Music.setFitHeight(50);
+			Music.setTranslateX(1200);
+			Music.setTranslateY(650);
 		});
 		Start.setTranslateX(565);
 		Start.setTranslateY(350);
 		Exit.setTranslateX(565);
 		Exit.setTranslateY(500);
-		
+		Music.setTranslateX(1200);
+		Music.setTranslateY(650);
 		System.out.println("Successfull Created pane");
-		appRoot.getChildren().addAll(Bg,Start,Exit);
+		appRoot.getChildren().addAll(Bg,Start,Exit,Music);
 	}
 	
 	
@@ -232,6 +265,9 @@ public class GameStart {
 		GameStart.appRoot = appRoot;
 	}
 	public static void clear() {
+		if (media != null) {
+            media.stop();
+        }
 		gameRoot.getChildren().clear();
 		uiRoot.getChildren().clear();
 		platform.clear();
@@ -334,7 +370,7 @@ public class GameStart {
 	}
 	private static void monsterFire() {
 		for (Node e:monster) {
-			fireShot((int) e.getTranslateX()+ 20, (int) e.getTranslateY(),e);
+			fireShot((int) e.getTranslateX()+20, (int) e.getTranslateY()+20,e);
 		}
 	}
 	private static void fireShot(int startX, int startY,Node mn) {
@@ -382,10 +418,12 @@ public class GameStart {
 			if (s.collide(player)) {
 				((Player)player).createAttackEffect(player);
 	            ((Player) player).setHp(((Player) player).getHp() - 10); // Decrease player HP by 10
+	            makehitSound();
 	            shotRoot.getChildren().remove(s);
 	            gameRoot.getChildren().remove(s);
 	            shot.remove(s);
 	            editUi(0);
+	            
 	        }
 		}
 	}
@@ -423,6 +461,7 @@ public class GameStart {
         	isDamage = true;
             new Thread(() -> {
             	((Player)player).createAttackEffect(player);
+            	makehitSound();
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -506,6 +545,7 @@ public class GameStart {
 			}
 		}
 		initUi();
+		initMusic();
 		gameRoot.setLayoutX(0); //reset มุมกล้อง
 	    gameRoot.setLayoutY(0); //reset มุมกล้อง 
 		player.setTranslateX(0);
@@ -518,6 +558,10 @@ public class GameStart {
 			}
 		});
 		appRoot.getChildren().addAll(Bg,gameRoot,uiRoot,shotRoot);
+	}
+	private static void makehitSound() {
+		//hitSoundPlayer.stop();
+		//hitSoundPlayer.play();
 	}
 	private static void initUi() {
 		double currentHealth =((Player)player).getHp();
@@ -540,6 +584,12 @@ public class GameStart {
 		uiRoot.getChildren().add(Health);
 		Score_on_screne = Scoreboard();
 		uiRoot.getChildren().add(Score_on_screne);
+	}
+	private static void initMusic() {
+		media = new MediaPlayer(SetMedia("Level"+Integer.toString(getRound())+".mp3"));
+		media.setCycleCount(MediaPlayer.INDEFINITE);
+		media.setVolume(0.1);
+		media.play();
 	}
 	private static Image SetImage(String imagePath) {
 		Image bg = null;
@@ -630,13 +680,9 @@ public class GameStart {
 	public static void setScore(int score) {
 		Score = score;
 	}
-
-
 	public static Pane getGameRoot() {
 		return gameRoot;
 	}
-
-
 	public static void setGameRoot(Pane gameRoot) {
 		GameStart.gameRoot = gameRoot;
 	}

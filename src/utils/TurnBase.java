@@ -120,7 +120,8 @@ public class TurnBase {
     }
     public void handleBuffAttackClick(MouseEvent event) {
     	if (isPlayerTurn()) {
-            extraDamage += 10; // เพิ่มแดเมจในรอบถัดไป
+    		double increaseDamage = player.getAtk()*0.5;
+    		extraDamage += (int) increaseDamage;
             player.setAtk(player.getAtk() + extraDamage);
             gamePane.updatePlayerStatus();
             gamePane.createShadowEffect(gamePane.getPlayerImage(), Color.BLUE);
