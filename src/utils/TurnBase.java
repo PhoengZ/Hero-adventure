@@ -3,6 +3,7 @@ package utils;
 import enemy.Enemy;
 import javafx.animation.PauseTransition;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import player.Player;
@@ -58,31 +59,49 @@ public class TurnBase {
     private void enemyTurn() {
     	isPlayerTurn = false;
         System.out.println("Enemy's Turn");
-        // สุ่มเลือกศัตรูที่ยังมีชีวิต
+
+        // Choose Enemy To attack Player by Random
         Enemy attackingEnemy = getRandomAliveEnemy();
         if (attackingEnemy != null) {
-        	 int damage = attackingEnemy.getAtk();
-        	 double chanceToMiss = this.getChanceToMiss();
-             if (Math.random() < chanceToMiss) { // ถ้าค่าที่สุ่มได้น้อยกว่าโอกาส miss
-                 gamePane.showMissText(this.player); // แสดงข้อความ miss
-             }
-             else {
-            	 attackingEnemy.attack(player); // ศัตรูโจมตีผู้เล่น
-            	 gamePane.showDamageText(this.player, attackingEnemy.getAtk());
-             }
-            if (gamePane instanceof TurnBasePane) {
-               gamePane.updatePlayerStatus(); // อัปเดตสถานะผู้เล่น
-            }
-            //showDamageText(playerImage, damage);
-        }
+            // get Image
+            ImageView enemyImageView = gamePane.getEnemyImageView(attackingEnemy);
 
-        // Pause เพื่อให้เห็นการเปลี่ยนสถานะ
-        PauseTransition pause = new PauseTransition(Duration.seconds(1));
-        pause.setOnFinished(e -> {
-            isPlayerTurn = true; // เปลี่ยนกลับเป็นเทิร์นของผู้เล่น
-            startTurn();
-        });
-        pause.play();
+            if (enemyImageView != null) {
+                // เปลี่ยนเป็นรูปต่อสู้ และเพิ่มขนาด
+                enemyImageView.setImage(attackingEnemy.getImageFight());
+                enemyImageView.setScaleX(1.2);
+                enemyImageView.setScaleY(1.2);
+            }
+
+            // สร้างความเสียหายให้ผู้เล่นหรือพลาดการโจมตี
+            int damage = attackingEnemy.getAtk();
+            if (Math.random() < TurnBase.getChanceToMiss()) {
+                gamePane.showMissText(enemyImageView); // แสดงข้อความ Miss
+            } else {
+                attackingEnemy.attack(player); // ศัตรูโจมตีผู้เล่น
+                gamePane.showDamageText(enemyImageView, damage); // แสดงความเสียหาย
+            }
+
+            // อัปเดตสถานะผู้เล่นใน Pane
+            gamePane.updatePlayerStatus();
+
+            // Pause เพื่อให้ศัตรูแสดงสถานะการต่อสู้สักพัก
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(e -> {
+                if (enemyImageView != null) {
+                    // เปลี่ยนกลับเป็นรูปปกติ และขนาดปกติ
+                    enemyImageView.setImage(attackingEnemy.getImageStay());
+                    enemyImageView.setScaleX(1.0);
+                    enemyImageView.setScaleY(1.0);
+                }
+                isPlayerTurn = true; // เปลี่ยนกลับเป็นเทิร์นของผู้เล่น
+                startTurn();
+            });
+            pause.play();
+        } else {
+            // ถ้าไม่มีศัตรูที่ยังมีชีวิต
+            endGame();
+        }
     }
 
     private Enemy getRandomAliveEnemy() {
@@ -99,6 +118,7 @@ public class TurnBase {
             System.out.println("Player Wins!");
         } else {
             System.out.println("Enemies Win!");
+            //go to GameoverPane
         }
     }
 

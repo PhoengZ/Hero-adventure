@@ -10,14 +10,16 @@ public class Enemy  extends Unit {
 	private int atk; 
 	private int speed;
 	private int defense;
-	private Image image;
+	private Image imageStay;
+	private Image imageFight;
 	private boolean alive;
-	public Enemy(int hp ,int atk , int speed ,int defense,String imagePath ) {
+	public Enemy(int hp ,int atk , int speed ,int defense,String imageStayPath , String imageFightPath ) {
 		this.setHp(hp);
 		this.setAtk(atk);
 		this.setSpeed(speed);
 		this.setDefense(defense);
-		this.setImageByPath(imagePath);
+		this.setImageStay(imageStayPath);
+		this.setImageFight(imageFightPath);
 		this.setAlive(true);
 	}
 	public void attack(Unit other) {
@@ -61,19 +63,33 @@ public class Enemy  extends Unit {
 	public void setDefense(int defense) {
 		this.defense = Math.max(0,defense);
 	}
-	public Image getImage() {
-		return image;
-	}
 
-	public void setImageByPath(String imagePath) {
+
+	public Image getImageStay() {
+		return imageStay;
+	}
+	public Image getImageFight() {
+		return imageFight;
+	}
+	public void setImageStay(String imageStayPath) {
     	try {
-            String classLoaderPath = ClassLoader.getSystemResource(imagePath).toString();
-            this.image=new Image(classLoaderPath);
+            String classLoaderPath = ClassLoader.getSystemResource(imageStayPath).toString();
+            this.imageStay=new Image(classLoaderPath);
         } catch (Exception e) {
             e.printStackTrace();
             
         }
     }
+	public void setImageFight(String imageFightPath) {
+    	try {
+            String classLoaderPath = ClassLoader.getSystemResource(imageFightPath).toString();
+            this.imageFight=new Image(classLoaderPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            
+        }
+    }
+	
 	
 	
 	

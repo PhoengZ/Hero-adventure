@@ -10,6 +10,7 @@ import enemy.FireDemon;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
+import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
@@ -30,6 +31,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -49,7 +51,6 @@ public class TurnBasePane extends Pane {
     private Map<Enemy, Label> enemyHpLabels = new HashMap<>();
     private Map<Enemy, Label> enemyDefenseLabels = new HashMap<>();
     private Map<Enemy, ImageView> enemyImageViews = new HashMap<>();
-    private int initialHpPlayer;
     private Label turnStatusLabel;
     private GridPane  EnemyBox;
     private GridPane playerBox;
@@ -58,8 +59,8 @@ public class TurnBasePane extends Pane {
 
     
     public TurnBasePane(Player player , List<Enemy> enemies , String BackgroundPath) {
+    	//start with animation player walkin and enemy blink
     	isAnimationRunning = true;
-    	this.initialHpPlayer = player.getHp();
         // Background setup
         Image Background = null;
         try {
@@ -92,12 +93,12 @@ public class TurnBasePane extends Pane {
         EnemyPositionY.add(new ArrayList<>(List.of(150)));
         EnemyPositionX.add(new ArrayList<>(List.of(300, 120)));
         EnemyPositionY.add(new ArrayList<>(List.of(30,200)));
-        EnemyPositionX.add(new ArrayList<>(List.of(200,80,380)));
+        EnemyPositionX.add(new ArrayList<>(List.of(240,80,380)));
         EnemyPositionY.add(new ArrayList<>(List.of(20, 220, 150)));
         for (int i = 0; i < enemies.size(); i++) {
             Enemy enemy = enemies.get(i);
             // Enemy image
-            ImageView enemyImage = new ImageView(enemy.getImage());
+            ImageView enemyImage = new ImageView(enemy.getImageStay());
             enemyImage.setPreserveRatio(true);
             enemyImage.setFitHeight(250);
             enemyImage.setLayoutX(EnemyPositionX.get(enemies.size() - 1).get(i));
@@ -167,7 +168,9 @@ public class TurnBasePane extends Pane {
         playerBox.setPrefHeight(200);
         playerBox.setPrefWidth(390);
         Text PlayerHeader = new Text("Player");
-        PlayerHeader.setFont(Font.font("Tahoma",FontWeight.BOLD,30));
+       // PlayerHeader.setFont(Font.font("Tahoma",FontWeight.BOLD,30));
+        PlayerHeader.setFont(Font.loadFont(getClass().getResourceAsStream("Pixeboy.ttf"), 20));
+        System.out.println(getClass().getResource("Pixeboy.ttf"));
         PlayerHeader.setFill(Color.BLACK);
         playerBox.add(PlayerHeader, 0, 0,1,1);
         Text playerName = new Text("Name: " + player.toString());
@@ -247,7 +250,7 @@ public class TurnBasePane extends Pane {
          turnStatusLabel = new Label("");
          turnStatusLabel.setFont(Font.font("Tahoma", FontWeight.BOLD, 30));
          //Font.font("Tahoma", FontWeight.BOLD, 30)
-         System.out.println(getClass().getResource("PixelGame.otf"));
+        // System.out.println(getClass().getResource("PixelGame.otf"));
          turnStatusLabel.setTextFill(Color.BLUE);
          turnStatusLabel.setLayoutX(550);
          turnStatusLabel.setLayoutY(50);
@@ -268,6 +271,7 @@ public class TurnBasePane extends Pane {
             } else {
                 int damage = player.getAtk();
                 player.attack(enemy); // Player attacks the specific enemy
+                playAttackEffect(enemyImageViews.get(enemy));
                 updatePlayerStatus();
                 updateEnemyStatus();
                 showDamageText(enemyImageViews.get(enemy), damage);
@@ -283,17 +287,6 @@ public class TurnBasePane extends Pane {
     public void updatePlayerStatus() {
         playerHp.setText("HP: " + player.getHp());
         playerDefense.setText("Defense: " + player.getDefense());
-        /*
-        if(player.getHp() != this.initialHpPlayer) {
-	        playerHp.setTextFill(Color.RED);
-	        PauseTransition pause = new PauseTransition(Duration.seconds(1));
-	        pause.setOnFinished(event -> {
-	            playerHp.setTextFill(Color.BLACK);
-	            playerDefense.setTextFill(Color.BLACK);
-	        });
-	        pause.play();
-        }
-        */
     }
 
     public void updateEnemyStatus() {
@@ -416,6 +409,27 @@ public class TurnBasePane extends Pane {
 	            ((Label) node).setTextFill(color); // เปลี่ยนสีข้อความ
 	        }
 	    }
+	}
+	public ImageView getEnemyImageView(Enemy enemy) {
+	    return enemyImageViews.get(enemy);
+	}
+	public void playAttackEffect(ImageView enemyImage) {
+	    // การเคลื่อนที่ของเอฟเฟกต์
+	    TranslateTransition attackMove = new TranslateTransition(Duration.millis(200), enemyImage);
+	    attackMove.setByX(10); // ขยับไปด้านข้างเล็กน้อย
+	    attackMove.setAutoReverse(true);
+	    attackMove.setCycleCount(2);
+
+	    // เอฟเฟกต์กระพริบ
+	    FadeTransition fadeEffect = new FadeTransition(Duration.millis(300), enemyImage);
+	    fadeEffect.setFromValue(1.0);
+	    fadeEffect.setToValue(0.5);
+	    fadeEffect.setAutoReverse(true);
+	    fadeEffect.setCycleCount(2);
+
+	    // เล่นอนิเมชัน
+	    attackMove.play();
+	    fadeEffect.play();
 	}
 
 
