@@ -14,7 +14,7 @@ public class Shot extends Pane {
 	private int posX, posY, speed = 5;
 	private int initialx,initialy;
 	private ImageView image;
-	static final int size = 30;
+	static final int size = 50;
 	public Shot(int posX, int posY) {
 		this.posX = posX;
 		this.posY = posY;
@@ -31,9 +31,6 @@ public class Shot extends Pane {
         } catch (Exception e) {
             e.printStackTrace();
         }
-		//Circle circle = new Circle(size / 2);
-	    //circle.setFill(Color.RED);
-//	    /this.getChildren().add(circle);
 	}
 
 	public ImageView getImage() {
