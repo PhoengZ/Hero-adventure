@@ -6,9 +6,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import utils.GameStart;
 
 public class GameOverPane extends Pane{
-	public GameOverPane(Stage primaryStage) {
+	public GameOverPane() {
 		Image Background = null;
 	    try {
 	        String classLoaderPath = ClassLoader.getSystemResource("GameOver.png").toString();
@@ -49,10 +50,11 @@ public class GameOverPane extends Pane{
 	    });
 	    restartButton.setOnMouseClicked(event -> {
 	    	//StartPane startPane = new StartPane(); // สร้าง StartPane
-	    	StartPane startPane = (StartPane) StartPane.getPane();
-	    	Scene startScene = new Scene(startPane, 1280, 720); // สร้าง Scene
-            primaryStage.setScene(startScene); // เปลี่ยน Scene เป็น StartPane
-            startPane.requestFocus();
+	    	GameStart.clear();
+	    	System.out.println("Is clicked");
+	    	//Scene startScene = new Scene(startPane, 1280, 720); // สร้าง Scene
+            //primaryStage.setScene(startScene); // เปลี่ยน Scene เป็น StartPane
+            GameStart.mainPage();
 	    });
 	    this.getChildren().add(restartButton);
 	}

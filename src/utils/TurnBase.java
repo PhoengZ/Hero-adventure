@@ -5,7 +5,9 @@ import javafx.animation.PauseTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import player.Player;
 
@@ -20,6 +22,8 @@ public class TurnBase {
     private TurnBasePane gamePane;
     private boolean isPlayerTurn;
     private static double chanceToMiss;
+    private int extraDamage = 0;        
+    private int extraDefense = 0;
 
     public TurnBase(Player player, List<Enemy> enemies, TurnBasePane gamePane) {
         this.player = player;
@@ -54,11 +58,15 @@ public class TurnBase {
 
     private void playerTurn() {
         System.out.println("Player's Turn");
+        gamePane.getBuffAttackButton().setVisible(true);
+        gamePane.getBuffDefenseButton().setVisible(true);
      
     }
 
     private void enemyTurn() {
     	isPlayerTurn = false;
+    	gamePane.getBuffAttackButton().setVisible(false);
+        gamePane.getBuffDefenseButton().setVisible(false);
         System.out.println("Enemy's Turn");
         gamePane.setEnemyFadeEffect(null, false);
         // Choose Enemy To attack Player by Random
@@ -72,8 +80,19 @@ public class TurnBase {
                     int damage = attackingEnemy.getAtk();
                     if (Math.random() < TurnBase.getChanceToMiss()) {
                         gamePane.showMissText(gamePane.getPlayerImage());
+                        if (getExtraDefense() > 0) {
+                        	player.setDefense(player.getDefense()-getExtraDefense());
+                        	setExtraDefense(0);
+                        }
                     } else {
-                        attackingEnemy.attack(player);
+                    	if (getExtraDefense() > 0) {
+                    		attackingEnemy.attack(player);
+                        	player.setDefense(player.getDefense()-getExtraDefense());
+                        	setExtraDefense(0);
+                        }
+                    	else {
+                    		attackingEnemy.attack(player);
+                    	}
                         gamePane.playAttackEffect(gamePane.getPlayerImage());
                         gamePane.showDamageText(gamePane.getPlayerImage(), damage);
                     }
@@ -83,6 +102,33 @@ public class TurnBase {
                 // ถ้าไม่มี ImageView ของศัตรู
                 endGame();
             }
+        }
+    }
+    public void handleBuffDefenseClick(MouseEvent event) {
+    	if (isPlayerTurn()) {
+    		double increasearmor = player.getDefense()*0.5;
+    		extraDefense += (int) increasearmor;
+    		player.setDefense(player.getDefense()+this.extraDefense);
+    		gamePane.updatePlayerStatus();
+            gamePane.createShadowEffect(gamePane.getPlayerImage(), Color.GREEN);
+            PauseTransition pause = new PauseTransition(Duration.seconds(2));
+            pause.setOnFinished(e -> {
+            	endPlayerTurn();
+            });
+            pause.play();
+        }
+    }
+    public void handleBuffAttackClick(MouseEvent event) {
+    	if (isPlayerTurn()) {
+            extraDamage += 10; // เพิ่มแดเมจในรอบถัดไป
+            player.setAtk(player.getAtk() + extraDamage);
+            gamePane.updatePlayerStatus();
+            gamePane.createShadowEffect(gamePane.getPlayerImage(), Color.BLUE);
+            PauseTransition pause = new PauseTransition(Duration.seconds(2));
+            pause.setOnFinished(e -> {
+            	endPlayerTurn();
+            });
+            pause.play();
         }
     }
     private Enemy getRandomAliveEnemy() {
@@ -96,8 +142,12 @@ public class TurnBase {
     private void endGame() {
         if (player.isAlive()) {
             System.out.println("Player Wins!");
+            gamePane.getTurnStatusLabel().setText("Player Wins!");
+            gamePane.getClickEnemyToAttackLabel().setVisible(false);
         } else {
             System.out.println("Enemies Win!");
+            gamePane.getTurnStatusLabel().setText("Enemies Wins!");
+            gamePane.getClickEnemyToAttackLabel().setVisible(false);
             //go to GameoverPane
         }
     }
@@ -111,6 +161,23 @@ public class TurnBase {
 	public void setPlayerTurn(boolean isPlayerTurn) {
 		this.isPlayerTurn = isPlayerTurn;
 	}
+
+	public int getExtraDamage() {
+		return extraDamage;
+	}
+
+	public void setExtraDamage(int extraDamage) {
+		this.extraDamage = extraDamage;
+	}
+
+	public int getExtraDefense() {
+		return extraDefense;
+	}
+
+	public void setExtraDefense(int extraDefense) {
+		this.extraDefense = extraDefense;
+	}
+	
 	
     
 }

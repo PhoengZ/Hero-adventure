@@ -29,7 +29,7 @@ public class Enemy  extends Unit {
 	public void attack(Unit other) {
 		if(other instanceof Player) {
 			Player player = (Player) other;
-			player.setHp(player.getHp()-atk);
+			player.setHp(player.getHp()-Math.max(0,(atk-player.getDefense())));
 			if(player.getHp() == 0) {
 				player.setAlive(false);
 			}

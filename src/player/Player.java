@@ -5,11 +5,15 @@ import java.util.ArrayList;
 import base.Unit;
 import enemy.Enemy;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 
@@ -55,10 +59,14 @@ public class Player extends Unit{
             String classLoaderPath3 = ClassLoader.getSystemResource(Left_2).toString();
             Image left2 = new Image(classLoaderPath3);
             walkRight.add(right1);
-            walkRight.add(this.Right);
+            if (!(this instanceof Magician)) {
+            	walkRight.add(this.Right);
+            }
             walkRight.add(right2);
             walkLeft.add(left1);
-            walkLeft.add(this.Left);
+            if (!(this instanceof Magician)) {
+            	walkLeft.add(this.Left);
+            }
             walkLeft.add(left2);
             System.out.println("found all image");
             
@@ -75,14 +83,13 @@ public class Player extends Unit{
 	public void attack(Unit other) {
 		if(other instanceof Enemy) {
 			Enemy enemy = (Enemy) other;
-			enemy.setHp(enemy.getHp()-atk);
+			enemy.setHp(enemy.getHp()-Math.max(0,(atk-enemy.getDefense())));
 			if(enemy.getHp() == 0) {
 				enemy.setAlive(false);
 			}
 		}
 		
 	}
-	
 	public int getHp() {
 		return hp;
 	}
@@ -180,7 +187,22 @@ public class Player extends Unit{
 
         walkLeftAnimation.setCycleCount(Timeline.INDEFINITE); // Repeat the animation
     }
+	public void createAttackEffect(Node player) {
+        DropShadow attackEffect = new DropShadow();
+        attackEffect.setColor(Color.RED);
+        attackEffect.setRadius(0);
 
+        ((Player)player).getImageView().setEffect(attackEffect);
+
+        Timeline flickerEffect = new Timeline(
+            new KeyFrame(Duration.ZERO, new KeyValue(attackEffect.radiusProperty(), 0)),
+            new KeyFrame(Duration.millis(100), new KeyValue(attackEffect.radiusProperty(), 20)),
+            new KeyFrame(Duration.millis(200), new KeyValue(attackEffect.radiusProperty(), 0))
+        );
+        flickerEffect.setCycleCount(6);
+        flickerEffect.setOnFinished(e -> ((Player)player).getImageView().setEffect(null));
+        flickerEffect.play();
+    }
     // Method to start the walking animation when moving right
     public void startWalkingRight() {
     	walkRightAnimation.play();

@@ -13,10 +13,13 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
+import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -53,6 +56,7 @@ public class TurnBasePane extends Pane {
     private TurnBase turnManager;
     private Label playerHp;
     private Label playerDefense;
+    private Label playerAtk;
     private Map<Enemy, Label> enemyHpLabels = new HashMap<>();
     private Map<Enemy, Label> enemyDefenseLabels = new HashMap<>();
     private Map<Enemy, ImageView> enemyImageViews = new HashMap<>();
@@ -65,6 +69,8 @@ public class TurnBasePane extends Pane {
     private ImageView playerImage; //88
     private  ArrayList<ArrayList<Integer>> EnemyPositionX;
     private ArrayList<ArrayList<Integer>> EnemyPositionY;
+    private ImageView BuffAttackButton;
+    private ImageView BuffDefenseButton;
     public TurnBasePane(Player player , List<Enemy> enemies , String BackgroundPath) {
     	//set font
     	String FontString = "";
@@ -99,7 +105,7 @@ public class TurnBasePane extends Pane {
         playerImage = new ImageView(player.getImageLeft());
         playerImage.setPreserveRatio(true);
         playerImage.setFitHeight(250);
-        playerImage.setLayoutX(1280); //1000
+        playerImage.setLayoutX(1260); //1000
         playerImage.setLayoutY(150);
         this.getChildren().add(playerImage);
         TranslateTransition playerMoveIn = new TranslateTransition(Duration.seconds(2), playerImage);
@@ -111,7 +117,7 @@ public class TurnBasePane extends Pane {
         EnemyPositionY.add(new ArrayList<>(List.of(150)));
         EnemyPositionX.add(new ArrayList<>(List.of(300, 120)));
         EnemyPositionY.add(new ArrayList<>(List.of(30,200)));
-        EnemyPositionX.add(new ArrayList<>(List.of(80,80,380)));
+        EnemyPositionX.add(new ArrayList<>(List.of(120,80,380)));
         EnemyPositionY.add(new ArrayList<>(List.of(20, 220, 150)));
         for (int i = 0; i < enemies.size(); i++) {
             Enemy enemy = enemies.get(i);
@@ -172,6 +178,7 @@ public class TurnBasePane extends Pane {
         // Initialize status labels and button
         playerHp = new Label();
         playerDefense = new Label();
+        playerAtk = new Label();
         updatePlayerStatus();
         //Player Status Box
         playerBox = new GridPane();
@@ -181,7 +188,7 @@ public class TurnBasePane extends Pane {
         playerBox.setLayoutX(820);
         playerBox.setLayoutY(500);
         playerBox.setPrefHeight(200);
-        playerBox.setPrefWidth(410);
+        playerBox.setPrefWidth(430);
         Text PlayerHeader = new Text("Player");
         PlayerHeader.setFont(Font.loadFont(FontString,45));
         PlayerHeader.setUnderline(true);
@@ -197,7 +204,6 @@ public class TurnBasePane extends Pane {
         playerDefense.setTextFill(Color.BLACK);
         playerBox.add(playerHp, 0, 2);
         playerBox.add(playerDefense, 0, 3);
-        Label playerAtk = new Label("Attack: " + this.player.getAtk());
         playerAtk.setFont(Font.loadFont(FontString,27));
         playerAtk.setTextFill(Color.BLACK);
         playerBox.add(playerAtk, 1, 2);
@@ -281,15 +287,88 @@ public class TurnBasePane extends Pane {
          clickEnemyToAttackLabel.setLayoutY(100);  
          clickEnemyToAttackLabel.setVisible(false);  
          this.getChildren().add(clickEnemyToAttackLabel);
+         
+         //Initialize Defense Button
+         Image BuffDefenseButtonImage = null;
+ 	    try {
+ 	        String classLoaderPath = ClassLoader.getSystemResource("DefenseBuff_button.png").toString();
+ 	       BuffDefenseButtonImage = new Image(classLoaderPath);
+ 	    } catch (Exception e) {
+ 	        e.printStackTrace();
+ 	        System.out.println("Not found BuffDefenseButtonImage");
+ 	    }
+ 	    BuffDefenseButton = new ImageView(BuffDefenseButtonImage);
+ 	    BuffDefenseButton.setFitHeight(80); 
+ 	    BuffDefenseButton.setFitWidth(80); 
+ 	    BuffDefenseButton.setLayoutX(960); 
+ 	    BuffDefenseButton.setLayoutY(410); 
+ 	    BuffDefenseButton.setOnMouseEntered(event -> {
+ 		   BuffDefenseButton.setFitHeight(90); 
+ 		   BuffDefenseButton.setFitWidth(90); 
+ 		   BuffDefenseButton.setLayoutX(960); 
+ 		   BuffDefenseButton.setLayoutY(410); 
+	        
+ 	    });
+ 	   BuffDefenseButton.setOnMouseExited(event -> {
+ 		   BuffDefenseButton.setFitHeight(80); 
+ 	 	   BuffDefenseButton.setFitWidth(80); 
+ 	 	   BuffDefenseButton.setLayoutX(960); 
+ 	 	   BuffDefenseButton.setLayoutY(410); 
+	        
+	    });
+ 	  BuffDefenseButton.setOnMouseClicked(e -> turnManager.handleBuffDefenseClick(e));
+ 	//Initialize Defense Button
+       Image BuffAttackButtonImage = null;
+	    try {
+	        String classLoaderPath = ClassLoader.getSystemResource("AttackBuff_button.png").toString();
+	        BuffAttackButtonImage = new Image(classLoaderPath);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        System.out.println("Not found BuffAttackButtonImage");
+	    }
+	    BuffAttackButton = new ImageView(BuffAttackButtonImage);
+	    BuffAttackButton.setFitHeight(80); 
+	    BuffAttackButton.setFitWidth(80); 
+	    BuffAttackButton.setLayoutX(1060); 
+	    BuffAttackButton.setLayoutY(410); 
+	    BuffAttackButton.setOnMouseEntered(event -> {
+	    	BuffAttackButton.setFitHeight(90); 
+	    	BuffAttackButton.setFitWidth(90); 
+	    	BuffAttackButton.setLayoutX(1060); 
+	    	BuffAttackButton.setLayoutY(410); 
+	        
+	    });
+	    BuffAttackButton.setOnMouseExited(event -> {
+	    	BuffAttackButton.setFitHeight(80); 
+	    	BuffAttackButton.setFitWidth(80); 
+	    	BuffAttackButton.setLayoutX(1060); 
+	    	BuffAttackButton.setLayoutY(410); 
+	        
+	    });
+	    BuffAttackButton.setOnMouseClicked(e -> turnManager.handleBuffAttackClick(e));
+        this.getChildren().addAll(BuffDefenseButton,BuffAttackButton);
+        BuffAttackButton.setVisible(false);
+        BuffDefenseButton.setVisible(false);
     }
     private void handleEnemyClick(MouseEvent event, Enemy enemy) {
     	if (turnManager.isPlayerTurn() && player.isAlive() && !isAnimationRunning) {
     		performAttack(this.getPlayerImage(), enemyImageViews.get(enemy), this.player, () -> {
     			if (Math.random() < this.turnManager.getChanceToMiss()) { // ถ้าค่าที่สุ่มได้น้อยกว่าโอกาส miss
                     showMissText(enemyImageViews.get(enemy)); // แสดงข้อความ miss
+                    if(turnManager.getExtraDamage() > 0) {
+                    	player.setAtk(player.getAtk()-turnManager.getExtraDamage());
+                    	turnManager.setExtraDamage(0);
+                    }
                 } else {
                     int damage = player.getAtk();
-                    player.attack(enemy); // Player attacks the specific enemy
+                    if(turnManager.getExtraDamage() > 0) {
+                    	player.attack(enemy);
+                    	player.setAtk(player.getAtk()-turnManager.getExtraDamage());
+                    	turnManager.setExtraDamage(0);
+                    }
+                    else {
+                    	player.attack(enemy);
+                    }
                     playAttackEffect(enemyImageViews.get(enemy));
                     updatePlayerStatus();
                     updateEnemyStatus();
@@ -297,7 +376,13 @@ public class TurnBasePane extends Pane {
                 }
                 setEnemyFadeEffect(null, false);
                 if (!enemy.isAlive()) {
-                    this.getChildren().remove(event.getSource());
+                	playDeathEffect(enemyImageViews.get(enemy), () -> {
+    	                enemyHpLabels.remove(enemy);
+    	                enemyDefenseLabels.remove(enemy);
+    	                enemies.remove(enemy);
+    	                this.getChildren().remove(event.getSource());
+    	                updateEnemyPositions();
+                    });
                 }
                 highlightEnemyRow(enemy, Color.BLACK);
                 //turnManager.endPlayerTurn();
@@ -305,8 +390,12 @@ public class TurnBasePane extends Pane {
         }
     }
     public void updatePlayerStatus() {
+    	if(!player.isAlive()) {
+    		playDeathEffect(this.getPlayerImage(), () -> {});
+    	}
         playerHp.setText("HP: " + player.getHp() + " / " + player.getMaxhp());
         playerDefense.setText("Defense: " + player.getDefense() + " / "+ player.getMaxdefense());
+        playerAtk.setText("Attack: " + this.player.getAtk());
     }
     public void updateEnemyStatus() {
     	for (Enemy enemy : new ArrayList<>(enemies)) {
@@ -318,10 +407,6 @@ public class TurnBasePane extends Pane {
                     this.highlightEnemyRow(enemy, Color.GRAY);
                 }
                 this.playAttackEffect(enemyImageViews.get(enemy));
-                enemyHpLabels.remove(enemy);
-                enemyDefenseLabels.remove(enemy);
-                enemies.remove(enemy);
-                updateEnemyPositions();
             } else {
                 Label hpLabel = enemyHpLabels.get(enemy);
                 Label defenseLabel = enemyDefenseLabels.get(enemy);
@@ -379,43 +464,42 @@ public class TurnBasePane extends Pane {
         }
     }
     public void showDamageText(Node target, int damage) {
-    	// สร้าง Label ที่แสดงข้อความการโจมตี
-    	 System.out.println("Damage");
-        Label damageLabel = new Label("-" + damage);
+        System.out.println("Damage: " + damage);
+        Label damageLabel = new Label("Damage " + damage);
         damageLabel.setFont(Font.font("Tahoma", FontWeight.BOLD, 20));
         damageLabel.setTextFill(Color.RED);
-        
-        // กำหนดตำแหน่งของ Label ตามตำแหน่งของ target (ศัตรูหรือผู้เล่น)
-        damageLabel.setLayoutX(target.getLayoutX());
-        damageLabel.setLayoutY(target.getLayoutY() - 20); // ให้แสดงเล็กน้อยข้างๆ target
-        
-        // เพิ่มข้อความการโจมตีลงใน Pane
-        this.getChildren().add(damageLabel);
-        
-        // ใช้ PauseTransition เพื่อให้ข้อความแสดงสักพักแล้วหายไป
-        PauseTransition pause = new PauseTransition(Duration.seconds(3));
-        pause.setOnFinished(event -> this.getChildren().remove(damageLabel));
-        pause.play();
+
+        // ใช้ตำแหน่ง localToScene
+        Bounds bounds = target.localToScene(target.getBoundsInLocal());
+        damageLabel.setLayoutX(bounds.getMinX()-30);
+        damageLabel.setLayoutY(bounds.getMinY() - 10);
+
+        Platform.runLater(() -> {
+            this.getChildren().add(damageLabel);
+            PauseTransition pause = new PauseTransition(Duration.seconds(1));
+            pause.setOnFinished(event -> this.getChildren().remove(damageLabel));
+            pause.play();
+        });
     }
+
     public void showMissText(Node target) {
-        // สร้าง Label ที่แสดงข้อความ Miss
-    	System.out.println("Miss");
+        System.out.println("Miss");
         Label missLabel = new Label("Miss");
         missLabel.setFont(Font.font("Tahoma", FontWeight.BOLD, 20));
         missLabel.setTextFill(Color.BLACK);
-        
-        // กำหนดตำแหน่งของ Label ตามตำแหน่งของ target (ศัตรูหรือผู้เล่น)
-        missLabel.setLayoutX(target.getLayoutX());
-        missLabel.setLayoutY(target.getLayoutY() - 20); // ให้แสดงเล็กน้อยข้างๆ target
-        
-        // เพิ่มข้อความ Miss ลงใน Pane
-        this.getChildren().add(missLabel);
-        
-        // ใช้ PauseTransition เพื่อให้ข้อความแสดงสักพักแล้วหายไป
-        PauseTransition pause = new PauseTransition(Duration.seconds(1));
-        pause.setOnFinished(event -> this.getChildren().remove(missLabel));
-        pause.play();
+
+        Bounds bounds = target.localToScene(target.getBoundsInLocal());
+        missLabel.setLayoutX(bounds.getMinX()-10);
+        missLabel.setLayoutY(bounds.getMinY() - 10);
+
+        Platform.runLater(() -> {
+            this.getChildren().add(missLabel);
+            PauseTransition pause = new PauseTransition(Duration.seconds(1));
+            pause.setOnFinished(event -> this.getChildren().remove(missLabel));
+            pause.play();
+        });
     }
+
 	public Label getTurnStatusLabel() {
 		return turnStatusLabel;
 	}
@@ -437,6 +521,10 @@ public class TurnBasePane extends Pane {
 	
 	public ImageView getPlayerImage() {
 		return playerImage;
+	}
+	
+	public Label getClickEnemyToAttackLabel() {
+		return clickEnemyToAttackLabel;
 	}
 	public void playAttackEffect(ImageView enemyImage) {
 	    // การเคลื่อนที่ของเอฟเฟกต์
@@ -479,7 +567,7 @@ public class TurnBasePane extends Pane {
 	            attackerImageView.setScaleX(1.2);
 	            attackerImageView.setScaleY(1.2);
 	            // สร้างเอฟเฟกต์แสงฟันที่เป้าหมาย
-	            createAttackEffect(targetImageView);
+	            createShadowEffect(targetImageView,Color.RED);
 	            onAttackComplete.run();
 	            // Pause เพื่อแสดงการโจมตี
 	            PauseTransition pause = new PauseTransition(Duration.seconds(2));
@@ -527,9 +615,9 @@ public class TurnBasePane extends Pane {
 	        slideForward.play();
 	    }
 	}
-	private void createAttackEffect(ImageView targetImageView) {
+	public void createShadowEffect(ImageView targetImageView,Color color) {
 	    DropShadow attackEffect = new DropShadow();
-	    attackEffect.setColor(Color.RED);
+	    attackEffect.setColor(color);
 	    attackEffect.setRadius(0);
 
 	    targetImageView.setEffect(attackEffect);
@@ -565,45 +653,49 @@ public class TurnBasePane extends Pane {
 	            double newY = EnemyPositionY.get(enemies.size() - 1).get(i);
 	            moveAnimation.setToX(newX - enemyImage.getLayoutX());
 	            moveAnimation.setToY(newY - enemyImage.getLayoutY());
-	            /*
-	            enemyImage.setLayoutX(EnemyPositionX.get(enemies.size() - 1).get(i));
-	            enemyImage.setLayoutY(EnemyPositionY.get(enemies.size() - 1).get(i));
-	            */
 	            moveAnimation.play();
 	        }
 	    }
 	}
-	private void playDeathEffect(ImageView enemyImage) {
-		// Fade Out Effect
-	    FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), enemyImage);
-	    fadeOut.setFromValue(1.0); // เริ่มต้นด้วยความโปร่งใสเต็ม
-	    fadeOut.setToValue(0.0);   // หายไปจนมองไม่เห็น
+	private void playDeathEffect(ImageView playerImage, Runnable onFinished) {
+	    // Fade out effect
+	    FadeTransition fadeOut = new FadeTransition(Duration.seconds(1.5), playerImage);
+	    fadeOut.setFromValue(1.0);
+	    fadeOut.setToValue(0.0);
 
-	    // Scale Down Effect
-	    ScaleTransition scaleDown = new ScaleTransition(Duration.seconds(1), enemyImage);
-	    scaleDown.setFromX(1.0); // เริ่มต้นด้วยขนาดปกติ
-	    scaleDown.setFromY(1.0);
-	    scaleDown.setToX(0.0);   // ลดขนาดลงจนเหลือ 0
-	    scaleDown.setToY(0.0);
+	    // Rotate effect (falling down)
+	    RotateTransition rotate = new RotateTransition(Duration.seconds(1.5), playerImage);
+	    rotate.setByAngle(90); // Rotate 90 degrees to simulate falling
 
-	    // Combine Both Effects
-	    ParallelTransition deathEffect = new ParallelTransition(fadeOut, scaleDown);
+	    // Scale down effect
+	    ScaleTransition scaleDown = new ScaleTransition(Duration.seconds(1.5), playerImage);
+	    scaleDown.setToX(0.5);
+	    scaleDown.setToY(0.5);
 
-	    // PauseTransition (หน่วงเวลาก่อนลบ)
-	    PauseTransition delay = new PauseTransition(Duration.seconds(3)); // หน่วงเวลา 0.5 วินาที
+	    // Combine animations
+	    ParallelTransition deathEffect = new ParallelTransition(fadeOut, rotate, scaleDown);
 
-	    // เมื่อ Animation เสร็จสิ้นให้ลบ Enemy ออกจาก Parent
-	    deathEffect.setOnFinished(event -> {
-	        // เล่น PauseTransition ก่อนลบ
-	        delay.setOnFinished(e -> {
-	            ((Pane) enemyImage.getParent()).getChildren().remove(enemyImage);
-	        });
-	        delay.play();
+	    deathEffect.setOnFinished(e -> {
+	        if (onFinished != null) {
+	            onFinished.run(); // Execute additional logic after death animation
+	        }
 	    });
 
-	    // เล่น Animation
 	    deathEffect.play();
 	}
+	public ImageView getBuffAttackButton() {
+		return BuffAttackButton;
+	}
+	public void setBuffAttackButton(ImageView buffAttackButton) {
+		BuffAttackButton = buffAttackButton;
+	}
+	public ImageView getBuffDefenseButton() {
+		return BuffDefenseButton;
+	}
+	public void setBuffDefenseButton(ImageView buffDefenseButton) {
+		BuffDefenseButton = buffDefenseButton;
+	}
+	
 
 	
 	
