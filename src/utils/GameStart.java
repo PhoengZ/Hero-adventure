@@ -1,7 +1,7 @@
 package utils;
 
 
-import player.Knight;
+ import player.Knight;
 import player.Magician;
 import player.Player;
 import player.Warrior;
@@ -18,7 +18,6 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -27,7 +26,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import obstacle.Shot;
 import obstacle.ShotX;
 import obstacle.SlimeFire;
@@ -197,9 +195,9 @@ public class GameStart {
 		Node py = player;
 		setPlayer(py);
 		GameStart.clear();
-		GameStart.setScore(1);
-		GameStart.initContent(1);
-		GameStart.setRound(1);
+		GameStart.setScore(0);
+		GameStart.setRound(0);
+		GameStart.initContent(0);
 		appRoot.setOnKeyPressed(event->{
 			GameStart.keys.put(event.getCode(), true);
 		});

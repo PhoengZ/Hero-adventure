@@ -7,7 +7,7 @@ import player.Player;
 
 public class IronGolem extends Enemy implements Armorable , Breakable{
 	public IronGolem() {
-		super(300,70,10,100,"");
+		super(300,70,10,100,"IronGolem.png","IronGolemFight.png");
 	}
 	public void attack(Player other) {
 		super.attack(other);
