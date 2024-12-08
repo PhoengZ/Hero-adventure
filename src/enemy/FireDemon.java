@@ -18,5 +18,7 @@ public class FireDemon extends Enemy implements Magicable{
 	public int getMagicAtk() {
 		return this.MagicAtk;
 	}
-	
+	public String toString() {
+		return "FireDemon";
+	}
 }

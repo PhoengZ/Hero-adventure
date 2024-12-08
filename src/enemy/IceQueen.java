@@ -18,4 +18,7 @@ public class IceQueen extends Enemy implements Magicable{
 	public int getMagicAtk() {
 		return this.MagicAtk;
 	}
+	public String toString() {
+		return "IceQueen";
+	}
 }

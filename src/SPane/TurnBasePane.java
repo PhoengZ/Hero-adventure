@@ -10,6 +10,7 @@ import enemy.FireDemon;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -52,11 +53,14 @@ public class TurnBasePane extends Pane {
     private Label turnStatusLabel;
     private GridPane  EnemyBox;
     private GridPane playerBox;
+    private boolean isAnimationRunning;
+    private Label clickEnemyToAttackLabel;
 
     
     public TurnBasePane(Player player , List<Enemy> enemies , String BackgroundPath) {
-        // Background setup
+    	isAnimationRunning = true;
     	this.initialHpPlayer = player.getHp();
+        // Background setup
         Image Background = null;
         try {
             String classLoaderPath = ClassLoader.getSystemResource(BackgroundPath).toString();
@@ -69,15 +73,18 @@ public class TurnBasePane extends Pane {
         backgroundView.setFitHeight(720);
         backgroundView.setFitWidth(1280);
         this.getChildren().add(backgroundView);
-
-      
+        //initialize turnManager
+        turnManager = new TurnBase(player, enemies, this);
         // Set Player Image Position
         ImageView playerImage = new ImageView(player.getImageLeft());
         playerImage.setPreserveRatio(true);
         playerImage.setFitHeight(250);
-        playerImage.setLayoutX(1000);
+        playerImage.setLayoutX(1280); //1000
         playerImage.setLayoutY(150);
         this.getChildren().add(playerImage);
+        TranslateTransition playerMoveIn = new TranslateTransition(Duration.seconds(2), playerImage);
+        playerMoveIn.setByX(-280);
+  
         // Set Enemy Image Position when have 1 or 2 or 3 enemy
         ArrayList<ArrayList<Integer>> EnemyPositionX = new ArrayList<ArrayList<Integer>>();
         ArrayList<ArrayList<Integer>> EnemyPositionY = new ArrayList<ArrayList<Integer>>();
@@ -87,39 +94,62 @@ public class TurnBasePane extends Pane {
         EnemyPositionY.add(new ArrayList<>(List.of(30,200)));
         EnemyPositionX.add(new ArrayList<>(List.of(200,80,380)));
         EnemyPositionY.add(new ArrayList<>(List.of(20, 220, 150)));
-        
         for (int i = 0; i < enemies.size(); i++) {
             Enemy enemy = enemies.get(i);
-
             // Enemy image
             ImageView enemyImage = new ImageView(enemy.getImage());
             enemyImage.setPreserveRatio(true);
             enemyImage.setFitHeight(250);
             enemyImage.setLayoutX(EnemyPositionX.get(enemies.size() - 1).get(i));
             enemyImage.setLayoutY(EnemyPositionY.get(enemies.size() - 1).get(i));
-
+            enemyImage.setOpacity(0);
             // Add mouse events
-            enemyImage.setOnMouseEntered(e -> {
-                if (turnManager.isPlayerTurn() && player.isAlive()) {
-                    enemyImage.setScaleX(1.1); // Zoom in
-                    enemyImage.setScaleY(1.1);
-                    setEnemyFadeEffect(enemy, true); // Fade other enemies
-                }
-            });
-
+	        enemyImage.setOnMouseEntered(e -> {
+	             if (turnManager.isPlayerTurn() && player.isAlive() && !this.isAnimationRunning) {
+	                 enemyImage.setScaleX(1.1); // Zoom in
+	                 enemyImage.setScaleY(1.1);
+	                 setEnemyFadeEffect(enemy, true); // Fade other enemies
+	                 highlightEnemyRow(enemy, Color.BLUE);
+	                 
+	             }
+	         });
             enemyImage.setOnMouseExited(e -> {
-                if (turnManager.isPlayerTurn() && player.isAlive()) {
+                if (turnManager.isPlayerTurn() && player.isAlive() && !this.isAnimationRunning) {
                     enemyImage.setScaleX(1.0); // Reset size
                     enemyImage.setScaleY(1.0);
                     setEnemyFadeEffect(null, false); // Reset fade effect
+                    highlightEnemyRow(enemy, Color.BLACK);
                 }
             });
-
             enemyImage.setOnMouseClicked(e -> handleEnemyClick(e, enemy)); // Handle click event
-
             this.getChildren().add(enemyImage);
             enemyImageViews.put(enemy, enemyImage); // เก็บ ImageView ของศัตรูใน Map
         }
+        
+        // Enemies Animation Blink
+        ParallelTransition enemiesFadeIn = new ParallelTransition();
+        for (ImageView enemyImage : enemyImageViews.values()) {
+            FadeTransition fade = new FadeTransition(Duration.seconds(0.5), enemyImage);
+            fade.setFromValue(0);
+            fade.setToValue(1);
+            fade.setCycleCount(5);
+            fade.setAutoReverse(true);
+            enemiesFadeIn.getChildren().add(fade);
+        }
+        SequentialTransition startSequence = new SequentialTransition(
+                playerMoveIn, // ผู้เล่นเดินเข้ามา
+                new PauseTransition(Duration.seconds(1)), // หยุดรอ 1 วินาที
+                enemiesFadeIn, // ศัตรูกระพริบ
+                new PauseTransition(Duration.seconds(0.5)) // หยุดก่อนเริ่มเกม
+        );
+
+        startSequence.setOnFinished(e -> {
+            // เริ่มเกมหลังจาก Animation จบ
+        	isAnimationRunning = false;
+            turnManager.startTurn();
+            updateTurnStatus(true); // แสดง Player Turn
+        });
+        startSequence.play();
         // initialize enemies and player
         this.enemies = enemies;
         this.player = player;
@@ -127,30 +157,36 @@ public class TurnBasePane extends Pane {
         playerHp = new Label();
         playerDefense = new Label();
         updatePlayerStatus();
-        
         //Player Status Box
         playerBox = new GridPane();
+        playerBox.setHgap(50);
         playerBox.setVgap(15);
         playerBox.setPadding(new Insets(20,40,20,40));
         playerBox.setLayoutX(820);
         playerBox.setLayoutY(500);
         playerBox.setPrefHeight(200);
-        playerBox.setPrefWidth(410);
+        playerBox.setPrefWidth(390);
         Text PlayerHeader = new Text("Player");
         PlayerHeader.setFont(Font.font("Tahoma",FontWeight.BOLD,30));
+        PlayerHeader.setFill(Color.BLACK);
         playerBox.add(PlayerHeader, 0, 0,1,1);
         Text playerName = new Text("Name: " + player.toString());
         playerName.setFont(Font.font("Tahoma",FontWeight.NORMAL,20));
+        playerName.setFill(Color.BLACK);
         playerBox.add(playerName, 0, 1);
         playerHp.setFont(Font.font("Tahoma",FontWeight.NORMAL,20));
+        playerHp.setTextFill(Color.BLACK);
         playerDefense.setFont(Font.font("Tahoma",FontWeight.NORMAL,20));
+        playerDefense.setTextFill(Color.BLACK);
         playerBox.add(playerHp, 0, 2);
         playerBox.add(playerDefense, 0, 3);
         Label playerAtk = new Label("Attack: " + this.player.getAtk());
         playerAtk.setFont(Font.font("Tahoma",FontWeight.NORMAL,20));
+        playerAtk.setTextFill(Color.BLACK);
         playerBox.add(playerAtk, 1, 2);
         Label playerSpeed = new Label("Speed: " + this.player.getSpeed());
         playerSpeed.setFont(Font.font("Tahoma",FontWeight.NORMAL,20));
+        playerSpeed.setTextFill(Color.BLACK);
         playerBox.add(playerSpeed, 1, 3);
         playerBox.setBackground(new Background(new BackgroundFill(
                 Color.WHITE,
@@ -165,8 +201,6 @@ public class TurnBasePane extends Pane {
             )));
         
          this.getChildren().add(playerBox);
-         
-         
          // Enemy status box
         EnemyBox = new GridPane();
         EnemyBox.setHgap(40);
@@ -179,10 +213,8 @@ public class TurnBasePane extends Pane {
         Text enemyHeader = new Text("Enemy");
         enemyHeader.setFont(Font.font("Tahoma", FontWeight.BOLD, 30));
         EnemyBox.add(enemyHeader, 0, 0, 1, 1);
-
         for (int i = 0; i < enemies.size(); i++) {
             Enemy enemy = enemies.get(i);
-            
             Label enemyName = new Label(enemy.toString());
             enemyName.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
             EnemyBox.add(enemyName, 0, i + 1);
@@ -197,15 +229,12 @@ public class TurnBasePane extends Pane {
             Label enemyAtk = new Label("Attack: " + enemy.getAtk());
             enemyAtk.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
             EnemyBox.add(enemyAtk, 3, i + 1);
-            
         }
-
         EnemyBox.setBackground(new Background(new BackgroundFill(
                 Color.WHITE,
                 new CornerRadii(10),     
                 Insets.EMPTY           
             )));
-
             // ตั้งค่า Border
         EnemyBox.setBorder(new Border(new BorderStroke(
         		Color.WHITE,            
@@ -213,38 +242,48 @@ public class TurnBasePane extends Pane {
                 new CornerRadii(10),     
                 new BorderWidths(2)     
             )));
-        
          this.getChildren().add(EnemyBox);
- 
-        
         // Initialize turn manager
-         turnStatusLabel = new Label("Player's Turn");
+         turnStatusLabel = new Label("");
          turnStatusLabel.setFont(Font.font("Tahoma", FontWeight.BOLD, 30));
+         //Font.font("Tahoma", FontWeight.BOLD, 30)
+         System.out.println(getClass().getResource("PixelGame.otf"));
          turnStatusLabel.setTextFill(Color.BLUE);
          turnStatusLabel.setLayoutX(550);
          turnStatusLabel.setLayoutY(50);
          this.getChildren().add(turnStatusLabel);
+         clickEnemyToAttackLabel = new Label("Click enemy to attack");
+         clickEnemyToAttackLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+         clickEnemyToAttackLabel.setTextFill(Color.BLUE);
+         clickEnemyToAttackLabel.setLayoutX(550); 
+         clickEnemyToAttackLabel.setLayoutY(100);  
+         clickEnemyToAttackLabel.setVisible(false);  
+         this.getChildren().add(clickEnemyToAttackLabel);
 
-        turnManager = new TurnBase(player, enemies, this);
-        turnManager.startTurn();
     }
     private void handleEnemyClick(MouseEvent event, Enemy enemy) {
-        if (turnManager.isPlayerTurn() && player.isAlive()) {
-        	int damage = player.getAtk();
-            player.attack(enemy); // Player attacks the specific enemy
-            updatePlayerStatus();
-            updateEnemyStatus();
-            showDamageText(enemyImageViews.get(enemy), damage);
+    	if (turnManager.isPlayerTurn() && player.isAlive() && !isAnimationRunning) {
+            if (Math.random() < this.turnManager.getChanceToMiss()) { // ถ้าค่าที่สุ่มได้น้อยกว่าโอกาส miss
+                showMissText(enemyImageViews.get(enemy)); // แสดงข้อความ miss
+            } else {
+                int damage = player.getAtk();
+                player.attack(enemy); // Player attacks the specific enemy
+                updatePlayerStatus();
+                updateEnemyStatus();
+                showDamageText(enemyImageViews.get(enemy), damage);
+            }
             setEnemyFadeEffect(null, false);
             if (!enemy.isAlive()) {
-            	this.getChildren().remove(event.getSource());
+                this.getChildren().remove(event.getSource());
             }
+            highlightEnemyRow(enemy, Color.BLACK);
             turnManager.endPlayerTurn();
         }
     }
     public void updatePlayerStatus() {
         playerHp.setText("HP: " + player.getHp());
         playerDefense.setText("Defense: " + player.getDefense());
+        /*
         if(player.getHp() != this.initialHpPlayer) {
 	        playerHp.setTextFill(Color.RED);
 	        PauseTransition pause = new PauseTransition(Duration.seconds(1));
@@ -254,6 +293,7 @@ public class TurnBasePane extends Pane {
 	        });
 	        pause.play();
         }
+        */
     }
 
     public void updateEnemyStatus() {
@@ -290,7 +330,7 @@ public class TurnBasePane extends Pane {
         }
     }
     public void updateTurnStatus(boolean isPlayerTurn) {
-        if (isPlayerTurn) {
+        if (isPlayerTurn && player.isAlive()) {
             turnStatusLabel.setText("Player's Turn");
             turnStatusLabel.setTextFill(Color.BLUE);
             playerBox.setBackground(new Background(new BackgroundFill(
@@ -303,8 +343,10 @@ public class TurnBasePane extends Pane {
                     new CornerRadii(10),  
                     Insets.EMPTY           
                 )));
-           
-        } else {
+            clickEnemyToAttackLabel.setVisible(true);
+        } 
+        
+        else {
             turnStatusLabel.setText("Enemy's Turn");
             turnStatusLabel.setTextFill(Color.RED);
             EnemyBox.setBackground(new Background(new BackgroundFill(
@@ -317,10 +359,13 @@ public class TurnBasePane extends Pane {
                     new CornerRadii(10),  
                     Insets.EMPTY           
                 )));
+            clickEnemyToAttackLabel.setVisible(false);
         }
+        
     }
-    private void showDamageText(Node target, int damage) {
+    public void showDamageText(Node target, int damage) {
     	// สร้าง Label ที่แสดงข้อความการโจมตี
+    	 System.out.println("Damage");
         Label damageLabel = new Label("-" + damage);
         damageLabel.setFont(Font.font("Tahoma", FontWeight.BOLD, 20));
         damageLabel.setTextFill(Color.RED);
@@ -337,6 +382,41 @@ public class TurnBasePane extends Pane {
         pause.setOnFinished(event -> this.getChildren().remove(damageLabel));
         pause.play();
     }
+    public void showMissText(Node target) {
+        // สร้าง Label ที่แสดงข้อความ Miss
+    	System.out.println("Miss");
+        Label missLabel = new Label("Miss");
+        missLabel.setFont(Font.font("Tahoma", FontWeight.BOLD, 20));
+        missLabel.setTextFill(Color.BLACK);
+        
+        // กำหนดตำแหน่งของ Label ตามตำแหน่งของ target (ศัตรูหรือผู้เล่น)
+        missLabel.setLayoutX(target.getLayoutX());
+        missLabel.setLayoutY(target.getLayoutY() - 20); // ให้แสดงเล็กน้อยข้างๆ target
+        
+        // เพิ่มข้อความ Miss ลงใน Pane
+        this.getChildren().add(missLabel);
+        
+        // ใช้ PauseTransition เพื่อให้ข้อความแสดงสักพักแล้วหายไป
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        pause.setOnFinished(event -> this.getChildren().remove(missLabel));
+        pause.play();
+    }
+
+	public Label getTurnStatusLabel() {
+		return turnStatusLabel;
+	}
+	public void setTurnStatusLabel(Label turnStatusLabel) {
+		this.turnStatusLabel = turnStatusLabel;
+	}
+	private void highlightEnemyRow(Enemy enemy, Color color) {
+	    int rowIndex = enemies.indexOf(enemy) + 1; // หาตำแหน่งแถว (บวก 1 เพราะแถวที่ 0 คือ header)
+	    for (Node node : EnemyBox.getChildren()) {
+	        Integer row = GridPane.getRowIndex(node); // ตรวจสอบ row index ของ Node
+	        if (row != null && row == rowIndex && node instanceof Label) {
+	            ((Label) node).setTextFill(color); // เปลี่ยนสีข้อความ
+	        }
+	    }
+	}
 
 
 }

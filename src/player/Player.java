@@ -5,11 +5,15 @@ import java.util.ArrayList;
 import base.Unit;
 import enemy.Enemy;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 
@@ -75,10 +79,13 @@ public class Player extends Unit{
 		
 	}
 	
-	public void attack(Enemy enemy) {
-		enemy.setHp(enemy.getHp()-atk);
-		if(enemy.getHp() == 0) {
-			enemy.setAlive(false);
+	public void attack(Unit other) {
+		if(other instanceof Enemy) {
+			Enemy enemy = (Enemy) other;
+			enemy.setHp(enemy.getHp()-atk);
+			if(enemy.getHp() == 0) {
+				enemy.setAlive(false);
+			}
 		}
 		
 	}
@@ -180,7 +187,22 @@ public class Player extends Unit{
 
         walkLeftAnimation.setCycleCount(Timeline.INDEFINITE); // Repeat the animation
     }
+	public void createAttackEffect(Node player) {
+        DropShadow attackEffect = new DropShadow();
+        attackEffect.setColor(Color.RED);
+        attackEffect.setRadius(0);
 
+        ((Player)player).getImageView().setEffect(attackEffect);
+
+        Timeline flickerEffect = new Timeline(
+            new KeyFrame(Duration.ZERO, new KeyValue(attackEffect.radiusProperty(), 0)),
+            new KeyFrame(Duration.millis(100), new KeyValue(attackEffect.radiusProperty(), 20)),
+            new KeyFrame(Duration.millis(200), new KeyValue(attackEffect.radiusProperty(), 0))
+        );
+        flickerEffect.setCycleCount(6);
+        flickerEffect.setOnFinished(e -> ((Player)player).getImageView().setEffect(null));
+        flickerEffect.play();
+    }
     // Method to start the walking animation when moving right
     public void startWalkingRight() {
     	walkRightAnimation.play();
@@ -203,11 +225,6 @@ public class Player extends Unit{
     		isWalkLeft = false;
     	}
     }
-	@Override
-	public void attack(Player player) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public int getMaxhp() {
 		return maxhp;

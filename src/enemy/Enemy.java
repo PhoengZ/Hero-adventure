@@ -20,10 +20,13 @@ public class Enemy  extends Unit {
 		this.setImageByPath(imagePath);
 		this.setAlive(true);
 	}
-	public void attack(Player player) {
-		player.setHp(player.getHp()-atk);
-		if(player.getHp() == 0) {
-			player.setAlive(false);
+	public void attack(Unit other) {
+		if(other instanceof Player) {
+			Player player = (Player) other;
+			player.setHp(player.getHp()-atk);
+			if(player.getHp() == 0) {
+				player.setAlive(false);
+			}
 		}
 		
 	}
