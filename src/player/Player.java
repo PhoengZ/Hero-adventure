@@ -24,6 +24,7 @@ public class Player extends Unit{
 	private boolean alive;
 	private Image Right;
 	private Image Left;
+	private Image imageFight;
 	private ImageView imageView;
 	private ArrayList<Image> walkRight;
 	private ArrayList<Image> walkLeft;
@@ -218,5 +219,10 @@ public class Player extends Unit{
 	public void setMaxdefense(int maxdefense) {
 		this.maxdefense = maxdefense;
 	}
+
+	public Image getImageFight() {
+		return imageFight;
+	}
+
 	
 }

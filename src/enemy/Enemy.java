@@ -10,6 +10,8 @@ public class Enemy  extends Unit {
 	private int atk; 
 	private int speed;
 	private int defense;
+	private int max_Hp;
+	private int max_Defense;
 	private Image imageStay;
 	private Image imageFight;
 	private boolean alive;
@@ -18,6 +20,8 @@ public class Enemy  extends Unit {
 		this.setAtk(atk);
 		this.setSpeed(speed);
 		this.setDefense(defense);
+		this.setMax_Hp(hp);
+		this.setMax_Defense(defense);
 		this.setImageStay(imageStayPath);
 		this.setImageFight(imageFightPath);
 		this.setAlive(true);
@@ -63,8 +67,20 @@ public class Enemy  extends Unit {
 	public void setDefense(int defense) {
 		this.defense = Math.max(0,defense);
 	}
+	
 
-
+	public int getMax_Hp() {
+		return max_Hp;
+	}
+	public void setMax_Hp(int max_hp) {
+		this.max_Hp = Math.max(0, max_hp);
+	}
+	public int getMax_Defense() {
+		return max_Defense;
+	}
+	public void setMax_Defense(int max_defense) {
+		this.max_Defense = Math.max(0, max_defense);
+	}
 	public Image getImageStay() {
 		return imageStay;
 	}

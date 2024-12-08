@@ -2,6 +2,7 @@ package utils;
 
 import enemy.Enemy;
 import javafx.animation.PauseTransition;
+import javafx.animation.TranslateTransition;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -25,7 +26,7 @@ public class TurnBase {
         this.enemies = enemies;
         this.gamePane = gamePane;
         this.isPlayerTurn = true; 
-        this.chanceToMiss = 0.6;
+        this.chanceToMiss = 0.4;
     }
 
     public boolean isPlayerTurn() {
@@ -59,51 +60,31 @@ public class TurnBase {
     private void enemyTurn() {
     	isPlayerTurn = false;
         System.out.println("Enemy's Turn");
-
+        gamePane.setEnemyFadeEffect(null, false);
         // Choose Enemy To attack Player by Random
         Enemy attackingEnemy = getRandomAliveEnemy();
         if (attackingEnemy != null) {
             // get Image
             ImageView enemyImageView = gamePane.getEnemyImageView(attackingEnemy);
-
             if (enemyImageView != null) {
-                // เปลี่ยนเป็นรูปต่อสู้ และเพิ่มขนาด
-                enemyImageView.setImage(attackingEnemy.getImageFight());
-                enemyImageView.setScaleX(1.2);
-                enemyImageView.setScaleY(1.2);
-            }
-
-            // สร้างความเสียหายให้ผู้เล่นหรือพลาดการโจมตี
-            int damage = attackingEnemy.getAtk();
-            if (Math.random() < TurnBase.getChanceToMiss()) {
-                gamePane.showMissText(enemyImageView); // แสดงข้อความ Miss
+                gamePane.performAttack(enemyImageView, gamePane.getPlayerImage(), attackingEnemy, () -> {
+                    // โจมตีผู้เล่น
+                    int damage = attackingEnemy.getAtk();
+                    if (Math.random() < TurnBase.getChanceToMiss()) {
+                        gamePane.showMissText(gamePane.getPlayerImage());
+                    } else {
+                        attackingEnemy.attack(player);
+                        gamePane.playAttackEffect(gamePane.getPlayerImage());
+                        gamePane.showDamageText(gamePane.getPlayerImage(), damage);
+                    }
+                    gamePane.updatePlayerStatus();
+                });
             } else {
-                attackingEnemy.attack(player); // ศัตรูโจมตีผู้เล่น
-                gamePane.showDamageText(enemyImageView, damage); // แสดงความเสียหาย
+                // ถ้าไม่มี ImageView ของศัตรู
+                endGame();
             }
-
-            // อัปเดตสถานะผู้เล่นใน Pane
-            gamePane.updatePlayerStatus();
-
-            // Pause เพื่อให้ศัตรูแสดงสถานะการต่อสู้สักพัก
-            PauseTransition pause = new PauseTransition(Duration.seconds(3));
-            pause.setOnFinished(e -> {
-                if (enemyImageView != null) {
-                    // เปลี่ยนกลับเป็นรูปปกติ และขนาดปกติ
-                    enemyImageView.setImage(attackingEnemy.getImageStay());
-                    enemyImageView.setScaleX(1.0);
-                    enemyImageView.setScaleY(1.0);
-                }
-                isPlayerTurn = true; // เปลี่ยนกลับเป็นเทิร์นของผู้เล่น
-                startTurn();
-            });
-            pause.play();
-        } else {
-            // ถ้าไม่มีศัตรูที่ยังมีชีวิต
-            endGame();
         }
     }
-
     private Enemy getRandomAliveEnemy() {
         Random random = new Random();
         List<Enemy> aliveEnemies = enemies.stream().filter(Enemy::isAlive).toList();
@@ -112,7 +93,6 @@ public class TurnBase {
         }
         return null;
     }
-
     private void endGame() {
         if (player.isAlive()) {
             System.out.println("Player Wins!");
@@ -121,13 +101,16 @@ public class TurnBase {
             //go to GameoverPane
         }
     }
-
 	public static double getChanceToMiss() {
 		return chanceToMiss;
 	}
-
 	public static void setChanceToMiss(double chanceToMiss) {
 		TurnBase.chanceToMiss = chanceToMiss;
 	}
+
+	public void setPlayerTurn(boolean isPlayerTurn) {
+		this.isPlayerTurn = isPlayerTurn;
+	}
+	
     
 }
