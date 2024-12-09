@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import SPane.GameOverPane;
+import SPane.GameWinPane;
 import SPane.HowToPlayPane;
 import SPane.StartPane;
 import SPane.TurnBasePane;
@@ -34,7 +35,7 @@ public class Main extends Application{
         // Request focus for the StartPane
         startPane.requestFocus();
         */
-		/*
+		
 		Player player = new Knight();
 		List<Enemy> enemies = new ArrayList<Enemy>();
 		Enemy BeastMaster = new BeastMaster();
@@ -50,7 +51,7 @@ public class Main extends Application{
         primaryStage.setScene(turnbaseScene);
         primaryStage.show();
         turnbasePane.requestFocus();
-        */
+        
 		/*
 		GameOverPane gameoverPane = new GameOverPane();
 		Scene gameoverscene = new Scene (gameoverPane , 1280 ,720);
@@ -60,6 +61,13 @@ public class Main extends Application{
         primaryStage.show();
         gameoverPane.requestFocus();
         */
+        GameWinPane gameWinPane = new GameWinPane();
+		Scene gameoverscene = new Scene (gameWinPane , 1280 ,720);
+		primaryStage.setTitle("Colosseum");
+        primaryStage.setResizable(false);
+        primaryStage.setScene(gameoverscene);
+        primaryStage.show();
+        gameWinPane.requestFocus();
 		/*
         GameOverPane gameOverPane = new GameOverPane(primaryStage);
         Scene gameOverScene = new Scene(gameOverPane, 1280, 720);
@@ -69,7 +77,7 @@ public class Main extends Application{
         primaryStage.show();
        // startPane.requestFocus();
         */
-		
+		/*
         HowToPlayPane howtoplayPane = new HowToPlayPane();
         Scene howtoplayScene = new Scene (howtoplayPane , 1280 ,720);
         primaryStage.setTitle("Colosseum");
@@ -77,7 +85,7 @@ public class Main extends Application{
         primaryStage.setScene(howtoplayScene);
         primaryStage.show();
         howtoplayPane.requestFocus();
-        
+        */
 	}
 	public static void main(String[] args) {
 		launch(args);
