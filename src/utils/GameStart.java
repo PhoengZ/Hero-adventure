@@ -13,12 +13,13 @@ import java.util.List;
 import Data.DataLevel;
 import SPane.GameOverPane;
 import SPane.StartPane;
-
+import SPane.UpgadeStatPane;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -41,19 +42,25 @@ public class GameStart {
 	private static Pane gameRoot = new Pane();
 	private static Pane uiRoot = new Pane();
 	private static Pane shotRoot = new Pane();
+	private static Pane settingRoot = new Pane();
 	private static AnimationTimer time;
 	private static boolean isJump;
 	private static boolean isWalk;
 	private static boolean isDamage;
+	private static boolean isMusic = true;
+	private static boolean isEsc = false;
+	private static boolean isEscHeld = false;
+	private static boolean isPaused = false;
 	private static Node player;
-	private static int levelWidth;
 	private static Node Door;
+	private static int levelWidth;
+	private static int Score;
+	private static int Round = 0;
 	private static ProgressBar H_bar;
 	private static MediaPlayer media;
-	private static boolean isMusic = true;
-	//private static MediaPlayer hitSoundPlayer;
-	private static int Score;
+	private static MediaPlayer hitSoundPlayer;
 	private static Text Score_on_screne;
+	private static ImageView Background;
 	private static ArrayList<Node> platform = new ArrayList<Node>();
 	private static ArrayList<Node> coins = new ArrayList<Node>();
 	private static ArrayList <Node> obstacle = new ArrayList<Node>(); 
@@ -61,33 +68,33 @@ public class GameStart {
 	private static ArrayList <Node> shot = new ArrayList<Node>();
 	private static Point2D playerVelocity = new Point2D(0,0);
 	private static String Path_Block;
-	private static int Round = 0;
 	private static Font font;
 	
 	
 	public static void mainPage() {
 		clear();
+		setEsc(false);
+		setEscHeld(false);
+		setPaused(false);
 		Media md = SetMedia("Music_mainPage.mp3");
 		media = new MediaPlayer(md);
 		media.setCycleCount(MediaPlayer.INDEFINITE);
 		media.setVolume(0.1);
 		media.play();
-		//hitSoundPlayer = new MediaPlayer(SetMedia("hit.mp3"));
+		hitSoundPlayer = new MediaPlayer(SetMedia("hit.mp3"));
+		hitSoundPlayer.setVolume(0.2);
 		//hitSoundPlayer.play();
 		Image st = SetImage("startButton.png");
 		Image ex = SetImage("Exit.png");
 		Image bg = SetImage("Background_Mainmenu_1.jpg");
-		Image mu = SetImage("Music_open.png");
 		ImageView Start = new ImageView(st);
 		ImageView Exit = new ImageView(ex);
 		ImageView Bg = new ImageView(bg);
-		ImageView Music = new ImageView(mu);
+		ImageView Music = createButtonMusic(1200, 650, 50, 50);
 		Start.setFitWidth(150);
 		Start.setFitHeight(150);
 		Exit.setFitHeight(150);
 		Exit.setFitWidth(150);
-		Music.setFitWidth(50);
-		Music.setFitHeight(50);
 		Bg.setFitHeight(720);
 		Bg.setFitWidth(1280);
 		Start.setOnMouseEntered(e->{
@@ -122,7 +129,6 @@ public class GameStart {
 			Button_warrior.setTranslateY(360);
 			Button_magic.setTranslateX(775);
 			Button_magic.setTranslateY(360);
-			
 			Button_knight.setOnMouseClicked(event->{
 				media.stop();
 				GameStart.GameStart(new Knight());
@@ -188,36 +194,11 @@ public class GameStart {
 		Exit.setOnMouseClicked(e->{
 			Platform.exit();
 		});
-		Music.setOnMouseClicked(e->{
-			if (isMusic) {
-				isMusic = false;
-				media.pause();
-				Music.setImage(SetImage("Music_Close.png"));
-			}else {
-				isMusic = true;
-				Music.setImage(SetImage("Music_open.png"));
-				media.play();
-			}
-			
-		});
-		Music.setOnMouseEntered(e->{
-			Music.setFitWidth(70);
-			Music.setFitHeight(70);
-			Music.setTranslateX(1190);
-			Music.setTranslateY(640);
-		});
-		Music.setOnMouseExited(e->{
-			Music.setFitWidth(50);
-			Music.setFitHeight(50);
-			Music.setTranslateX(1200);
-			Music.setTranslateY(650);
-		});
 		Start.setTranslateX(565);
 		Start.setTranslateY(350);
 		Exit.setTranslateX(565);
 		Exit.setTranslateY(500);
-		Music.setTranslateX(1200);
-		Music.setTranslateY(650);
+		setBackground(Bg);
 		System.out.println("Successfull Created pane");
 		appRoot.getChildren().addAll(Bg,Start,Exit,Music);
 	}
@@ -226,13 +207,13 @@ public class GameStart {
 	public static void GameStart(Player player) {
 		String ft = "";
 		try {
-            String classLoaderPath = ClassLoader.getSystemResource("PixelGame.otf").toString();
+            String classLoaderPath = ClassLoader.getSystemResource("Pixeboy.ttf").toString();
             ft = classLoaderPath;
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Not fount: "+ "PixelGame.otf");
         }	
-		font = Font.loadFont(ft, 30);
+		setFont(Font.loadFont(ft, 36));
 		Node py = player;
 		setPlayer(py);
 		GameStart.clear();
@@ -243,12 +224,13 @@ public class GameStart {
 			GameStart.keys.put(event.getCode(), true);
 		});
 		appRoot.setOnKeyReleased(event->{
-			GameStart.keys.put(event.getCode(),false);
 			if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) {
 		        ((Player) player).stopWalking();
 		        isWalk = false;
 		    }
+			GameStart.keys.put(event.getCode(),false);
 		});
+
 		AnimationTimer timer = new AnimationTimer() {
 			public void handle(long now) {
 				GameStart.update();
@@ -270,13 +252,37 @@ public class GameStart {
         }
 		gameRoot.getChildren().clear();
 		uiRoot.getChildren().clear();
-		platform.clear();
 		shotRoot.getChildren().clear();
+		settingRoot.getChildren().clear();
+		platform.clear();
 		monster.clear();
 		shot.clear();
  		appRoot.getChildren().clear();
 	}
 	public static void update() {
+		if (isPressed(KeyCode.ESCAPE) && !isEscHeld) {
+			isEscHeld = true;
+		    isEsc = !isEsc; // Toggle isEsc
+		    if (isEsc) {
+		    	settingRoot.setVisible(true);
+		    	setPaused(true);
+		        GaussianBlur blur = new GaussianBlur();
+		        blur.setRadius(10);
+		        gameRoot.setEffect(blur);
+		        uiRoot.setEffect(blur);
+		        Background.setEffect(blur);
+		    } else {
+		    	settingRoot.setVisible(false);
+		    	setPaused(false);
+		    	Background.setEffect(null);
+		        gameRoot.setEffect(null);
+		        uiRoot.setEffect(null);
+		    }
+		}
+		if (!isPressed(KeyCode.ESCAPE)) {
+		    isEscHeld = false; // Reset when key is released
+		}
+		if (isPaused)return ;
 		if (isPressed(KeyCode.SPACE) && player.getTranslateY()  >=5) {
 			jumpPlayer();
 		}
@@ -285,15 +291,16 @@ public class GameStart {
 				((Player)player).startWalkingLeft();
 				isWalk = true;
 			}
-			movePlayerX(-5);
+			movePlayerX(-4);
 		}
 		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 40  <= levelWidth - 5) {
 			if (!isWalk) {
 				((Player)player).startWalkingRight();
 				isWalk = true;
 			}
-			movePlayerX(5);
+			movePlayerX(4);
 		}
+		
 		if (playerVelocity.getY() < 10) {
 			playerVelocity = playerVelocity.add(0,1);
 		}
@@ -357,7 +364,7 @@ public class GameStart {
 					}
 				}
 			}
-			player.setTranslateY(player.getTranslateY() + (moveDown ? 1:-1)); // if moveRight set translate x to oldX + 1 or oldX -1 when moveLeft 
+			player.setTranslateY(player.getTranslateY() + (moveDown ? 0.5:-1)); // if moveRight set translate x to oldX + 1 or oldX -1 when moveLeft 
 		}
 		if (player.getTranslateY() >= 720) {
 			player.setTranslateX(0);
@@ -446,12 +453,14 @@ public class GameStart {
 		if (player.getBoundsInParent().intersects(Door.getBoundsInParent())) {
 			clear();
 			setRound(getRound() + 1);
-			if (getRound() == 4) {
-				//Goto หน้าบอส
-			}else {
-				initContent(getRound());
-				System.out.println("Round: "+getRound());
-			}
+			time.stop();
+			clear();
+			appRoot.getChildren().add(Background);
+			GaussianBlur blur = new GaussianBlur();
+	        blur.setRadius(10);
+			Background.setEffect(blur);
+			UpgadeStatPane up = new UpgadeStatPane((Player)player);
+			appRoot.getChildren().add(up);
 		}
 	}
 	private static void checkcollideObstacle(Node pt) {
@@ -459,9 +468,9 @@ public class GameStart {
 			((Player)player).setHp(((Player)player).getHp() - 10);
             editUi(0);
         	isDamage = true;
+        	((Player)player).createAttackEffect(player);
+        	makehitSound();
             new Thread(() -> {
-            	((Player)player).createAttackEffect(player);
-            	makehitSound();
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -498,9 +507,12 @@ public class GameStart {
 			sp = "Cactus.png";
 			Bg = new ImageView(SetImage("Level2.png"));
 		}
-		
 		Bg.setFitHeight(720);
 		Bg.setFitWidth(1280);
+		setBackground(Bg);
+		gameRoot.setEffect(null);
+		uiRoot.setEffect(null);
+		Background.setEffect(null);
 		levelWidth = arr[0].length() * 60;
  		for (int i = 0 ;i<arr.length;i++) {
 			String line = arr[i];
@@ -546,10 +558,14 @@ public class GameStart {
 		}
 		initUi();
 		initMusic();
+		initSetting();
 		gameRoot.setLayoutX(0); //reset มุมกล้อง
 	    gameRoot.setLayoutY(0); //reset มุมกล้อง 
 		player.setTranslateX(0);
 		player.setTranslateY(500);
+		System.out.println("Attack: "+((Player)player).getAtk());
+		System.out.println("Attack: "+((Player)player).getDefense());
+		System.out.println("Attack: "+((Player)player).getHp());
 		gameRoot.getChildren().add(player);
 		player.translateXProperty().addListener((obs,old,newValue)->{
 			int offset = newValue.intValue();
@@ -557,12 +573,9 @@ public class GameStart {
 				gameRoot.setLayoutX(-(offset-640));
 			}
 		});
-		appRoot.getChildren().addAll(Bg,gameRoot,uiRoot,shotRoot);
+		appRoot.getChildren().addAll(Bg,gameRoot,uiRoot,shotRoot,settingRoot);
 	}
-	private static void makehitSound() {
-		//hitSoundPlayer.stop();
-		//hitSoundPlayer.play();
-	}
+
 	private static void initUi() {
 		double currentHealth =((Player)player).getHp();
 		ProgressBar healthBar = new ProgressBar();
@@ -589,7 +602,75 @@ public class GameStart {
 		media = new MediaPlayer(SetMedia("Level"+Integer.toString(getRound())+".mp3"));
 		media.setCycleCount(MediaPlayer.INDEFINITE);
 		media.setVolume(0.1);
-		media.play();
+		if (isMusic)media.play();
+	}
+	private static void initSetting() {
+		settingRoot.setVisible(false);
+		ImageView setting = new ImageView(SetImage("Menu.png"));
+		setting.setFitWidth(600);
+		setting.setFitHeight(650);
+		setting.setTranslateX(340);
+		setting.setTranslateY(35);
+		ImageView main = new ImageView(SetImage("main_button.png"));
+		main.setFitHeight(150);
+		main.setFitWidth(200);
+		main.setTranslateX(540);
+		main.setTranslateY(450);
+		main.setOnMouseClicked(e->{
+			time.stop();
+			clear();
+			GameStart.mainPage();
+		});
+		main.setOnMouseEntered(e->{
+			main.setFitHeight(170);
+			main.setFitWidth(220);
+			main.setTranslateX(530);
+			main.setTranslateY(440);
+		});
+		main.setOnMouseExited(e->{
+			main.setFitHeight(150);
+			main.setFitWidth(200);
+			main.setTranslateX(540);
+			main.setTranslateY(450);
+		});
+		ImageView Music = createButtonMusic(615, 400, 50, 50);
+		settingRoot.getChildren().addAll(setting,main,Music);
+	}
+	private static void makehitSound() {
+		hitSoundPlayer.stop();
+		hitSoundPlayer.play();
+	}
+	private static ImageView createButtonMusic(int x,int y,int w,int h) {
+		String path = isMusic ? "Music_open.png":"Music_Close.png" ;
+		ImageView Music = new ImageView(SetImage(path));
+		Music.setOnMouseClicked(e->{
+			if (isMusic) {
+				setMusic(false);
+				media.pause();
+				Music.setImage(SetImage("Music_Close.png"));
+			}else {
+				setMusic(true);
+				Music.setImage(SetImage("Music_open.png"));
+				media.play();
+			}
+		});
+		Music.setOnMouseEntered(e->{
+			Music.setFitWidth(w+20);
+			Music.setFitHeight(h+20);
+			Music.setTranslateX(x-10);
+			Music.setTranslateY(y-10);
+		});
+		Music.setOnMouseExited(e->{
+			Music.setFitWidth(w);
+			Music.setFitHeight(h);
+			Music.setTranslateX(x);
+			Music.setTranslateY(y);
+		});
+		Music.setTranslateX(x);
+		Music.setTranslateY(y);
+		Music.setFitWidth(w);
+		Music.setFitHeight(h);
+		return Music;
 	}
 	private static Image SetImage(String imagePath) {
 		Image bg = null;
@@ -614,8 +695,10 @@ public class GameStart {
 		return bg;
 	}
 	private static Text Scoreboard() {
-		Text t = new Text("Score: " + Integer.toString(getScore()));
+		Text t = new Text("Coins: " + Integer.toString(getScore()));
 		t.setFont(font);
+		t.setStroke(Color.BLUE);
+		t.setStrokeDashOffset(5);
 		t.setFill(Color.BLACK);
 		t.prefHeight(60);
 		t.prefWidth(60);
@@ -635,7 +718,7 @@ public class GameStart {
 			}
 		}else {
 			Platform.runLater(()->{
-				Score_on_screne.setText("Score: "+Integer.toString(getScore()));
+				Score_on_screne.setText("Coins: "+Integer.toString(getScore()));
 			});
 		}
 	}
@@ -686,5 +769,91 @@ public class GameStart {
 	public static void setGameRoot(Pane gameRoot) {
 		GameStart.gameRoot = gameRoot;
 	}
+
+
+	public static boolean isWalk() {
+		return isWalk;
+	}
+
+
+	public static void setWalk(boolean isWalk) {
+		GameStart.isWalk = isWalk;
+	}
+
+
+	public static boolean isDamage() {
+		return isDamage;
+	}
+
+
+	public static void setDamage(boolean isDamage) {
+		GameStart.isDamage = isDamage;
+	}
+
+
+	public static boolean isMusic() {
+		return isMusic;
+	}
+
+
+	public static void setMusic(boolean isMusic) {
+		GameStart.isMusic = isMusic;
+	}
+
+
+	public static boolean isEsc() {
+		return isEsc;
+	}
+
+
+	public static void setEsc(boolean isEsc) {
+		GameStart.isEsc = isEsc;
+	}
+
+
+	public static boolean isPaused() {
+		return isPaused;
+	}
+
+
+	public static void setPaused(boolean isPaused) {
+		GameStart.isPaused = isPaused;
+	}
+
+
+	public static boolean isEscHeld() {
+		return isEscHeld;
+	}
+
+
+	public static void setEscHeld(boolean isEscHeld) {
+		GameStart.isEscHeld = isEscHeld;
+	}
+
+
+	public static ImageView getBackground() {
+		return Background;
+	}
+
+
+	public static void setBackground(ImageView background) {
+		Background = background;
+	}
+
+
+	public static AnimationTimer getTime() {
+		return time;
+	}
+
+
+	public static Font getFont() {
+		return font;
+	}
+
+
+	public static void setFont(Font font) {
+		GameStart.font = font;
+	}
+
 	
 }

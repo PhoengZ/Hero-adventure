@@ -94,6 +94,7 @@ public class Player extends Unit{
 		return hp;
 	}
 	public void setHp(int hp) {
+		if (hp > this.getMaxhp())hp = this.getMaxhp(); 
 		this.hp = Math.max(0, hp);
 	}
 	public int getAtk() {
