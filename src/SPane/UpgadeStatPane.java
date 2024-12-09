@@ -11,7 +11,6 @@ import utils.GameStart;
 
 public class UpgadeStatPane extends Pane{
 	private Font Price;
-	private Font Describe;
 	public UpgadeStatPane(Player player) {
 		String pt= "";
 		try {
@@ -22,7 +21,6 @@ public class UpgadeStatPane extends Pane{
             System.out.println("Not fount: "+ "PixelGame.otf");
         }
 		this.Price = Font.loadFont(pt, 24);
-		this.Describe = Font.loadFont(pt,16);
 		int price[] = {15,10,20};
 		ImageView Background = new ImageView(SetImage("Buy_item.png"));
 		Background.setFitHeight(600);
