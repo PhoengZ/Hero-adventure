@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Random;
 
 import SPane.GameOverPane;
+import SPane.GameWinPane;
 import SPane.TurnBasePane;
 
 public class TurnBase {
@@ -162,13 +163,19 @@ public class TurnBase {
     }
     private void endGame() {
         if (player.isAlive()) {
-            System.out.println("Player Wins!");
-            gamePane.getTurnStatusLabel().setText("Player Wins!");
-            gamePane.getClickEnemyToAttackLabel().setVisible(false);
-            this.mediabackground.stop();
-            GameStart.clear();
-            GameStart.getTime().start();
-            GameStart.initContent(GameStart.getRound());
+        	if (GameStart.getRound() == 3) {
+        		GameStart.clear();
+        		GameWinPane wingame = new GameWinPane();
+        		GameStart.getAppRoot().getChildren().add(wingame);
+        	}else {
+        		//System.out.println("Player Wins!");
+                //gamePane.getTurnStatusLabel().setText("Player Wins!");
+                gamePane.getClickEnemyToAttackLabel().setVisible(false);
+                this.mediabackground.stop();
+                GameStart.clear();
+                GameStart.getTime().start();
+                GameStart.initContent(GameStart.getRound());
+        	}
         } else {
             System.out.println("Enemies Win!");
             gamePane.getTurnStatusLabel().setText("Enemies Wins!");

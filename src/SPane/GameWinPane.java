@@ -1,26 +1,33 @@
 package SPane;
 
-
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import utils.GameStart;
 
-public class GameOverPane extends Pane{
-	public GameOverPane() {
+public class GameWinPane extends Pane{
+	private static String FontString;
+	public GameWinPane() {
 		Image Background = null;
 	    try {
-	        String classLoaderPath = ClassLoader.getSystemResource("GameOver.png").toString();
+	        String classLoaderPath = ClassLoader.getSystemResource("GameWin.png").toString();
 	        Background = new Image(classLoaderPath);
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        System.out.println("Not found gameover Background");
 	    }
+	    ImageView backgroundView = new ImageView(Background);
+	    backgroundView.setFitHeight(720);
+	    backgroundView.setFitWidth(1280);
+	    this.getChildren().add(backgroundView);
 	    Media bg = null;
 		try {
-            String classLoaderPath = ClassLoader.getSystemResource("Gameover.mp3").toString();
+            String classLoaderPath = ClassLoader.getSystemResource("Gamewin.mp3").toString();
             bg = new Media(classLoaderPath);
         } catch (Exception e) {
             e.printStackTrace();
@@ -30,11 +37,6 @@ public class GameOverPane extends Pane{
 		media.setCycleCount(MediaPlayer.INDEFINITE);
 		media.setVolume(0.1);
 		media.play();
-	    ImageView backgroundView = new ImageView(Background);
-	    backgroundView.setFitHeight(720);
-	    backgroundView.setFitWidth(1280);
-	    this.getChildren().add(backgroundView);
-	    
 	    Image restartButtonImage = null;
 	    try {
 	        String classLoaderPath = ClassLoader.getSystemResource("RestartButton.png").toString();
@@ -43,6 +45,21 @@ public class GameOverPane extends Pane{
 	        e.printStackTrace();
 	        System.out.println("Not found RestartButton");
 	    }
+	    FontString = "";
+		 try {
+	        String classLoaderPath = ClassLoader.getSystemResource("Pixeboy.ttf").toString();
+	        FontString = classLoaderPath;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        System.out.println("Not fount: "+ "Pixeboy.ttf");
+	    }   
+	    Text youwin = new Text("You Win");
+	    youwin.setStroke(Color.WHITE);
+	    youwin.setStrokeWidth(2);
+	    youwin.setFont(Font.loadFont(FontString, 80));
+	    youwin.setTranslateX(530);
+	    youwin.setTranslateY(100);
+	    this.getChildren().add(youwin);
 	    ImageView restartButton = new ImageView(restartButtonImage);
 	    restartButton.setFitHeight(100); 
         restartButton.setFitWidth(200); 
@@ -68,5 +85,4 @@ public class GameOverPane extends Pane{
 	    });
 	    this.getChildren().add(restartButton);
 	}
-	
 }
