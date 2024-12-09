@@ -165,14 +165,13 @@ public class GameStart {
 				Button_knight.setFitWidth(320);
 				Button_knight.setTranslateX(165);
 				Button_knight.setTranslateY(500);
-				
+				createShadowEffect(knight,Color.RED);
 			});
 			Button_knight.setOnMouseExited(event->{
 				Button_knight.setFitHeight(200);
 				Button_knight.setFitWidth(300);
 				Button_knight.setTranslateX(175);
 				Button_knight.setTranslateY(510);
-				createShadowEffect(knight,Color.RED);
 			});
 			Button_warrior.setOnMouseClicked(event->{
 				media.stop();
