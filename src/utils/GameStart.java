@@ -13,7 +13,15 @@ import java.util.List;
 import Data.DataLevel;
 import SPane.GameOverPane;
 import SPane.StartPane;
+import SPane.TurnBasePane;
 import SPane.UpgadeStatPane;
+import enemy.BeastMaster;
+import enemy.Enemy;
+import enemy.FireDemon;
+import enemy.IceQueen;
+import enemy.IronGolem;
+import enemy.ShadowWarrior;
+import enemy.Wizard;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -340,7 +348,6 @@ public class GameStart {
 		}
 		movePlayerY((int)playerVelocity.getY());
 		if (((Player)player).getHp() == 0) {
-			((Player)player).setHp(0);
 			((Player)player).setAlive(false);
 		}
 		if (!((Player)player).isAlive()) {
@@ -491,7 +498,6 @@ public class GameStart {
 			clear();
 			setRound(getRound() + 1);
 			time.stop();
-			clear();
 			appRoot.getChildren().add(Background);
 			GaussianBlur blur = new GaussianBlur();
 	        blur.setRadius(10);

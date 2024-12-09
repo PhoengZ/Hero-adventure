@@ -1,7 +1,15 @@
 package SPane;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import enemy.BeastMaster;
+import enemy.Enemy;
+import enemy.FireDemon;
+import enemy.IceQueen;
+import enemy.IronGolem;
+import enemy.ShadowWarrior;
+import enemy.Wizard;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -104,8 +112,27 @@ public class UpgadeStatPane extends Pane{
 		});
 		Continue.setOnMouseClicked(e->{
 			media.stop();
+			GameStart.clear();
+			List <Enemy> lt = new ArrayList<Enemy>();
+			String background = "";
+			if (GameStart.getRound() == 1) {
+				lt.add(new BeastMaster());
+				lt.add(new IceQueen());
+				background = "MountainTurnBaseBackGround.png";
+			}else if (GameStart.getRound() == 2) {
+				lt.add(new Wizard());
+				lt.add(new ShadowWarrior());
+				lt.add(new FireDemon());
+				background = "DesertTurnBaseBackground.png";
+			}else {
+				lt.add(new IronGolem());
+				background = "ColossiumTurnBaseBackground.png";
+			}
+			TurnBasePane turnbase = new TurnBasePane(((Player)player),lt,background);
+			GameStart.getAppRoot().getChildren().add(turnbase);
+			/*
 			GameStart.getTime().start();
-			GameStart.initContent(GameStart.getRound());
+			GameStart.initContent(GameStart.getRound());*/
 		});
 		Continue.setOnMouseEntered(e->{
 			Continue.setFitWidth(120);

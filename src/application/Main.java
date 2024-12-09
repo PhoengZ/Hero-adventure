@@ -21,7 +21,7 @@ import enemy.IceQueen;
 
 public class Main extends Application{
 	public void start(Stage primaryStage)  throws Exception {
-		/*
+		
 		StartPane.setStage(primaryStage);
 		StartPane startPane = (StartPane) StartPane.getPane();
         Scene startScene = new Scene(startPane, 1280, 720);
@@ -33,7 +33,7 @@ public class Main extends Application{
 
         // Request focus for the StartPane
         startPane.requestFocus();
-        */
+        
 		/*
 		Player player = new Knight();
 		List<Enemy> enemies = new ArrayList<Enemy>();
@@ -69,7 +69,7 @@ public class Main extends Application{
         primaryStage.show();
        // startPane.requestFocus();
         */
-		
+		/*
         HowToPlayPane howtoplayPane = new HowToPlayPane();
         Scene howtoplayScene = new Scene (howtoplayPane , 1280 ,720);
         primaryStage.setTitle("Colosseum");
@@ -77,7 +77,7 @@ public class Main extends Application{
         primaryStage.setScene(howtoplayScene);
         primaryStage.show();
         howtoplayPane.requestFocus();
-        
+        */
 	}
 	public static void main(String[] args) {
 		launch(args);
