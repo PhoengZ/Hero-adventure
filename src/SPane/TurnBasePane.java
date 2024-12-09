@@ -41,6 +41,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -53,6 +55,7 @@ import utils.TurnBase;
 public class TurnBasePane extends Pane {
     private Player player;
     private List<Enemy> enemies;
+    private List<Enemy> initialenemies;
     private TurnBase turnManager;
     private Label playerHp;
     private Label playerDefense;
@@ -73,7 +76,7 @@ public class TurnBasePane extends Pane {
     private ImageView BuffDefenseButton;
     public TurnBasePane(Player player , List<Enemy> enemies , String BackgroundPath) {
     	//set font
-    	String FontString = "";
+    	FontString = "";
     	 try {
              String classLoaderPath = ClassLoader.getSystemResource("Pixeboy.ttf").toString();
              FontString = classLoaderPath;
@@ -86,6 +89,10 @@ public class TurnBasePane extends Pane {
     	// initialize enemies and player
         this.enemies = enemies;
         this.player = player;
+        initialenemies = new ArrayList<Enemy>();
+        for(Enemy enemy : enemies) {
+        	initialenemies.add(enemy);
+        }
         // Background setup
         Image Background = null;
         try {
@@ -102,7 +109,7 @@ public class TurnBasePane extends Pane {
         //initialize turnManager
         turnManager = new TurnBase(player, enemies, this);
         // Set Player Image Position
-        playerImage = new ImageView(player.getImageLeft());
+        playerImage = new ImageView(player.getImageStay());
         playerImage.setPreserveRatio(true);
         playerImage.setFitHeight(250);
         playerImage.setLayoutX(1260); //1000
@@ -119,14 +126,14 @@ public class TurnBasePane extends Pane {
         EnemyPositionY.add(new ArrayList<>(List.of(30,200)));
         EnemyPositionX.add(new ArrayList<>(List.of(120,80,380)));
         EnemyPositionY.add(new ArrayList<>(List.of(20, 220, 150)));
-        for (int i = 0; i < enemies.size(); i++) {
-            Enemy enemy = enemies.get(i);
+        for (int i = 0; i < this.enemies.size(); i++) {
+            Enemy enemy = this.enemies.get(i);
             // Enemy image
             ImageView enemyImage = new ImageView(enemy.getImageStay());
             enemyImage.setPreserveRatio(true);
             enemyImage.setFitHeight(250);
-            enemyImage.setLayoutX(EnemyPositionX.get(enemies.size() - 1).get(i));
-            enemyImage.setLayoutY(EnemyPositionY.get(enemies.size() - 1).get(i));
+            enemyImage.setLayoutX(EnemyPositionX.get(this.enemies.size() - 1).get(i));
+            enemyImage.setLayoutY(EnemyPositionY.get(this.enemies.size() - 1).get(i));
             enemyImage.setOpacity(0);
             // Add mouse events
 	        enemyImage.setOnMouseEntered(e -> {
@@ -182,6 +189,7 @@ public class TurnBasePane extends Pane {
         updatePlayerStatus();
         //Player Status Box
         playerBox = new GridPane();
+        playerBox.setOpacity(0.8);
         playerBox.setHgap(20);
         playerBox.setVgap(25);
         playerBox.setPadding(new Insets(20,40,20,40));
@@ -217,10 +225,10 @@ public class TurnBasePane extends Pane {
                 Insets.EMPTY           
             )));
         playerBox.setBorder(new Border(new BorderStroke(
-        		Color.WHITE,             
+        		Color.BLACK,             
         		BorderStrokeStyle.SOLID, 
                 new CornerRadii(10),    
-                new BorderWidths(2)     
+                new BorderWidths(5)     
             )));
          this.getChildren().add(playerBox);
          
@@ -228,6 +236,7 @@ public class TurnBasePane extends Pane {
         EnemyBox = new GridPane();
         EnemyBox.setHgap(20);
         EnemyBox.setVgap(25);
+        EnemyBox.setOpacity(0.8);
         EnemyBox.setPadding(new Insets(20,20,20,40));
         EnemyBox.setLayoutX(70);
         EnemyBox.setLayoutY(500);
@@ -238,8 +247,8 @@ public class TurnBasePane extends Pane {
         enemyHeader.setUnderline(true);
         enemyHeader.setFill(Color.RED);
         EnemyBox.add(enemyHeader, 0, 0, 1, 1);
-        for (int i = 0; i < enemies.size(); i++) {
-            Enemy enemy = enemies.get(i);
+        for (int i = 0; i < this.enemies.size(); i++) {
+            Enemy enemy = this.enemies.get(i);
             Label enemyName = new Label(enemy.toString());
             enemyName.setFont(Font.loadFont(FontString,27));
             enemyName.setTextFill(Color.BLACK);
@@ -266,10 +275,10 @@ public class TurnBasePane extends Pane {
             )));
             // ตั้งค่า Border
         EnemyBox.setBorder(new Border(new BorderStroke(
-        		Color.WHITE,            
+        		Color.BLACK,            
         		BorderStrokeStyle.SOLID, 
                 new CornerRadii(10),     
-                new BorderWidths(2)     
+                new BorderWidths(5)     
             )));
          this.getChildren().add(EnemyBox);
          
@@ -303,17 +312,19 @@ public class TurnBasePane extends Pane {
  	    BuffDefenseButton.setLayoutX(960); 
  	    BuffDefenseButton.setLayoutY(410); 
  	    BuffDefenseButton.setOnMouseEntered(event -> {
- 		   BuffDefenseButton.setFitHeight(90); 
- 		   BuffDefenseButton.setFitWidth(90); 
- 		   BuffDefenseButton.setLayoutX(960); 
- 		   BuffDefenseButton.setLayoutY(410); 
+ 	    	if(turnManager.getExtraDamage() == 0 && turnManager.getExtraDefense() == 0) {
+	 		   BuffDefenseButton.setFitHeight(90); 
+	 		   BuffDefenseButton.setFitWidth(90); 
+	 		   BuffDefenseButton.setLayoutX(960); 
+	 		   BuffDefenseButton.setLayoutY(410); 
+ 	    	}
 	        
  	    });
  	   BuffDefenseButton.setOnMouseExited(event -> {
- 		   BuffDefenseButton.setFitHeight(80); 
- 	 	   BuffDefenseButton.setFitWidth(80); 
- 	 	   BuffDefenseButton.setLayoutX(960); 
- 	 	   BuffDefenseButton.setLayoutY(410); 
+	 		   BuffDefenseButton.setFitHeight(80); 
+	 	 	   BuffDefenseButton.setFitWidth(80); 
+	 	 	   BuffDefenseButton.setLayoutX(960); 
+	 	 	   BuffDefenseButton.setLayoutY(410); 
 	        
 	    });
  	  BuffDefenseButton.setOnMouseClicked(e -> turnManager.handleBuffDefenseClick(e));
@@ -332,10 +343,12 @@ public class TurnBasePane extends Pane {
 	    BuffAttackButton.setLayoutX(1060); 
 	    BuffAttackButton.setLayoutY(410); 
 	    BuffAttackButton.setOnMouseEntered(event -> {
-	    	BuffAttackButton.setFitHeight(90); 
-	    	BuffAttackButton.setFitWidth(90); 
-	    	BuffAttackButton.setLayoutX(1060); 
-	    	BuffAttackButton.setLayoutY(410); 
+	    	if(turnManager.getExtraDamage() == 0 && turnManager.getExtraDefense() == 0) {
+		    	BuffAttackButton.setFitHeight(90); 
+		    	BuffAttackButton.setFitWidth(90); 
+		    	BuffAttackButton.setLayoutX(1060); 
+		    	BuffAttackButton.setLayoutY(410); 
+	    	}
 	        
 	    });
 	    BuffAttackButton.setOnMouseExited(event -> {
@@ -350,8 +363,11 @@ public class TurnBasePane extends Pane {
         BuffAttackButton.setVisible(false);
         BuffDefenseButton.setVisible(false);
     }
+    
     private void handleEnemyClick(MouseEvent event, Enemy enemy) {
     	if (turnManager.isPlayerTurn() && player.isAlive() && !isAnimationRunning) {
+    		this.BuffAttackButton.setVisible(false);
+    		this.BuffDefenseButton.setVisible(false);
     		performAttack(this.getPlayerImage(), enemyImageViews.get(enemy), this.player, () -> {
     			if (Math.random() < this.turnManager.getChanceToMiss()) { // ถ้าค่าที่สุ่มได้น้อยกว่าโอกาส miss
                     showMissText(enemyImageViews.get(enemy)); // แสดงข้อความ miss
@@ -379,7 +395,7 @@ public class TurnBasePane extends Pane {
                 	playDeathEffect(enemyImageViews.get(enemy), () -> {
     	                enemyHpLabels.remove(enemy);
     	                enemyDefenseLabels.remove(enemy);
-    	                enemies.remove(enemy);
+    	                this.enemies.remove(enemy);
     	                this.getChildren().remove(event.getSource());
     	                updateEnemyPositions();
                     });
@@ -389,6 +405,7 @@ public class TurnBasePane extends Pane {
     		});
         }
     }
+    
     public void updatePlayerStatus() {
     	if(!player.isAlive()) {
     		playDeathEffect(this.getPlayerImage(), () -> {});
@@ -398,7 +415,7 @@ public class TurnBasePane extends Pane {
         playerAtk.setText("Attack: " + this.player.getAtk());
     }
     public void updateEnemyStatus() {
-    	for (Enemy enemy : new ArrayList<>(enemies)) {
+    	for (Enemy enemy : new ArrayList<>(this.enemies)) {
             if (!enemy.isAlive()) {
                 // อัปเดต HP ของศัตรูให้เป็น 0
                 Label hpLabel = enemyHpLabels.get(enemy);
@@ -476,6 +493,7 @@ public class TurnBasePane extends Pane {
 
         Platform.runLater(() -> {
             this.getChildren().add(damageLabel);
+            turnManager.playSound("sound/OUCH_SoundEffect.mp3", 0.5);
             PauseTransition pause = new PauseTransition(Duration.seconds(1));
             pause.setOnFinished(event -> this.getChildren().remove(damageLabel));
             pause.play();
@@ -494,6 +512,7 @@ public class TurnBasePane extends Pane {
 
         Platform.runLater(() -> {
             this.getChildren().add(missLabel);
+            turnManager.playSound("sound/Miss2_SoundEffect.mp3", 0.7);
             PauseTransition pause = new PauseTransition(Duration.seconds(1));
             pause.setOnFinished(event -> this.getChildren().remove(missLabel));
             pause.play();
@@ -506,8 +525,9 @@ public class TurnBasePane extends Pane {
 	public void setTurnStatusLabel(Label turnStatusLabel) {
 		this.turnStatusLabel = turnStatusLabel;
 	}
-	private void highlightEnemyRow(Enemy enemy, Color color) {
-	    int rowIndex = enemies.indexOf(enemy) + 1; // หาตำแหน่งแถว (บวก 1 เพราะแถวที่ 0 คือ header)
+	public void highlightEnemyRow(Enemy enemy, Color color) {
+	    int rowIndex = initialenemies.indexOf(enemy) + 1; // หาตำแหน่งแถว (บวก 1 เพราะแถวที่ 0 คือ header)
+	    //int rowIndex = 
 	    for (Node node : EnemyBox.getChildren()) {
 	        Integer row = GridPane.getRowIndex(node); // ตรวจสอบ row index ของ Node
 	        if (row != null && row == rowIndex && node instanceof Label) {
@@ -562,7 +582,7 @@ public class TurnBasePane extends Pane {
 	        	}
 	        	else {
 	        		Player Attacker = (Player) attacker;
-	        		attackerImageView.setImage(Attacker.getImageRight());
+	        		attackerImageView.setImage(Attacker.getImageFight());
 	        	}
 	            attackerImageView.setScaleX(1.2);
 	            attackerImageView.setScaleY(1.2);
@@ -589,7 +609,7 @@ public class TurnBasePane extends Pane {
 	    	        	}
 	    	        	else {
 	    	        		Player Attacker = (Player) attacker;
-	    	        		attackerImageView.setImage(Attacker.getImageLeft());
+	    	        		attackerImageView.setImage(Attacker.getImageStay());
 	    	        	}
 	                    attackerImageView.setScaleX(1.0);
 	                    attackerImageView.setScaleY(1.0);
@@ -637,7 +657,7 @@ public class TurnBasePane extends Pane {
 	public void setAnimationRunning(boolean isAnimationRunning) {
 		this.isAnimationRunning = isAnimationRunning;
 	}
-	private void updateEnemyPositions() {
+	public void updateEnemyPositions() {
 		for (int i = 0; i < enemies.size(); i++) {
 	        Enemy enemy = enemies.get(i);
 	        ImageView enemyImage = enemyImageViews.get(enemy);
@@ -657,7 +677,7 @@ public class TurnBasePane extends Pane {
 	        }
 	    }
 	}
-	private void playDeathEffect(ImageView playerImage, Runnable onFinished) {
+	public void playDeathEffect(ImageView playerImage, Runnable onFinished) {
 	    // Fade out effect
 	    FadeTransition fadeOut = new FadeTransition(Duration.seconds(1.5), playerImage);
 	    fadeOut.setFromValue(1.0);
@@ -695,6 +715,19 @@ public class TurnBasePane extends Pane {
 	public void setBuffDefenseButton(ImageView buffDefenseButton) {
 		BuffDefenseButton = buffDefenseButton;
 	}
+	public Map<Enemy, Label> getEnemyHpLabels() {
+		return enemyHpLabels;
+	}
+	public void setEnemyHpLabels(Map<Enemy, Label> enemyHpLabels) {
+		this.enemyHpLabels = enemyHpLabels;
+	}
+	public Map<Enemy, Label> getEnemyDefenseLabels() {
+		return enemyDefenseLabels;
+	}
+	public void setEnemyDefenseLabels(Map<Enemy, Label> enemyDefenseLabels) {
+		this.enemyDefenseLabels = enemyDefenseLabels;
+	}
+	
 	
 
 	

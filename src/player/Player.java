@@ -29,6 +29,7 @@ public class Player extends Unit{
 	private Image Right;
 	private Image Left;
 	private Image imageFight;
+	private Image imageStay;
 	private ImageView imageView;
 	private ArrayList<Image> walkRight;
 	private ArrayList<Image> walkLeft;
@@ -37,7 +38,8 @@ public class Player extends Unit{
 	private boolean isWalkRight = false;
 	private boolean isWalkLeft = false;
 	
-	public Player(int hp , int atk , int speed , int defense ,String Right,String Left ,String Right_1,String Right_2,String Left_1,String Left_2) {
+	public Player(int hp , int atk , int speed , int defense ,String Right,String Left ,
+			String Right_1,String Right_2,String Left_1,String Left_2,String Stay , String Fight) {
 		this.setMaxhp(hp);
 		this.setMaxdefense(defense);
 		this.setHp(hp);
@@ -47,6 +49,8 @@ public class Player extends Unit{
 		this.setAlive(true);
 		this.setImageRightByPath(Right);
 		this.setImageLeftByPath(Left);
+		this.setImageStay(Stay);
+		this.setImageFight(Fight);
 		walkRight = new ArrayList<Image>();
 		walkLeft = new ArrayList<Image>();
 		try {
@@ -242,9 +246,30 @@ public class Player extends Unit{
 		this.maxdefense = maxdefense;
 	}
 
+	public Image getImageStay() {
+		return imageStay;
+	}
 	public Image getImageFight() {
 		return imageFight;
 	}
+	public void setImageStay(String imageStayPath) {
+    	try {
+            String classLoaderPath = ClassLoader.getSystemResource(imageStayPath).toString();
+            this.imageStay=new Image(classLoaderPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            
+        }
+    }
+	public void setImageFight(String imageFightPath) {
+    	try {
+            String classLoaderPath = ClassLoader.getSystemResource(imageFightPath).toString();
+            this.imageFight=new Image(classLoaderPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            
+        }
+    }
 
 	
 }
