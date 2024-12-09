@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import SPane.GameOverPane;
+import SPane.HowToPlayPane;
 import SPane.StartPane;
 import SPane.TurnBasePane;
 import javafx.application.Application;
@@ -20,7 +21,7 @@ import enemy.IceQueen;
 
 public class Main extends Application{
 	public void start(Stage primaryStage)  throws Exception {
-		
+		/*
 		StartPane.setStage(primaryStage);
 		StartPane startPane = (StartPane) StartPane.getPane();
         Scene startScene = new Scene(startPane, 1280, 720);
@@ -32,9 +33,9 @@ public class Main extends Application{
 
         // Request focus for the StartPane
         startPane.requestFocus();
-        
-		
-		/*Player player = new Knight();
+        */
+		/*
+		Player player = new Knight();
 		List<Enemy> enemies = new ArrayList<Enemy>();
 		Enemy BeastMaster = new BeastMaster();
 		enemies.add(BeastMaster);
@@ -48,8 +49,8 @@ public class Main extends Application{
         primaryStage.setResizable(false);
         primaryStage.setScene(turnbaseScene);
         primaryStage.show();
-        turnbasePane.requestFocus();/*
-        
+        turnbasePane.requestFocus();
+        */
 		/*
 		GameOverPane gameoverPane = new GameOverPane();
 		Scene gameoverscene = new Scene (gameoverPane , 1280 ,720);
@@ -68,6 +69,15 @@ public class Main extends Application{
         primaryStage.show();
        // startPane.requestFocus();
         */
+		
+        HowToPlayPane howtoplayPane = new HowToPlayPane();
+        Scene howtoplayScene = new Scene (howtoplayPane , 1280 ,720);
+        primaryStage.setTitle("Colosseum");
+        primaryStage.setResizable(false);
+        primaryStage.setScene(howtoplayScene);
+        primaryStage.show();
+        howtoplayPane.requestFocus();
+        
 	}
 	public static void main(String[] args) {
 		launch(args);

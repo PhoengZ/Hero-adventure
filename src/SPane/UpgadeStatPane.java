@@ -1,5 +1,7 @@
 package SPane;
 
+import java.util.ArrayList;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -13,7 +15,9 @@ import utils.GameStart;
 
 public class UpgadeStatPane extends Pane{
 	private Font Price;
+	private ArrayList<ImageView> Describetion;
 	public UpgadeStatPane(Player player) {
+		Describetion = new ArrayList<>();
 		String pt= "";
 		Media bg = null;
 		try {
@@ -62,12 +66,24 @@ public class UpgadeStatPane extends Pane{
 			if (GameStart.getScore() >= price[0]) {
 				GameStart.setScore(GameStart.getScore()-price[0]);
 				player.setAtk(player.getAtk()+10);
+				BuffAttack.setImage(SetImage(GameStart.getScore() < price[0] ? "cantBuy_Attack.png":"Buy_Attack.png"));
+				Describetion.get(0).setImage(SetImage(GameStart.getScore() < price[0] ? "15attackred.png":"15attackgreen.png"));
+				ResetHp.setImage(SetImage(GameStart.getScore() >= price[2] ? "Buy_Hp.png":"cantBuy_Hp.png"));
+				Describetion.get(2).setImage(SetImage(GameStart.getScore() < price[2] ? "20_HPred.png":"20_HPgreen.png"));
+				BuffDef.setImage(SetImage(GameStart.getScore() >= price[1] ? "Buy_Def.png":"cantBuy_Def.png"));
+				Describetion.get(1).setImage(SetImage(GameStart.getScore() < price[1] ?"10defensereed.png":"10defensegreen.png"));
 				Update(score);
 			}
 		});
 		BuffDef.setOnMouseClicked(e->{
 			if (GameStart.getScore() >= price[1]) {
 				GameStart.setScore(GameStart.getScore()-price[1]);
+				BuffAttack.setImage(SetImage(GameStart.getScore() < price[0] ? "cantBuy_Attack.png":"Buy_Attack.png"));
+				Describetion.get(0).setImage(SetImage(GameStart.getScore() < price[0] ? "15attackred.png":"15attackgreen.png"));
+				ResetHp.setImage(SetImage(GameStart.getScore() >= price[2] ? "Buy_Hp.png":"cantBuy_Hp.png"));
+				Describetion.get(2).setImage(SetImage(GameStart.getScore() < price[2] ? "20_HPred.png":"20_HPgreen.png"));
+				BuffDef.setImage(SetImage(GameStart.getScore() >= price[1] ? "Buy_Def.png":"cantBuy_Def.png"));
+				Describetion.get(1).setImage(SetImage(GameStart.getScore() < price[1] ?"10defensereed.png":"10defensegreen.png"));
 				player.setDefense(player.getDefense()+10);
 				Update(score);
 			}
@@ -76,6 +92,12 @@ public class UpgadeStatPane extends Pane{
 		ResetHp.setOnMouseClicked(e->{
 			if (GameStart.getScore() >= price[2]) {
 				GameStart.setScore(GameStart.getScore()-price[2]);
+				BuffAttack.setImage(SetImage(GameStart.getScore() < price[0] ? "cantBuy_Attack.png":"Buy_Attack.png"));
+				Describetion.get(0).setImage(SetImage(GameStart.getScore() < price[0] ? "15attackred.png":"15attackgreen.png"));
+				ResetHp.setImage(SetImage(GameStart.getScore() >= price[2] ? "Buy_Hp.png":"cantBuy_Hp.png"));
+				Describetion.get(2).setImage(SetImage(GameStart.getScore() < price[2] ? "20_HPred.png":"20_HPgreen.png"));
+				BuffDef.setImage(SetImage(GameStart.getScore() >= price[1] ? "Buy_Def.png":"cantBuy_Def.png"));
+				Describetion.get(1).setImage(SetImage(GameStart.getScore() < price[1] ?"10defensereed.png":"10defensegreen.png"));
 				player.setHp(player.getHp()+100);
 				Update(score);
 			}
@@ -148,6 +170,7 @@ public class UpgadeStatPane extends Pane{
 			sc.setTranslateX(x-20);
 			sc.setTranslateY(y+h+90);
 		});
+		Describetion.add(sc);
 		this.getChildren().addAll(sc);
 		return img;
 	}
