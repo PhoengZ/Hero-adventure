@@ -3,6 +3,8 @@ package SPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -13,6 +15,17 @@ public class UpgadeStatPane extends Pane{
 	private Font Price;
 	public UpgadeStatPane(Player player) {
 		String pt= "";
+		Media bg = null;
+		try {
+            String classLoaderPath = ClassLoader.getSystemResource("UpgradePane.mp3").toString();
+            bg = new Media(classLoaderPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+		MediaPlayer media = new MediaPlayer(bg);
+		media.setCycleCount(MediaPlayer.INDEFINITE);
+		media.setVolume(0.1);
+		media.play();
 		try {
             String classLoaderPath = ClassLoader.getSystemResource("Pixeboy.ttf").toString();
             pt = classLoaderPath;
@@ -68,6 +81,7 @@ public class UpgadeStatPane extends Pane{
 			}
 		});
 		Continue.setOnMouseClicked(e->{
+			media.stop();
 			GameStart.getTime().start();
 			GameStart.initContent(GameStart.getRound());
 		});

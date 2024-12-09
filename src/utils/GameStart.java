@@ -66,6 +66,7 @@ public class GameStart {
 	private static ArrayList <Node> obstacle = new ArrayList<Node>(); 
 	private static ArrayList <Node> monster = new ArrayList<Node>();
 	private static ArrayList <Node> shot = new ArrayList<Node>();
+	private static ArrayList <Node> setUi = new ArrayList<Node>();
 	private static Point2D playerVelocity = new Point2D(0,0);
 	private static String Path_Block;
 	private static Font font;
@@ -257,6 +258,7 @@ public class GameStart {
 		platform.clear();
 		monster.clear();
 		shot.clear();
+		setUi.clear();
  		appRoot.getChildren().clear();
 	}
 	public static void update() {
@@ -430,6 +432,7 @@ public class GameStart {
 	            gameRoot.getChildren().remove(s);
 	            shot.remove(s);
 	            editUi(0);
+	            editUi(2);
 	            
 	        }
 		}
@@ -467,6 +470,7 @@ public class GameStart {
 		if (obstacle.contains(pt) && !isDamage) {
 			((Player)player).setHp(((Player)player).getHp() - 10);
             editUi(0);
+            editUi(2);
         	isDamage = true;
         	((Player)player).createAttackEffect(player);
         	makehitSound();
@@ -588,10 +592,10 @@ public class GameStart {
 		H_bar = healthBar;
 		Image Heart = SetImage("Heart.png");
 		ImageView Health = new ImageView(Heart);
-		Health.setFitHeight(40);
-		Health.setFitWidth(40);
-		Health.setTranslateX(15);
-		Health.setTranslateY(15);
+		Health.setFitHeight(60);
+		Health.setFitWidth(60);
+		Health.setTranslateX(10);
+		Health.setTranslateY(8);
 		//System.out.println("H_bar initialized: " + (H_bar != null));
 		uiRoot.getChildren().add(healthBar);
 		uiRoot.getChildren().add(Health);
@@ -612,6 +616,36 @@ public class GameStart {
 		setting.setTranslateX(340);
 		setting.setTranslateY(35);
 		ImageView main = new ImageView(SetImage("main_button.png"));
+		ImageView att = new ImageView(SetImage("sword.png"));
+		ImageView def = new ImageView(SetImage("shield.png"));
+		ImageView Hp = new ImageView(SetImage("Heart.png"));
+		att.setFitHeight(50);
+		att.setFitWidth(50);
+		att.setTranslateX(465);
+		att.setTranslateY(225);
+		def.setFitHeight(50);
+		def.setFitWidth(50);
+		def.setTranslateX(615);
+		def.setTranslateY(225);
+		Hp.setFitHeight(50);
+		Hp.setFitWidth(50);
+		Hp.setTranslateX(765);
+		Hp.setTranslateY(225);
+		Text dam = new Text(Integer.toString(((Player)player).getAtk()));
+		Text df = new Text(Integer.toString(((Player)player).getDefense()));
+		Text hp = new Text(Integer.toString(((Player)player).getHp()) +  "/" + Integer.toString(((Player)player).getMaxhp()));
+		dam.setFont(font);
+		df.setFont(font);
+		hp.setFont(font);
+		dam.setTranslateX(467);
+		dam.setTranslateY(325);
+		df.setTranslateX(623);
+		df.setTranslateY(325);
+		hp.setTranslateX(730);
+		hp.setTranslateY(325);
+		setUi.add(hp);
+		setUi.add(df);
+		setUi.add(dam);
 		main.setFitHeight(150);
 		main.setFitWidth(200);
 		main.setTranslateX(540);
@@ -634,7 +668,7 @@ public class GameStart {
 			main.setTranslateY(450);
 		});
 		ImageView Music = createButtonMusic(615, 400, 50, 50);
-		settingRoot.getChildren().addAll(setting,main,Music);
+		settingRoot.getChildren().addAll(setting,main,Music,att,def,Hp,dam,df,hp);
 	}
 	private static void makehitSound() {
 		hitSoundPlayer.stop();
@@ -702,7 +736,7 @@ public class GameStart {
 		t.setFill(Color.BLACK);
 		t.prefHeight(60);
 		t.prefWidth(60);
-		t.setTranslateX(1160);
+		t.setTranslateX(1130);
 		t.setTranslateY(50);
 		return t;
 	}
@@ -716,10 +750,16 @@ public class GameStart {
 				H_bar.setProgress(0);
 				appRoot.getChildren().clear();
 			}
-		}else {
+		}else if (idx == 1){
 			Platform.runLater(()->{
 				Score_on_screne.setText("Coins: "+Integer.toString(getScore()));
 			});
+		}else if (idx == 2){
+			((Text)setUi.get(0)).setText(Integer.toString(((Player)player).getHp()) + "/" + Integer.toString(((Player)player).getMaxhp()));
+		}else if (idx == 3) {
+			((Text)setUi.get(1)).setText(Integer.toString(((Player)player).getDefense()));
+		}else {
+			((Text)setUi.get(2)).setText(Integer.toString(((Player)player).getAtk()));
 		}
 	}
 	private static Node CreateEntity(int x,int y,int w,int h,Pane p,Image image) {
