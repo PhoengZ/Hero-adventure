@@ -53,7 +53,12 @@ public class Enemy  extends Unit {
 		return speed;
 	}
 	public void setSpeed(int speed) {
-		this.speed = Math.max(0, speed);
+		if(speed > 100) {
+			this.speed = 100;
+		}
+		else{
+			this.speed = Math.max(0, speed);
+		}
 	}
 	public boolean isAlive() {
 		return alive;

@@ -44,7 +44,7 @@ public class Main extends Application{
 		enemies.add(FireDemon);
 		Enemy IceQueen = new IceQueen();
 		enemies.add(IceQueen);
-		TurnBasePane turnbasePane = new TurnBasePane(player,enemies,"DesertTurnBaseBackground.png");
+		TurnBasePane turnbasePane = new TurnBasePane(player,enemies,"ColossiumTurnBaseBackground.png");
 		Scene turnbaseScene = new Scene (turnbasePane , 1280 ,720);
 		primaryStage.setTitle("Colosseum");
         primaryStage.setResizable(false);
@@ -61,6 +61,7 @@ public class Main extends Application{
         primaryStage.show();
         gameoverPane.requestFocus();
         */
+        /*
         GameWinPane gameWinPane = new GameWinPane();
 		Scene gameoverscene = new Scene (gameWinPane , 1280 ,720);
 		primaryStage.setTitle("Colosseum");
@@ -68,6 +69,7 @@ public class Main extends Application{
         primaryStage.setScene(gameoverscene);
         primaryStage.show();
         gameWinPane.requestFocus();
+        */
 		/*
         GameOverPane gameOverPane = new GameOverPane(primaryStage);
         Scene gameOverScene = new Scene(gameOverPane, 1280, 720);
