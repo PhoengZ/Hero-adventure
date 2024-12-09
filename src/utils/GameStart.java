@@ -15,10 +15,14 @@ import SPane.GameOverPane;
 import SPane.StartPane;
 import SPane.UpgadeStatPane;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -59,6 +63,8 @@ public class GameStart {
 	private static ProgressBar H_bar;
 	private static MediaPlayer media;
 	private static MediaPlayer hitSoundPlayer;
+	private static MediaPlayer walk;
+	private static MediaPlayer jump;
 	private static Text Score_on_screne;
 	private static ImageView Background;
 	private static ArrayList<Node> platform = new ArrayList<Node>();
@@ -84,6 +90,11 @@ public class GameStart {
 		media.play();
 		hitSoundPlayer = new MediaPlayer(SetMedia("hit.mp3"));
 		hitSoundPlayer.setVolume(0.2);
+		walk = new MediaPlayer(SetMedia("Walk_SoundEffect.mp3"));
+		jump = new MediaPlayer(SetMedia("Jump_SoundEffect.mp3"));
+		walk.setVolume(0.05);
+		walk.setCycleCount(MediaPlayer.INDEFINITE);
+		jump.setVolume(0.05);
 		//hitSoundPlayer.play();
 		Image st = SetImage("startButton.png");
 		Image ex = SetImage("Exit.png");
@@ -118,6 +129,21 @@ public class GameStart {
 			ImageView Button_knight = new ImageView(bt_knight);
 			ImageView Button_warrior = new ImageView(bt_warrior);
 			ImageView Button_magic = new ImageView(bt_magic);
+			ImageView knight = new ImageView(SetImage("KnightRight.png"));
+			ImageView warrior = new ImageView(SetImage("warriorRight.png"));
+			ImageView mage = new ImageView(SetImage("MagicianRight.png"));
+			knight.setFitHeight(150);
+			knight.setFitWidth(100);
+			warrior.setFitHeight(150);
+			warrior.setFitWidth(100);
+			mage.setFitHeight(150);
+			mage.setFitWidth(100);
+			knight.setTranslateX(275);
+			knight.setTranslateY(350);
+			warrior.setTranslateX(575);
+			warrior.setTranslateY(350);
+			mage.setTranslateX(875);
+			mage.setTranslateY(350);
 			Button_knight.setFitHeight(200);
 			Button_knight.setFitWidth(300);
 			Button_warrior.setFitHeight(200);
@@ -125,11 +151,11 @@ public class GameStart {
 			Button_magic.setFitHeight(200);
 			Button_magic.setFitWidth(300);
 			Button_knight.setTranslateX(175);
-			Button_knight.setTranslateY(360);
+			Button_knight.setTranslateY(510);
 			Button_warrior.setTranslateX(475);
-			Button_warrior.setTranslateY(360);
+			Button_warrior.setTranslateY(510);
 			Button_magic.setTranslateX(775);
-			Button_magic.setTranslateY(360);
+			Button_magic.setTranslateY(510);
 			Button_knight.setOnMouseClicked(event->{
 				media.stop();
 				GameStart.GameStart(new Knight());
@@ -138,13 +164,15 @@ public class GameStart {
 				Button_knight.setFitHeight(220);
 				Button_knight.setFitWidth(320);
 				Button_knight.setTranslateX(165);
-				Button_knight.setTranslateY(350);
+				Button_knight.setTranslateY(500);
+				
 			});
 			Button_knight.setOnMouseExited(event->{
 				Button_knight.setFitHeight(200);
 				Button_knight.setFitWidth(300);
 				Button_knight.setTranslateX(175);
-				Button_knight.setTranslateY(360);
+				Button_knight.setTranslateY(510);
+				createShadowEffect(knight,Color.RED);
 			});
 			Button_warrior.setOnMouseClicked(event->{
 				media.stop();
@@ -154,13 +182,14 @@ public class GameStart {
 				Button_warrior.setFitHeight(220);
 				Button_warrior.setFitWidth(320);
 				Button_warrior.setTranslateX(465);
-				Button_warrior.setTranslateY(350);
+				Button_warrior.setTranslateY(500);
+				createShadowEffect(warrior,Color.ORANGE);
 			});
 			Button_warrior.setOnMouseExited(event->{
 				Button_warrior.setFitHeight(200);
 				Button_warrior.setFitWidth(300);
 				Button_warrior.setTranslateX(475);
-				Button_warrior.setTranslateY(360);
+				Button_warrior.setTranslateY(510);
 			});
 			Button_magic.setOnMouseClicked(event->{
 				media.stop();
@@ -170,15 +199,16 @@ public class GameStart {
 				Button_magic.setFitHeight(220);
 				Button_magic.setFitWidth(320);
 				Button_magic.setTranslateX(765);
-				Button_magic.setTranslateY(350);
+				Button_magic.setTranslateY(500);
+				createShadowEffect(mage,Color.PURPLE);
 			});
 			Button_magic.setOnMouseExited(event->{
 				Button_magic.setFitHeight(200);
 				Button_magic.setFitWidth(300);
 				Button_magic.setTranslateX(775);
-				Button_magic.setTranslateY(360);
+				Button_magic.setTranslateY(510);
 			});
-			appRoot.getChildren().addAll(Bg,Button_knight,Button_warrior,Button_magic);
+			appRoot.getChildren().addAll(Bg,Button_knight,Button_warrior,Button_magic,knight,warrior,mage);
 		});
 		Exit.setOnMouseEntered(e->{
 			Exit.setFitHeight(170);
@@ -228,6 +258,7 @@ public class GameStart {
 			if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) {
 		        ((Player) player).stopWalking();
 		        isWalk = false;
+		        walk.stop();
 		    }
 			GameStart.keys.put(event.getCode(),false);
 		});
@@ -291,6 +322,7 @@ public class GameStart {
 		if (isPressed(KeyCode.LEFT) && player.getTranslateX() >= 5) {
 			if (!isWalk) {
 				((Player)player).startWalkingLeft();
+				walk.play();
 				isWalk = true;
 			}
 			movePlayerX(-4);
@@ -298,6 +330,7 @@ public class GameStart {
 		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 40  <= levelWidth - 5) {
 			if (!isWalk) {
 				((Player)player).startWalkingRight();
+				walk.play();
 				isWalk = true;
 			}
 			movePlayerX(4);
@@ -349,6 +382,7 @@ public class GameStart {
 	}
 	private static void movePlayerY(int value) {
 		boolean moveDown = value > 0; // - is mean up + is mean down
+		if (!moveDown && walk.getStatus() != MediaPlayer.Status.PLAYING)jump.play();
 		for (int i = 0;i<Math.abs(value);i++) {
 			for (Node pt:platform) {
 				if (player.getBoundsInParent().intersects(pt.getBoundsInParent())) {
@@ -366,7 +400,7 @@ public class GameStart {
 					}
 				}
 			}
-			player.setTranslateY(player.getTranslateY() + (moveDown ? 0.5:-1)); // if moveRight set translate x to oldX + 1 or oldX -1 when moveLeft 
+			player.setTranslateY(player.getTranslateY() + (moveDown ? 0.5:-1));
 		}
 		if (player.getTranslateY() >= 720) {
 			player.setTranslateX(0);
@@ -376,6 +410,7 @@ public class GameStart {
 		    ((Player)player).setHp(((Player)player).getHp() - 20);
 		    editUi(0);
 		}
+		
 	}
 	private static void monsterFire() {
 		for (Node e:monster) {
@@ -487,6 +522,8 @@ public class GameStart {
 	
 	private static void jumpPlayer() {
 		if (!isJump) {
+			jump.stop();
+			jump.seek(Duration.ZERO);
 			playerVelocity = playerVelocity.add(0,-30);
 			setJump(true); //prohibit to double jump
 		}
@@ -772,7 +809,22 @@ public class GameStart {
 		p.getChildren().add(ob);
 		return ob;
 	}
-	
+	public static void createShadowEffect(ImageView targetImageView,Color color) {
+	    DropShadow attackEffect = new DropShadow();
+	    attackEffect.setColor(color);
+	    attackEffect.setRadius(0);
+
+	    targetImageView.setEffect(attackEffect);
+
+	    Timeline flickerEffect = new Timeline(
+	        new KeyFrame(Duration.ZERO, new KeyValue(attackEffect.radiusProperty(), 0)),
+	        new KeyFrame(Duration.millis(100), new KeyValue(attackEffect.radiusProperty(), 100)),
+	        new KeyFrame(Duration.millis(200), new KeyValue(attackEffect.radiusProperty(), 0))
+	    );
+	    flickerEffect.setCycleCount(3);
+	    flickerEffect.setOnFinished(e -> targetImageView.setEffect(null));
+	    flickerEffect.play();
+	}
 	public static Node getPlayer() {
 		return player;
 	}
