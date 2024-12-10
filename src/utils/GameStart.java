@@ -641,9 +641,6 @@ public class GameStart {
 	    gameRoot.setLayoutY(0); //reset มุมกล้อง 
 		player.setTranslateX(0);
 		player.setTranslateY(500);
-		System.out.println("Attack: "+((Player)player).getAtk());
-		System.out.println("Attack: "+((Player)player).getDefense());
-		System.out.println("Attack: "+((Player)player).getHp());
 		gameRoot.getChildren().add(player);
 		player.translateXProperty().addListener((obs,old,newValue)->{
 			int offset = newValue.intValue();
