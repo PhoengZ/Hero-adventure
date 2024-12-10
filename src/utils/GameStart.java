@@ -81,6 +81,8 @@ public class GameStart {
 	private static Point2D playerVelocity = new Point2D(0,0);
 	private static String path_Block;
 	private static Font font;
+	private static final double TARGET_FPS = 60.0; // Target frames per second
+	private static final double TIME_PER_FRAME = 1e9 / TARGET_FPS;
 	
 	
 	public static void mainPage() {
@@ -288,7 +290,6 @@ public class GameStart {
 		    }
 			GameStart.keys.put(event.getCode(),false);
 		});
-
 		AnimationTimer timer = new AnimationTimer() {
 			public void handle(long now) {
 				GameStart.update();

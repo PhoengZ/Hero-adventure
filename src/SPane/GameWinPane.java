@@ -35,7 +35,7 @@ public class GameWinPane extends Pane{
         }
 		MediaPlayer media = new MediaPlayer(bg);
 		media.setCycleCount(MediaPlayer.INDEFINITE);
-		media.setVolume(0.1);
+		media.setVolume(0.2);
 		media.play();
 	    Image restartButtonImage = null;
 	    try {
@@ -45,9 +45,8 @@ public class GameWinPane extends Pane{
 	        e.printStackTrace();
 	        System.out.println("Not found RestartButton");
 	    }
-	    /*
-	    FontString = "";
->>>>>>> 8e52be5b648175d6f8ce6a944047bf78cad8a903
+	    
+	    fontString = "";
 		 try {
 	        String classLoaderPath = ClassLoader.getSystemResource("Pixeboy.ttf").toString();
 	        fontString = classLoaderPath;
@@ -55,7 +54,6 @@ public class GameWinPane extends Pane{
 	        e.printStackTrace();
 	        System.out.println("Not fount: "+ "Pixeboy.ttf");
 	    }   
-	    */
 	    Text youwin = new Text("You Win");
 	    youwin.setStroke(Color.WHITE);
 	    youwin.setStrokeWidth(2);

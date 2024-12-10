@@ -2,11 +2,8 @@ package utils;
 
 import enemy.Enemy;
 import javafx.animation.PauseTransition;
-import javafx.animation.TranslateTransition;
-import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -171,7 +168,7 @@ public class TurnBase {
         if (player.isAlive()) {
             System.out.println("Player Wins!");
             gamePane.getTurnStatusLabelPlayer().setText("Player Wins!");
-            this.playSound("sound/YouWin2_SoundEffect.mp3", 0.5);
+            //this.playSound("sound/YouWin2_SoundEffect.mp3", 0.5);
             gamePane.getClickEnemyToAttackLabel().setVisible(false);
             this.mediabackground.stop();
         	if (GameStart.getRound() == 3) {
