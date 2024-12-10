@@ -1,22 +1,23 @@
 package enemy;
 
 import base.Magicable;
+import base.Unit;
 import player.Player;
 
 public class FireDemon extends Enemy implements Magicable{
-	private int MagicAtk;
 	public FireDemon() {
 		super(100,80,70,20,"FireDemon.png","FireDemonFight.png"); //hp atk speed
-		this.setMagicAtk(40);
+	}
+	public void attack(Unit other) {
+		Player player = (Player) other;
+		this.decreaseHp(player);
+		this.setDamage(this.getAtk());
+		if(player.getHp() == 0) {
+			player.setAlive(false);
+		}
 	}
 	public void decreaseHp(Player player) {
-		player.setHp(player.getHp()-this.getMagicAtk());
-	}
-	public void setMagicAtk(int MagicAtk) {
-		this.MagicAtk = Math.max(0, MagicAtk);
-	}
-	public int getMagicAtk() {
-		return this.MagicAtk;
+		player.setHp(player.getHp()-this.getAtk());
 	}
 	public String toString() {
 		return "FireDemon";

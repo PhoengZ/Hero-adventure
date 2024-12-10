@@ -25,6 +25,7 @@ public class Player extends Unit{
 	private int defense;
 	private int maxhp;
 	private int maxdefense;
+	private int damage;
 	private boolean alive;
 	private Image rightStay;
 	private Image leftStay;
@@ -45,6 +46,7 @@ public class Player extends Unit{
 		this.setHp(hp);
 		this.setAtk(atk);
 		this.setSpeed(speed);
+		this.setDamage(0);
 		this.setDefense(defense);
 		this.setAlive(true);
 		this.setImageRightByPath(Right);
@@ -88,6 +90,7 @@ public class Player extends Unit{
 		if(other instanceof Enemy) {
 			Enemy enemy = (Enemy) other;
 			enemy.setHp(enemy.getHp()-Math.max(0,(atk-enemy.getDefense())));
+			this.setDamage(Math.max(0,(atk-enemy.getDefense())));
 			if(enemy.getHp() == 0) {
 				enemy.setAlive(false);
 			}
@@ -250,6 +253,14 @@ public class Player extends Unit{
 
 	public void setMaxdefense(int maxdefense) {
 		this.maxdefense = maxdefense;
+	}
+	
+	public int getDamage() {
+		return damage;
+	}
+
+	public void setDamage(int damage) {
+		this.damage = damage;
 	}
 
 	public Image getImageStay() {

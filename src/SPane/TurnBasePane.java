@@ -391,7 +391,6 @@ public class TurnBasePane extends Pane {
                     updatePlayerStatus();
                     updateEnemyStatus();
                 } else {
-                    int damage = Math.max(0,player.getAtk()-enemy.getDefense());
                     if(turnManager.getExtraDamage() > 0) {
                     	player.attack(enemy);
                     	player.setAtk(player.getAtk()-turnManager.getExtraDamage());
@@ -403,7 +402,7 @@ public class TurnBasePane extends Pane {
                     playAttackEffect(enemyImageViews.get(enemy));
                     updatePlayerStatus();
                     updateEnemyStatus();
-                    showDamageText(enemyImageViews.get(enemy), damage);
+                    showDamageText(enemyImageViews.get(enemy), player.getDamage());
                 }
                 setEnemyFadeEffect(null, false);
                 if (!enemy.isAlive()) {

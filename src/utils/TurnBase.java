@@ -2,11 +2,8 @@ package utils;
 
 import enemy.Enemy;
 import javafx.animation.PauseTransition;
-import javafx.animation.TranslateTransition;
-import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -95,7 +92,6 @@ public class TurnBase {
             if (enemyImageView != null) {
                 gamePane.performAttack(enemyImageView, gamePane.getPlayerImage(), attackingEnemy, () -> {
                     // โจมตีผู้เล่น
-                    int damage = Math.max(0,attackingEnemy.getAtk()-player.getDefense());
                     double s = Math.random();
                     System.out.println(s);
                     System.out.println(this.chanceToMiss(attackingEnemy));
@@ -115,7 +111,7 @@ public class TurnBase {
                     		attackingEnemy.attack(player);
                     	}
                         gamePane.playAttackEffect(gamePane.getPlayerImage());
-                        gamePane.showDamageText(gamePane.getPlayerImage(), damage);
+                        gamePane.showDamageText(gamePane.getPlayerImage(),attackingEnemy.getDamage());
                     }
                     gamePane.updatePlayerStatus();
                 });

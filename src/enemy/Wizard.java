@@ -6,19 +6,20 @@ import base.Unit;
 import player.Player;
 
 public class Wizard extends Enemy implements Magicable,Breakable{
-	private int MagicAtk;
 	public Wizard() {
-		super(80,20,70,10,"Wizard.png","WizardFight.png"); //hp atk speed
-		this.setMagicAtk(60);
+		super(80,30,70,10,"Wizard.png","WizardFight.png"); //hp atk speed
+	}
+	public void attack(Unit other) {
+		Player player = (Player) other;
+		this.decreaseHp(player);
+		this.setDamage(this.getAtk());
+		if(player.getHp() == 0) {
+			player.setAlive(false);
+		}
+		this.decreaseEnemyDefense(other);
 	}
 	public void decreaseHp(Player player) {
-		player.setHp(player.getHp()-this.getMagicAtk());
-	}
-	public void setMagicAtk(int MagicAtk) {
-		this.MagicAtk = Math.max(0, MagicAtk);
-	}
-	public int getMagicAtk() {
-		return this.MagicAtk;
+		player.setHp(player.getHp()-this.getAtk());
 	}
 	public void decreaseEnemyDefense(Unit enemy) {
 		if(enemy instanceof Player) {

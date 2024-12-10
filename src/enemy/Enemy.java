@@ -5,13 +5,14 @@ import base.Unit;
 import javafx.scene.image.Image;
 import player.Player;
 
-public class Enemy  extends Unit {
+public abstract class Enemy  extends Unit {
 	private int hp;
 	private int atk; 
 	private int speed;
 	private int defense;
 	private int max_Hp;
 	private int max_Defense;
+	private int damage;
 	private Image imageStay;
 	private Image imageFight;
 	private boolean alive;
@@ -22,18 +23,23 @@ public class Enemy  extends Unit {
 		this.setDefense(defense);
 		this.setMax_Hp(hp);
 		this.setMax_Defense(defense);
+		this.setDamage(0);
 		this.setImageStay(imageStayPath);
 		this.setImageFight(imageFightPath);
 		this.setAlive(true);
 	}
-	public void attack(Unit other) {
+	public abstract void attack(Unit other) ;
+	{
+		/*
 		if(other instanceof Player) {
 			Player player = (Player) other;
 			player.setHp(player.getHp()-Math.max(0,(atk-player.getDefense())));
+			this.setDamage(Math.max(0,(atk-player.getDefense())));
 			if(player.getHp() == 0) {
 				player.setAlive(false);
 			}
 		}
+		*/
 		
 	}
 
@@ -91,6 +97,13 @@ public class Enemy  extends Unit {
 	}
 	public Image getImageFight() {
 		return imageFight;
+	}
+	
+	public int getDamage() {
+		return damage;
+	}
+	public void setDamage(int damage) {
+		this.damage = damage;
 	}
 	public void setImageStay(String imageStayPath) {
     	try {
