@@ -63,7 +63,8 @@ public class TurnBasePane extends Pane {
     private Map<Enemy, Label> enemyHpLabels = new HashMap<>();
     private Map<Enemy, Label> enemyDefenseLabels = new HashMap<>();
     private Map<Enemy, ImageView> enemyImageViews = new HashMap<>();
-    private Text turnStatusLabel;
+    private Text turnStatusLabelPlayer;
+    private Text turnStatusLabelEnemy;
     private Text clickEnemyToAttackLabel;
     private GridPane  EnemyBox;
     private GridPane playerBox;
@@ -200,7 +201,7 @@ public class TurnBasePane extends Pane {
         Text PlayerHeader = new Text("Player");
         PlayerHeader.setFont(Font.loadFont(FontString,45));
         PlayerHeader.setUnderline(true);
-        PlayerHeader.setFill(Color.BLUE);
+        PlayerHeader.setFill(Color.web("#c765ff"));
         playerBox.add(PlayerHeader, 0, 0,1,1);
         Text playerName = new Text("Name: " + player.toString());
         playerName.setFont(Font.loadFont(FontString,27));
@@ -287,18 +288,27 @@ public class TurnBasePane extends Pane {
          this.getChildren().add(EnemyBox);
          
         // Initialize turn manager
-         turnStatusLabel = new Text("");
-         turnStatusLabel.setFont(Font.loadFont(FontString,45));
-         turnStatusLabel.setLayoutX(550);
-         turnStatusLabel.setLayoutY(50);
-         this.getChildren().add(turnStatusLabel);
+         turnStatusLabelPlayer = new Text("Player's Turn");
+         turnStatusLabelPlayer.setFont(Font.loadFont(FontString,45));
+         turnStatusLabelPlayer.setFill(Color.web("#c765ff"));
+         turnStatusLabelPlayer.setLayoutX(550);
+         turnStatusLabelPlayer.setLayoutY(50);
+         turnStatusLabelPlayer.setVisible(false);
+         this.getChildren().add(turnStatusLabelPlayer);
          clickEnemyToAttackLabel = new Text("(Click enemy to attack)");
          clickEnemyToAttackLabel.setFont(Font.loadFont(FontString,30));
-         clickEnemyToAttackLabel.setFill(Color.BLUE);
+         clickEnemyToAttackLabel.setFill(Color.web("#c765ff"));
          clickEnemyToAttackLabel.setLayoutX(532); 
          clickEnemyToAttackLabel.setLayoutY(100);  
          clickEnemyToAttackLabel.setVisible(false);  
          this.getChildren().add(clickEnemyToAttackLabel);
+         turnStatusLabelEnemy = new Text("Enemies's Turn");
+         turnStatusLabelEnemy.setFont(Font.loadFont(FontString,45));
+         turnStatusLabelEnemy.setFill(Color.RED);
+         turnStatusLabelEnemy.setLayoutX(545);
+         turnStatusLabelEnemy.setLayoutY(50);
+         turnStatusLabelEnemy.setVisible(false);
+         this.getChildren().add(turnStatusLabelEnemy);
          
          //Initialize Defense Button
          Image BuffDefenseButtonImage = null;
@@ -454,8 +464,8 @@ public class TurnBasePane extends Pane {
     }
     public void updateTurnStatus(boolean isPlayerTurn) {
         if (isPlayerTurn && player.isAlive()) {
-            turnStatusLabel.setText("Player's Turn");
-            turnStatusLabel.setFill(Color.BLUE);
+        	turnStatusLabelEnemy.setVisible(false);
+        	turnStatusLabelPlayer.setVisible(true);
             playerBox.setBackground(new Background(new BackgroundFill(
                     Color.YELLOW,
                     new CornerRadii(10),  
@@ -470,8 +480,8 @@ public class TurnBasePane extends Pane {
         } 
         
         else {
-            turnStatusLabel.setText("Enemy's Turn");
-            turnStatusLabel.setFill(Color.RED);
+        	turnStatusLabelPlayer.setVisible(false);
+        	turnStatusLabelEnemy.setVisible(true);
             EnemyBox.setBackground(new Background(new BackgroundFill(
                     Color.YELLOW,
                     new CornerRadii(10),  
@@ -487,14 +497,16 @@ public class TurnBasePane extends Pane {
     }
     public void showDamageText(Node target, int damage) {
         System.out.println("Damage: " + damage);
-        Label damageLabel = new Label("Damage " + damage);
+        Text damageLabel = new Text("Damage " + damage);
         damageLabel.setFont(Font.font("Tahoma", FontWeight.BOLD, 20));
-        damageLabel.setTextFill(Color.RED);
+        damageLabel.setFill(Color.RED);
+        damageLabel.setStroke(Color.WHITE);
+        damageLabel.setStrokeWidth(1.5);
 
         // ใช้ตำแหน่ง localToScene
         Bounds bounds = target.localToScene(target.getBoundsInLocal());
         damageLabel.setLayoutX(bounds.getMinX()-30);
-        damageLabel.setLayoutY(bounds.getMinY() - 10);
+        damageLabel.setLayoutY(bounds.getMinY()+10);
 
         Platform.runLater(() -> {
             this.getChildren().add(damageLabel);
@@ -507,13 +519,15 @@ public class TurnBasePane extends Pane {
 
     public void showMissText(Node target) {
         System.out.println("Miss");
-        Label missLabel = new Label("Miss");
+        Text missLabel = new Text("Miss");
         missLabel.setFont(Font.font("Tahoma", FontWeight.BOLD, 20));
-        missLabel.setTextFill(Color.BLACK);
+        missLabel.setFill(Color.BLACK);
+        missLabel.setStroke(Color.WHITE);
+        missLabel.setStrokeWidth(1.5);
 
         Bounds bounds = target.localToScene(target.getBoundsInLocal());
         missLabel.setLayoutX(bounds.getMinX()-10);
-        missLabel.setLayoutY(bounds.getMinY() - 10);
+        missLabel.setLayoutY(bounds.getMinY()+ 10);
 
         Platform.runLater(() -> {
             this.getChildren().add(missLabel);
@@ -730,11 +744,21 @@ public class TurnBasePane extends Pane {
 	public Text getClickEnemyToAttackLabel() {
 		return clickEnemyToAttackLabel;
 	}
-	public Text getTurnStatusLabel() {
-		return turnStatusLabel;
+
+	public Text getTurnStatusLabelPlayer() {
+		return turnStatusLabelPlayer;
 	}
-	public void setTurnStatusLabel(Text turnStatusLabel) {
-		this.turnStatusLabel = turnStatusLabel;
+
+	public void setTurnStatusLabelPlayer(Text turnStatusLabelPlayer) {
+		this.turnStatusLabelPlayer = turnStatusLabelPlayer;
+	}
+
+	public Text getTurnStatusLabelEnemy() {
+		return turnStatusLabelEnemy;
+	}
+
+	public void setTurnStatusLabelEnemy(Text turnStatusLabelEnemy) {
+		this.turnStatusLabelEnemy = turnStatusLabelEnemy;
 	}
 	
 	

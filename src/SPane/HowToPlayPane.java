@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import utils.GameStart;
 
 public class HowToPlayPane extends Pane{
 	private int stepIndex = 0; 
@@ -30,7 +31,7 @@ public class HowToPlayPane extends Pane{
 	        System.out.println("Not fount: "+ "Pixeboy.ttf");
 	    }   
 		// Background setup
-	        Image Background = null;
+	       Image Background = null;
 	        try {
 	            String classLoaderPath = ClassLoader.getSystemResource("Background_Mainmenu.jpg").toString();
 	            Background = new Image(classLoaderPath);
@@ -57,18 +58,66 @@ public class HowToPlayPane extends Pane{
         imageView.setFitWidth(200);
         imageView.setPreserveRatio(true);
         
-        Button nextButton = new Button("ถัดไป");
-        nextButton.setStyle("-fx-font-size: 16px; -fx-background-color: #0078D7; -fx-text-fill: white;");
-        nextButton.setOnAction(e -> {
+        ImageView nextButton = new ImageView(SetImage("nextbutton.png"));
+        ImageView prevButton = new ImageView(SetImage("prevbutton.png"));
+        prevButton.setVisible(false);
+        nextButton.setOnMouseClicked(e -> {
             stepIndex++;
             if (stepIndex < steps.length) {
+            	if (stepIndex > 0)prevButton.setVisible(true);
                 instructionText.setText(steps[stepIndex]);
                 imageView.setImage(new Image("howtoplay/howtoplay" + (stepIndex + 1) + ".JPG"));
-            } else {
-            	nextButton.setDisable(true);
+            } else if (stepIndex == steps.length){
                 instructionText.setText("Done Let's Play!!");
+            }else {
+            	GameStart.clear();
+            	GameStart.mainPage();
             }
         });
+        prevButton.setOnMouseClicked(e->{
+        	stepIndex--;
+            if (stepIndex > 0) {
+            	prevButton.setVisible(true);
+                instructionText.setText(steps[stepIndex]);
+                imageView.setImage(new Image("howtoplay/howtoplay" + (stepIndex + 1) + ".JPG"));
+            } else if (stepIndex == 0){
+                prevButton.setVisible(false);
+                instructionText.setText(steps[stepIndex]);
+                imageView.setImage(new Image("howtoplay/howtoplay" + (stepIndex + 1) + ".JPG"));
+            }
+        });
+        nextButton.setOnMouseEntered(e->{
+        	nextButton.setFitHeight(50);
+            nextButton.setFitWidth(50);
+            nextButton.setTranslateX(940);
+            nextButton.setTranslateY(615);
+        });
+        nextButton.setOnMouseExited(e->{
+        	nextButton.setFitHeight(30);
+            nextButton.setFitWidth(30);
+            nextButton.setTranslateX(950);
+            nextButton.setTranslateY(625);
+        });
+        prevButton.setOnMouseEntered(e->{
+        	prevButton.setFitHeight(50);
+            prevButton.setFitWidth(50);
+            prevButton.setTranslateX(290);
+            prevButton.setTranslateY(615);
+        });
+        prevButton.setOnMouseExited(e->{
+        	prevButton.setFitHeight(30);
+            prevButton.setFitWidth(30);
+            prevButton.setTranslateX(300);
+            prevButton.setTranslateY(625);
+        });
+        nextButton.setFitHeight(30);
+        nextButton.setFitWidth(30);
+        nextButton.setTranslateX(950);
+        nextButton.setTranslateY(625);
+        prevButton.setFitHeight(30);
+        prevButton.setFitWidth(30);
+        prevButton.setTranslateX(300);
+        prevButton.setTranslateY(625);
         VBox vbox = new VBox(20, imageView, instructionText, nextButton);
         vbox.setPrefWidth(800); 
         vbox.setPrefHeight(570);
@@ -91,6 +140,17 @@ public class HowToPlayPane extends Pane{
         imageView.setFitWidth(580); 
         imageView.setPreserveRatio(true);
 
-        this.getChildren().add(vbox);
+        this.getChildren().addAll(vbox,nextButton,prevButton);
+	}
+	private static Image SetImage(String imagePath) {
+		Image bg = null;
+		try {
+            String classLoaderPath = ClassLoader.getSystemResource(imagePath).toString();
+            bg = new Image(classLoaderPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Not fount: "+ imagePath);
+        }
+		return bg;
 	}
 }

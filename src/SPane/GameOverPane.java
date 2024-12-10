@@ -1,11 +1,11 @@
 package SPane;
 
-import application.Main;
-import javafx.scene.Scene;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import utils.GameStart;
 
 public class GameOverPane extends Pane{
@@ -18,6 +18,18 @@ public class GameOverPane extends Pane{
 	        e.printStackTrace();
 	        System.out.println("Not found gameover Background");
 	    }
+	    Media bg = null;
+		try {
+            String classLoaderPath = ClassLoader.getSystemResource("Gameover.mp3").toString();
+            bg = new Media(classLoaderPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Not found Media:");
+        }
+		MediaPlayer media = new MediaPlayer(bg);
+		media.setCycleCount(MediaPlayer.INDEFINITE);
+		media.setVolume(0.1);
+		media.play();
 	    ImageView backgroundView = new ImageView(Background);
 	    backgroundView.setFitHeight(720);
 	    backgroundView.setFitWidth(1280);
@@ -49,11 +61,9 @@ public class GameOverPane extends Pane{
             restartButton.setLayoutY(580); 
 	    });
 	    restartButton.setOnMouseClicked(event -> {
-	    	//StartPane startPane = new StartPane(); // สร้าง StartPane
+	    	media.stop();
 	    	GameStart.clear();
 	    	System.out.println("Is clicked");
-	    	//Scene startScene = new Scene(startPane, 1280, 720); // สร้าง Scene
-            //primaryStage.setScene(startScene); // เปลี่ยน Scene เป็น StartPane
             GameStart.mainPage();
 	    });
 	    this.getChildren().add(restartButton);

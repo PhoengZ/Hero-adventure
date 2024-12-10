@@ -3,10 +3,15 @@ package SPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import utils.GameStart;
 
 public class GameWinPane extends Pane{
+	private static String FontString;
 	public GameWinPane() {
 		Image Background = null;
 	    try {
@@ -20,7 +25,18 @@ public class GameWinPane extends Pane{
 	    backgroundView.setFitHeight(720);
 	    backgroundView.setFitWidth(1280);
 	    this.getChildren().add(backgroundView);
-	    
+	    Media bg = null;
+		try {
+            String classLoaderPath = ClassLoader.getSystemResource("Gamewin.mp3").toString();
+            bg = new Media(classLoaderPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Not found Media:");
+        }
+		MediaPlayer media = new MediaPlayer(bg);
+		media.setCycleCount(MediaPlayer.INDEFINITE);
+		media.setVolume(0.1);
+		media.play();
 	    Image restartButtonImage = null;
 	    try {
 	        String classLoaderPath = ClassLoader.getSystemResource("RestartButton.png").toString();
@@ -40,7 +56,11 @@ public class GameWinPane extends Pane{
 	    }   
 	    */
 	    Text youwin = new Text("You Win");
-	    youwin.setFont(null);
+	    youwin.setStroke(Color.WHITE);
+	    youwin.setStrokeWidth(2);
+	    youwin.setFont(Font.loadFont(FontString, 80));
+	    youwin.setTranslateX(530);
+	    youwin.setTranslateY(100);
 	    this.getChildren().add(youwin);
 	    ImageView restartButton = new ImageView(restartButtonImage);
 	    restartButton.setFitHeight(100); 
@@ -60,11 +80,9 @@ public class GameWinPane extends Pane{
             restartButton.setLayoutY(580); 
 	    });
 	    restartButton.setOnMouseClicked(event -> {
-	    	//StartPane startPane = new StartPane(); // สร้าง StartPane
+	    	media.stop();
 	    	GameStart.clear();
 	    	System.out.println("Is clicked");
-	    	//Scene startScene = new Scene(startPane, 1280, 720); // สร้าง Scene
-            //primaryStage.setScene(startScene); // เปลี่ยน Scene เป็น StartPane
             GameStart.mainPage();
 	    });
 	    this.getChildren().add(restartButton);

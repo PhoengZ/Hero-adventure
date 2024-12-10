@@ -12,11 +12,22 @@ import java.util.List;
 
 import Data.DataLevel;
 import SPane.GameOverPane;
+import SPane.HowToPlayPane;
 import SPane.StartPane;
+import SPane.TurnBasePane;
 import SPane.UpgadeStatPane;
+import enemy.BeastMaster;
+import enemy.Enemy;
+import enemy.FireDemon;
+import enemy.IceQueen;
+import enemy.IronGolem;
+import enemy.ShadowWarrior;
+import enemy.Wizard;
 import javafx.animation.AnimationTimer;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
@@ -103,12 +114,15 @@ public class GameStart {
 		ImageView Exit = new ImageView(ex);
 		ImageView Bg = new ImageView(bg);
 		ImageView Music = createButtonMusic(1200, 650, 50, 50);
+		ImageView Htp = new ImageView(SetImage("Htpbutton.png"));
 		Start.setFitWidth(150);
 		Start.setFitHeight(150);
 		Exit.setFitHeight(150);
 		Exit.setFitWidth(150);
 		Bg.setFitHeight(720);
 		Bg.setFitWidth(1280);
+		Htp.setFitHeight(150);
+		Htp.setFitWidth(150);
 		Start.setOnMouseEntered(e->{
 			Start.setFitHeight(170);
 			Start.setFitWidth(170);
@@ -213,24 +227,43 @@ public class GameStart {
 			Exit.setFitHeight(170);
 			Exit.setFitWidth(170);
 			Exit.setTranslateX(555);
-			Exit.setTranslateY(490);
+			Exit.setTranslateY(565);
 		});
 		Exit.setOnMouseExited(e->{
 			Exit.setFitHeight(150);
 			Exit.setFitWidth(150);
 			Exit.setTranslateX(565);
-			Exit.setTranslateY(500);
+			Exit.setTranslateY(575);
 		});
 		Exit.setOnMouseClicked(e->{
 			Platform.exit();
 		});
+		Htp.setOnMouseEntered(e->{
+			Htp.setFitHeight(170);
+			Htp.setFitWidth(170);
+			Htp.setTranslateX(555);
+			Htp.setTranslateY(453);
+		});
+		Htp.setOnMouseExited(e->{
+			Htp.setFitHeight(150);
+			Htp.setFitWidth(150);
+			Htp.setTranslateX(565);
+			Htp.setTranslateY(463);
+		});
+		Htp.setOnMouseClicked(e->{
+			appRoot.getChildren().clear();
+			HowToPlayPane htp = new HowToPlayPane();
+			appRoot.getChildren().add(htp);
+		});
+		Htp.setTranslateX(565);
+		Htp.setTranslateY(463);
 		Start.setTranslateX(565);
 		Start.setTranslateY(350);
 		Exit.setTranslateX(565);
-		Exit.setTranslateY(500);
+		Exit.setTranslateY(575);
 		setBackground(Bg);
 		System.out.println("Successfull Created pane");
-		appRoot.getChildren().addAll(Bg,Start,Exit,Music);
+		appRoot.getChildren().addAll(Bg,Start,Exit,Music,Htp);
 	}
 	
 	
@@ -340,7 +373,6 @@ public class GameStart {
 		}
 		movePlayerY((int)playerVelocity.getY());
 		if (((Player)player).getHp() == 0) {
-			((Player)player).setHp(0);
 			((Player)player).setAlive(false);
 		}
 		if (!((Player)player).isAlive()) {
@@ -488,10 +520,18 @@ public class GameStart {
 	}
 	private static void checkcollideDoor() {
 		if (player.getBoundsInParent().intersects(Door.getBoundsInParent())) {
+			/*
+			ParallelTransition enemiesFadeIn = new ParallelTransition();
+	        FadeTransition fade = new FadeTransition(Duration.seconds(0.5),new ImageView(SetImage("KnightRight.png")));
+	        fade.setFromValue(0);
+	        fade.setToValue(1);
+	        fade.setCycleCount(5);
+	        fade.setAutoReverse(true);
+	        enemiesFadeIn.getChildren().add(fade);
+	        */
 			clear();
 			setRound(getRound() + 1);
 			time.stop();
-			clear();
 			appRoot.getChildren().add(Background);
 			GaussianBlur blur = new GaussianBlur();
 	        blur.setRadius(10);
@@ -824,6 +864,7 @@ public class GameStart {
 	    flickerEffect.setOnFinished(e -> targetImageView.setEffect(null));
 	    flickerEffect.play();
 	}
+	
 	public static Node getPlayer() {
 		return player;
 	}
@@ -944,6 +985,16 @@ public class GameStart {
 
 	public static void setFont(Font font) {
 		GameStart.font = font;
+	}
+
+
+	public static MediaPlayer getMedia() {
+		return media;
+	}
+
+
+	public static void setMedia(MediaPlayer media) {
+		GameStart.media = media;
 	}
 
 	

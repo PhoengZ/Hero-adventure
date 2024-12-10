@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Random;
 
 import SPane.GameOverPane;
+import SPane.GameWinPane;
 import SPane.TurnBasePane;
 import base.Unit;
 
@@ -166,15 +167,31 @@ public class TurnBase {
     private void endGame() {
         if (player.isAlive()) {
             System.out.println("Player Wins!");
-            gamePane.getTurnStatusLabel().setText("Player Wins!");
+            gamePane.getTurnStatusLabelPlayer().setText("Player Wins!");
             this.playSound("sound/YouWin2_SoundEffect.mp3", 0.5);
             gamePane.getClickEnemyToAttackLabel().setVisible(false);
             this.mediabackground.stop();
+        	if (GameStart.getRound() == 3) {
+        		GameStart.clear();
+        		GameWinPane wingame = new GameWinPane();
+        		GameStart.getAppRoot().getChildren().add(wingame);
+        	}else {
+        		//System.out.println("Player Wins!");
+                //gamePane.getTurnStatusLabel().setText("Player Wins!");
+                gamePane.getClickEnemyToAttackLabel().setVisible(false);
+                this.mediabackground.stop();
+                GameStart.clear();
+                GameStart.getTime().start();
+                GameStart.initContent(GameStart.getRound());
+        	}
         } else {
             System.out.println("Enemies Win!");
-            gamePane.getTurnStatusLabel().setText("Enemies Wins!");
+            gamePane.getTurnStatusLabelEnemy().setText("Enemies Wins!");
             gamePane.getClickEnemyToAttackLabel().setVisible(false);
             this.mediabackground.stop();
+            GameStart.clear();
+			GameOverPane gameOverPane = new GameOverPane();
+			GameStart.getAppRoot().getChildren().add(gameOverPane);
             //go to GameoverPane
         }
     }
