@@ -31,6 +31,7 @@ public class Shot extends Pane {
         } catch (Exception e) {
             e.printStackTrace();
         }
+		this.setToRemove(false);
 	}
 
 	public ImageView getImage() {
@@ -99,8 +100,8 @@ public class Shot extends Pane {
 	
 
 	public void draw() {
-	    Circle circle = new Circle(size / 2);
-	    circle.setFill(Color.RED);
+	    //Circle circle = new Circle(size / 2);
+	    //circle.setFill(Color.RED);
 	    this.setTranslateX(this.posX);
 	    this.setTranslateY(this.posY);
 	    
