@@ -12,7 +12,7 @@ import utils.GameStart;
 
 public class HowToPlayPane extends Pane{
 	private int stepIndex = 0; 
-	private static String FontString;
+	private String FontString;
     private String[] steps = {
         "Step 1 : Choose player chractor to play.",
         "Step 2 :Move continuously through the map by using arrow keys (<-, ->) to move left and right, and press the spacebar to jump. Collect coins along the way to enhance your character's power after completing the stage.",
@@ -117,7 +117,7 @@ public class HowToPlayPane extends Pane{
         prevButton.setFitWidth(30);
         prevButton.setTranslateX(300);
         prevButton.setTranslateY(625);
-        VBox vbox = new VBox(20, imageView, instructionText, nextButton);
+        VBox vbox = new VBox(20, imageView, instructionText);
         vbox.setPrefWidth(800); 
         vbox.setPrefHeight(570);
         vbox.setLayoutX((1280 - 800) / 2);

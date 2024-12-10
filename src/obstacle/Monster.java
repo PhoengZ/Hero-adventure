@@ -75,8 +75,5 @@ public class Monster extends Pane{
 		Image = image;
 	}
 
-	public Shot shoot() {
-		return new Shot(posX + size / 2 - Shot.size / 2, posY - Shot.size);
-	}
 	
 }

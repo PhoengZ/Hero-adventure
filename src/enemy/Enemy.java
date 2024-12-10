@@ -3,7 +3,6 @@ package enemy;
 
 import base.Unit;
 import javafx.scene.image.Image;
-import player.Player;
 
 public abstract class Enemy  extends Unit {
 	private int hp;

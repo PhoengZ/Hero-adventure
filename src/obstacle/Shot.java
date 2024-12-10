@@ -14,7 +14,7 @@ public class Shot extends Pane {
 	private int posX, posY, speed = 5;
 	private int initialx,initialy;
 	private ImageView image;
-	static final int size = 50;
+	private static final int size = 50;
 	public Shot(int posX, int posY) {
 		this.posX = posX;
 		this.posY = posY;

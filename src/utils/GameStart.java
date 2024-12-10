@@ -46,7 +46,7 @@ import obstacle.Dragon;
 import obstacle.Monster;
 
 public class GameStart {
-	public static HashMap<KeyCode,Boolean> keys = new HashMap<KeyCode,Boolean>();
+	private static HashMap<KeyCode,Boolean> keys = new HashMap<KeyCode,Boolean>();
 	private static StartPane appRoot;
 	private static Pane gameRoot = new Pane();
 	private static Pane uiRoot = new Pane();
@@ -81,8 +81,7 @@ public class GameStart {
 	private static Point2D playerVelocity = new Point2D(0,0);
 	private static String path_Block;
 	private static Font font;
-	private static final double TARGET_FPS = 60.0; // Target frames per second
-	private static final double TIME_PER_FRAME = 1e9 / TARGET_FPS;
+
 	
 	
 	public static void mainPage() {
@@ -258,7 +257,6 @@ public class GameStart {
 		Exit.setTranslateX(565);
 		Exit.setTranslateY(575);
 		setBackground(Bg);
-		System.out.println("Successfull Created pane");
 		appRoot.getChildren().addAll(Bg,Start,Exit,Music,Htp);
 	}
 	
@@ -442,7 +440,7 @@ public class GameStart {
 		if (!((Monster)mn).getCanshot())return;
 		int adjustedStartX = startX ;
 	    int adjustedStartY = startY ;
-	    if (mn instanceof Dragon) {
+	    if (mn instanceof Dragon && ((Monster)mn).getCanshot()) {
 	    	Shot newShot = new Shot(adjustedStartX, adjustedStartY);
 		    Platform.runLater(() -> {
 		        newShot.draw();
@@ -450,7 +448,7 @@ public class GameStart {
 		        shot.add(newShot);
 		        gameRoot.getChildren().add(newShot);
 		    });
-	    }else if (mn instanceof SlimeFire) {
+	    }else if (mn instanceof SlimeFire && ((Monster)mn).getCanshot()) {
 	    	Shot newShot = new ShotX(adjustedStartX, adjustedStartY);
 		    Platform.runLater(() -> {
 		        newShot.draw();

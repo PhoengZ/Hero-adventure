@@ -25,7 +25,7 @@ public class TurnBase {
     private boolean isPlayerTurn;
     private int extraDamage = 0;        
     private int extraDefense = 0;
-	private static MediaPlayer mediabackground;
+	private MediaPlayer mediabackground;
 	private MediaPlayer currentMediaPlayer;
 
     public TurnBase(Player player, List<Enemy> enemies, TurnBasePane gamePane) {
@@ -64,7 +64,6 @@ public class TurnBase {
     }
 
     private void playerTurn() {
-        System.out.println("Player's Turn");
         gamePane.getBuffAttackButton().setVisible(true);
         gamePane.getBuffDefenseButton().setVisible(true);
         if(extraDamage > 0 || extraDamage > 0) {
@@ -82,7 +81,6 @@ public class TurnBase {
     	isPlayerTurn = false;
     	gamePane.getBuffAttackButton().setVisible(false);
         gamePane.getBuffDefenseButton().setVisible(false);
-        System.out.println("Enemy's Turn");
         gamePane.setEnemyFadeEffect(null, false);
         // Choose Enemy To attack Player by Random
         Enemy attackingEnemy = getRandomAliveEnemy();
@@ -93,8 +91,6 @@ public class TurnBase {
                 gamePane.performAttack(enemyImageView, gamePane.getPlayerImage(), attackingEnemy, () -> {
                     // โจมตีผู้เล่น
                     double s = Math.random();
-                    System.out.println(s);
-                    System.out.println(this.chanceToMiss(attackingEnemy));
                     if (s < this.chanceToMiss(attackingEnemy)) {
                         gamePane.showMissText(gamePane.getPlayerImage());
                         if (getExtraDefense() > 0) {
@@ -166,9 +162,7 @@ public class TurnBase {
     }
     private void endGame() {
         if (player.isAlive()) {
-            System.out.println("Player Wins!");
             gamePane.getTurnStatusLabelPlayer().setText("Player Wins!");
-            //this.playSound("sound/YouWin2_SoundEffect.mp3", 0.5);
             gamePane.getClickEnemyToAttackLabel().setVisible(false);
             this.mediabackground.stop();
         	if (GameStart.getRound() == 3) {
@@ -176,8 +170,6 @@ public class TurnBase {
         		GameWinPane wingame = new GameWinPane();
         		GameStart.getAppRoot().getChildren().add(wingame);
         	}else {
-        		//System.out.println("Player Wins!");
-                //gamePane.getTurnStatusLabel().setText("Player Wins!");
                 gamePane.getClickEnemyToAttackLabel().setVisible(false);
                 this.mediabackground.stop();
                 GameStart.clear();
@@ -185,7 +177,6 @@ public class TurnBase {
                 GameStart.initContent(GameStart.getRound());
         	}
         } else {
-            System.out.println("Enemies Win!");
             gamePane.getTurnStatusLabelEnemy().setText("Enemies Wins!");
             gamePane.getClickEnemyToAttackLabel().setVisible(false);
             this.mediabackground.stop();
@@ -207,7 +198,6 @@ public class TurnBase {
 		Media bg = null;
 		try {
             String classLoaderPath = ClassLoader.getSystemResource(mediaPath).toString();
-            System.out.println("Loading media from: " + classLoaderPath);
             bg = new Media(classLoaderPath);
         } catch (Exception e) {
             e.printStackTrace();
