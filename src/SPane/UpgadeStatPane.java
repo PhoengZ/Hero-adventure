@@ -149,7 +149,7 @@ public class UpgadeStatPane extends Pane{
 				background = "DesertTurnBaseBackground.png";
 			}else {
 				lt.add(new IronGolem());
-				background = "ColossiumTurnBaseBackground.png";
+				background = "ColossiumTurnBaseBackground2.png";
 			}
 			TurnBasePane turnbase = new TurnBasePane(((Player)player),lt,background);
 			GameStart.getAppRoot().getChildren().add(turnbase);

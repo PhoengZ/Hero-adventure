@@ -18,7 +18,6 @@ import javafx.scene.Scene;
 public class Main extends Application{
 	
 	public void start(Stage primaryStage)  throws Exception {
-		
 		StartPane.setStage(primaryStage);
 		StartPane startPane = (StartPane) StartPane.getPane();
         Scene startScene = new Scene(startPane, 1280, 720);

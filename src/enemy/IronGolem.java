@@ -7,7 +7,7 @@ import player.Player;
 
 public class IronGolem extends Enemy implements Armorable , Breakable{
 	public IronGolem() {
-		super(300,120,70,60,"IronGolem.png","IronGolemFight.png");
+		super(300,100,60,60,"IronGolem.png","IronGolemFight.png");
 	}
 	public void attack(Unit other) {
 		if(other instanceof Player) {
@@ -17,7 +17,7 @@ public class IronGolem extends Enemy implements Armorable , Breakable{
 			if(player.getHp() == 0) {
 				player.setAlive(false);
 			}
-			this.increaseDefense(5);
+			this.increaseDefense(2);
 			this.decreaseEnemyDefense(other);
 		}
 	}
@@ -27,7 +27,7 @@ public class IronGolem extends Enemy implements Armorable , Breakable{
 	public void decreaseEnemyDefense(Unit enemy) {
 		if(enemy instanceof Player) {
 			Player player = (Player) enemy;
-			player.setDefense(player.getDefense()-5);
+			player.setDefense(player.getDefense()-2);
 		}
 	}
 	public String toString() {

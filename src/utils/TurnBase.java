@@ -114,6 +114,7 @@ public class TurnBase {
                         gamePane.showDamageText(gamePane.getPlayerImage(),attackingEnemy.getDamage());
                     }
                     gamePane.updatePlayerStatus();
+                    gamePane.updateEnemyStatus();
                 });
             } else {
                 // ถ้าไม่มี ImageView ของศัตรู
