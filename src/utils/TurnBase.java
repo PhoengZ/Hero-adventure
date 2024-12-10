@@ -167,7 +167,7 @@ public class TurnBase {
         if (player.isAlive()) {
             System.out.println("Player Wins!");
             gamePane.getTurnStatusLabelPlayer().setText("Player Wins!");
-            this.playSound("sound/YouWin2_SoundEffect.mp3", 0.5);
+            //this.playSound("sound/YouWin2_SoundEffect.mp3", 0.5);
             gamePane.getClickEnemyToAttackLabel().setVisible(false);
             this.mediabackground.stop();
         	if (GameStart.getRound() == 3) {
