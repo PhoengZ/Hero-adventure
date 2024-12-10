@@ -14,15 +14,7 @@ import Data.DataLevel;
 import SPane.GameOverPane;
 import SPane.HowToPlayPane;
 import SPane.StartPane;
-import SPane.TurnBasePane;
 import SPane.UpgadeStatPane;
-import enemy.BeastMaster;
-import enemy.Enemy;
-import enemy.FireDemon;
-import enemy.IceQueen;
-import enemy.IronGolem;
-import enemy.ShadowWarrior;
-import enemy.Wizard;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -65,16 +57,16 @@ public class GameStart {
 	private static boolean isEscHeld = false;
 	private static boolean isPaused = false;
 	private static Node player;
-	private static Node Door;
+	private static Node door;
 	private static int levelWidth;
-	private static int Score;
-	private static int Round = 0;
-	private static ProgressBar H_bar;
+	private static int score;
+	private static int round = 0;
+	private static ProgressBar h_bar;
 	private static MediaPlayer media;
 	private static MediaPlayer hitSoundPlayer;
 	private static MediaPlayer walk;
 	private static MediaPlayer jump;
-	private static Text Score_on_screne;
+	private static Text score_on_screne;
 	private static ImageView Background;
 	private static ArrayList<Node> platform = new ArrayList<Node>();
 	private static ArrayList<Node> coins = new ArrayList<Node>();
@@ -83,7 +75,7 @@ public class GameStart {
 	private static ArrayList <Node> shot = new ArrayList<Node>();
 	private static ArrayList <Node> setUi = new ArrayList<Node>();
 	private static Point2D playerVelocity = new Point2D(0,0);
-	private static String Path_Block;
+	private static String path_Block;
 	private static Font font;
 	
 	
@@ -105,14 +97,14 @@ public class GameStart {
 		walk.setCycleCount(MediaPlayer.INDEFINITE);
 		jump.setVolume(0.05);
 		//hitSoundPlayer.play();
-		Image st = SetImage("startButton.png");
-		Image ex = SetImage("Exit.png");
-		Image bg = SetImage("Background_Mainmenu_1.jpg");
+		Image st = setImage("startButton.png");
+		Image ex = setImage("Exit.png");
+		Image bg = setImage("Background_Mainmenu_1.jpg");
 		ImageView Start = new ImageView(st);
 		ImageView Exit = new ImageView(ex);
 		ImageView Bg = new ImageView(bg);
 		ImageView Music = createButtonMusic(1200, 650, 50, 50);
-		ImageView Htp = new ImageView(SetImage("Htpbutton.png"));
+		ImageView Htp = new ImageView(setImage("Htpbutton.png"));
 		Start.setFitWidth(150);
 		Start.setFitHeight(150);
 		Exit.setFitHeight(150);
@@ -135,15 +127,15 @@ public class GameStart {
 		});
 		Start.setOnMouseClicked(e->{
 			appRoot.getChildren().clear();
-			Image bt_knight = SetImage("Knight_button.png");
-			Image bt_warrior = SetImage("Warrior_button.png");
-			Image bt_magic = SetImage("Magician_button.png");
+			Image bt_knight = setImage("Knight_button.png");
+			Image bt_warrior = setImage("Warrior_button.png");
+			Image bt_magic = setImage("Magician_button.png");
 			ImageView Button_knight = new ImageView(bt_knight);
 			ImageView Button_warrior = new ImageView(bt_warrior);
 			ImageView Button_magic = new ImageView(bt_magic);
-			ImageView knight = new ImageView(SetImage("KnightRight.png"));
-			ImageView warrior = new ImageView(SetImage("warriorRight.png"));
-			ImageView mage = new ImageView(SetImage("MagicianRight.png"));
+			ImageView knight = new ImageView(setImage("KnightRight.png"));
+			ImageView warrior = new ImageView(setImage("warriorRight.png"));
+			ImageView mage = new ImageView(setImage("MagicianRight.png"));
 			knight.setFitHeight(150);
 			knight.setFitWidth(100);
 			warrior.setFitHeight(150);
@@ -170,7 +162,7 @@ public class GameStart {
 			Button_magic.setTranslateY(510);
 			Button_knight.setOnMouseClicked(event->{
 				media.stop();
-				GameStart.GameStart(new Knight());
+				GameStart.gameStart(new Knight());
 			});
 			Button_knight.setOnMouseEntered(event->{
 				Button_knight.setFitHeight(220);
@@ -187,7 +179,7 @@ public class GameStart {
 			});
 			Button_warrior.setOnMouseClicked(event->{
 				media.stop();
-				GameStart.GameStart(new Warrior());
+				GameStart.gameStart(new Warrior());
 			});
 			Button_warrior.setOnMouseEntered(event->{
 				Button_warrior.setFitHeight(220);
@@ -204,7 +196,7 @@ public class GameStart {
 			});
 			Button_magic.setOnMouseClicked(event->{
 				media.stop();
-				GameStart.GameStart(new Magician()); 
+				GameStart.gameStart(new Magician()); 
 			});
 			Button_magic.setOnMouseEntered(event->{
 				Button_magic.setFitHeight(220);
@@ -265,7 +257,7 @@ public class GameStart {
 	}
 	
 	
-	public static void GameStart(Player player) {
+	public static void gameStart(Player player) {
 		String ft = "";
 		try {
             String classLoaderPath = ClassLoader.getSystemResource("Pixeboy.ttf").toString();
@@ -302,12 +294,7 @@ public class GameStart {
 		time.start();
 	}
 	
-	public static StartPane getAppRoot() {
-		return appRoot;
-	}
-	public static void setAppRoot(StartPane appRoot) {
-		GameStart.appRoot = appRoot;
-	}
+	
 	public static void clear() {
 		if (media != null) {
             media.stop();
@@ -383,7 +370,7 @@ public class GameStart {
 		monsterFire();
 		checkcollideShot();
 		checkcollideCoin();
-		checkcollideDoor();
+		checkcollidedoor();
 	}
 	private static boolean isPressed(KeyCode key) {
 		return keys.getOrDefault(key, false);
@@ -516,8 +503,8 @@ public class GameStart {
 	        coins.remove(coin);
 	    }
 	}
-	private static void checkcollideDoor() {
-		if (player.getBoundsInParent().intersects(Door.getBoundsInParent())) {
+	private static void checkcollidedoor() {
+		if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
 			clear();
 			setRound(getRound() + 1);
 			time.stop();
@@ -561,20 +548,20 @@ public class GameStart {
 		String[] arr;
 		ImageView Bg = null;
 		if (level == 0) {
-			Path_Block = "Block_01.png";
+			path_Block = "Block_01.png";
 			arr = DataLevel.Level1;
 			sp = "Spike.png";
-			Bg = new ImageView(SetImage("Level0.png"));
+			Bg = new ImageView(setImage("Level0.png"));
 		}else if (level == 1) {
-			Path_Block = "Block_02.png";
+			path_Block = "Block_02.png";
 			arr = DataLevel.Level2;
 			sp = "Cactus.png";
-			Bg = new ImageView(SetImage("Level1.png"));
+			Bg = new ImageView(setImage("Level1.png"));
 		}else {
-			Path_Block = "Block_03.png";
+			path_Block = "Block_03.png";
 			arr = DataLevel.Level3;
 			sp = "Cactus.png";
-			Bg = new ImageView(SetImage("Level2.png"));
+			Bg = new ImageView(setImage("Level2.png"));
 		}
 		Bg.setFitHeight(720);
 		Bg.setFitWidth(1280);
@@ -587,20 +574,20 @@ public class GameStart {
 			String line = arr[i];
 			for (int j = 0;j<line.length();j++) {
 				if (line.charAt(j) == '1') {
-					Image block =  SetImage(Path_Block);
+					Image block =  setImage(path_Block);
 					Node pt = CreateEntity(j*60, i*60, 60, 60,gameRoot,block);
 					platform.add(pt);
 				}
 				else if (line.charAt(j) == '2') {
-					Image block =  SetImage(getRound() == 2 ? "Rome_Door.png":"Portal.png");
+					Image block =  setImage(getRound() == 2 ? "Rome_door.png":"Portal.png");
 					Node door = CreateEntity(j*60-300, i*60-200, 300,300,gameRoot,block);
-					setDoor(door);
+					setdoor(door);
 				}else if (line.charAt(j) == '3') {
-					Image coin = SetImage("Coin.png");
+					Image coin = setImage("Coin.png");
 					Node Coin = CreateEntity(j*60, i*60, 60, 60,gameRoot,coin);
 					coins.add(Coin);
 				}else if (line.charAt(j) == '4') {
-					Image spike = SetImage(sp);
+					Image spike = setImage(sp);
 					Node Spike = CreateEntity(j*60, i*60, 60, 60,gameRoot,spike);
 					platform.add(Spike);
 					obstacle.add(Spike);
@@ -644,7 +631,6 @@ public class GameStart {
 		});
 		appRoot.getChildren().addAll(Bg,gameRoot,uiRoot,shotRoot,settingRoot);
 	}
-
 	private static void initUi() {
 		double currentHealth =((Player)player).getHp();
 		ProgressBar healthBar = new ProgressBar();
@@ -654,8 +640,8 @@ public class GameStart {
 		healthBar.setTranslateX(30);
 		healthBar.setTranslateY(20);
 		healthBar.setProgress(currentHealth/((Player)player).getMaxhp());
-		H_bar = healthBar;
-		Image Heart = SetImage("Heart.png");
+		h_bar = healthBar;
+		Image Heart = setImage("Heart.png");
 		ImageView Health = new ImageView(Heart);
 		Health.setFitHeight(60);
 		Health.setFitWidth(60);
@@ -664,8 +650,8 @@ public class GameStart {
 		//System.out.println("H_bar initialized: " + (H_bar != null));
 		uiRoot.getChildren().add(healthBar);
 		uiRoot.getChildren().add(Health);
-		Score_on_screne = Scoreboard();
-		uiRoot.getChildren().add(Score_on_screne);
+		score_on_screne = scoreboard();
+		uiRoot.getChildren().add(score_on_screne);
 	}
 	private static void initMusic() {
 		media = new MediaPlayer(SetMedia("Level"+Integer.toString(getRound())+".mp3"));
@@ -675,15 +661,15 @@ public class GameStart {
 	}
 	private static void initSetting() {
 		settingRoot.setVisible(false);
-		ImageView setting = new ImageView(SetImage("Menu.png"));
+		ImageView setting = new ImageView(setImage("Menu.png"));
 		setting.setFitWidth(600);
 		setting.setFitHeight(650);
 		setting.setTranslateX(340);
 		setting.setTranslateY(35);
-		ImageView main = new ImageView(SetImage("main_button.png"));
-		ImageView att = new ImageView(SetImage("sword.png"));
-		ImageView def = new ImageView(SetImage("shield.png"));
-		ImageView Hp = new ImageView(SetImage("Heart.png"));
+		ImageView main = new ImageView(setImage("main_button.png"));
+		ImageView att = new ImageView(setImage("sword.png"));
+		ImageView def = new ImageView(setImage("shield.png"));
+		ImageView Hp = new ImageView(setImage("Heart.png"));
 		att.setFitHeight(50);
 		att.setFitWidth(50);
 		att.setTranslateX(465);
@@ -741,15 +727,15 @@ public class GameStart {
 	}
 	private static ImageView createButtonMusic(int x,int y,int w,int h) {
 		String path = isMusic ? "Music_open.png":"Music_Close.png" ;
-		ImageView Music = new ImageView(SetImage(path));
+		ImageView Music = new ImageView(setImage(path));
 		Music.setOnMouseClicked(e->{
 			if (isMusic) {
 				setMusic(false);
 				media.pause();
-				Music.setImage(SetImage("Music_Close.png"));
+				Music.setImage(setImage("Music_Close.png"));
 			}else {
 				setMusic(true);
-				Music.setImage(SetImage("Music_open.png"));
+				Music.setImage(setImage("Music_open.png"));
 				media.play();
 			}
 		});
@@ -771,7 +757,7 @@ public class GameStart {
 		Music.setFitHeight(h);
 		return Music;
 	}
-	private static Image SetImage(String imagePath) {
+	private static Image setImage(String imagePath) {
 		Image bg = null;
 		try {
             String classLoaderPath = ClassLoader.getSystemResource(imagePath).toString();
@@ -793,7 +779,7 @@ public class GameStart {
         }
 		return bg;
 	}
-	private static Text Scoreboard() {
+	private static Text scoreboard() {
 		Text t = new Text("Coins: " + Integer.toString(getScore()));
 		t.setFont(font);
 		t.setStroke(Color.BLUE);
@@ -810,14 +796,14 @@ public class GameStart {
 			double currentHp = ((Player) player).getHp();
 			double maxHp = ((Player) player).getMaxhp();
 			if (currentHp > 0) {
-				H_bar.setProgress(currentHp / maxHp);
+				h_bar.setProgress(currentHp / maxHp);
 			}else {
-				H_bar.setProgress(0);
+				h_bar.setProgress(0);
 				appRoot.getChildren().clear();
 			}
 		}else if (idx == 1){
 			Platform.runLater(()->{
-				Score_on_screne.setText("Coins: "+Integer.toString(getScore()));
+				score_on_screne.setText("Coins: "+Integer.toString(getScore()));
 			});
 		}else if (idx == 2){
 			((Text)setUi.get(0)).setText(Integer.toString(((Player)player).getHp()) + "/" + Integer.toString(((Player)player).getMaxhp()));
@@ -853,6 +839,12 @@ public class GameStart {
 	    flickerEffect.setOnFinished(e -> targetImageView.setEffect(null));
 	    flickerEffect.play();
 	}
+	public static StartPane getAppRoot() {
+		return appRoot;
+	}
+	public static void setAppRoot(StartPane appRoot) {
+		GameStart.appRoot = appRoot;
+	}
 	public static Node getPlayer() {
 		return player;
 	}
@@ -865,23 +857,23 @@ public class GameStart {
 	public static void setJump(boolean Jump) {
 		isJump = Jump;
 	}
-	public static Node getDoor() {
-		return Door;
+	public static Node getdoor() {
+		return door;
 	}
-	public static void setDoor(Node door) {
-		Door = door;
+	public static void setdoor(Node Door) {
+		door = Door;
 	}
 	public static int getRound() {
-		return Round;
+		return round;
 	}
-	public static void setRound(int round) {
-		Round = round;
+	public static void setRound(int Round) {
+		round= Round;
 	}
 	public static int getScore() {
-		return Score;
+		return score;
 	}
-	public static void setScore(int score) {
-		Score = score;
+	public static void setScore(int Score) {
+		score = Score;
 	}
 	public static Pane getGameRoot() {
 		return gameRoot;
@@ -889,101 +881,61 @@ public class GameStart {
 	public static void setGameRoot(Pane gameRoot) {
 		GameStart.gameRoot = gameRoot;
 	}
-
-
 	public static boolean isWalk() {
 		return isWalk;
 	}
-
-
 	public static void setWalk(boolean isWalk) {
 		GameStart.isWalk = isWalk;
 	}
-
-
 	public static boolean isDamage() {
 		return isDamage;
 	}
-
-
 	public static void setDamage(boolean isDamage) {
 		GameStart.isDamage = isDamage;
 	}
-
-
 	public static boolean isMusic() {
 		return isMusic;
 	}
-
-
 	public static void setMusic(boolean isMusic) {
 		GameStart.isMusic = isMusic;
 	}
-
-
 	public static boolean isEsc() {
 		return isEsc;
 	}
-
-
 	public static void setEsc(boolean isEsc) {
 		GameStart.isEsc = isEsc;
 	}
-
-
 	public static boolean isPaused() {
 		return isPaused;
 	}
-
-
 	public static void setPaused(boolean isPaused) {
 		GameStart.isPaused = isPaused;
 	}
-
-
 	public static boolean isEscHeld() {
 		return isEscHeld;
 	}
-
-
 	public static void setEscHeld(boolean isEscHeld) {
 		GameStart.isEscHeld = isEscHeld;
 	}
-
-
 	public static ImageView getBackground() {
 		return Background;
 	}
-
-
 	public static void setBackground(ImageView background) {
 		Background = background;
 	}
-
-
 	public static AnimationTimer getTime() {
 		return time;
 	}
-
-
 	public static Font getFont() {
 		return font;
 	}
-
-
 	public static void setFont(Font font) {
 		GameStart.font = font;
 	}
-
-
 	public static MediaPlayer getMedia() {
 		return media;
 	}
-
-
 	public static void setMedia(MediaPlayer media) {
 		GameStart.media = media;
 	}
-
-	
 }
