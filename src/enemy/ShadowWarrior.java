@@ -6,7 +6,7 @@ import player.Player;
 
 public class ShadowWarrior extends Enemy implements Armorable{
 	public ShadowWarrior() {
-		super(100,60,100,20,"ShadowWarrior.png","ShadowWarriorFight.png");
+		super(100,60,75,20,"ShadowWarrior.png","ShadowWarriorFight.png");
 	}
 	public void attack(Player other) {
 		super.attack(other);
