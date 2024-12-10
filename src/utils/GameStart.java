@@ -81,8 +81,7 @@ public class GameStart {
 	private static Point2D playerVelocity = new Point2D(0,0);
 	private static String path_Block;
 	private static Font font;
-	private static final double TARGET_FPS = 60.0; // Target frames per second
-	private static final double TIME_PER_FRAME = 1e9 / TARGET_FPS;
+
 	
 	
 	public static void mainPage() {
@@ -442,7 +441,7 @@ public class GameStart {
 		if (!((Monster)mn).getCanshot())return;
 		int adjustedStartX = startX ;
 	    int adjustedStartY = startY ;
-	    if (mn instanceof Dragon) {
+	    if (mn instanceof Dragon && ((Monster)mn).getCanshot()) {
 	    	Shot newShot = new Shot(adjustedStartX, adjustedStartY);
 		    Platform.runLater(() -> {
 		        newShot.draw();
@@ -450,7 +449,7 @@ public class GameStart {
 		        shot.add(newShot);
 		        gameRoot.getChildren().add(newShot);
 		    });
-	    }else if (mn instanceof SlimeFire) {
+	    }else if (mn instanceof SlimeFire && ((Monster)mn).getCanshot()) {
 	    	Shot newShot = new ShotX(adjustedStartX, adjustedStartY);
 		    Platform.runLater(() -> {
 		        newShot.draw();
