@@ -480,7 +480,7 @@ public class GameStart {
 			s.draw();
 			if (s.collide(player)) {
 				((Player)player).createAttackEffect(player);
-	            ((Player) player).setHp(((Player) player).getHp() - 10); // Decrease player HP by 10
+	            ((Player) player).setHp(((Player) player).getHp() - 25); // Decrease player HP by 10
 	            makehitSound();
 	            shotRoot.getChildren().remove(s);
 	            gameRoot.getChildren().remove(s);
@@ -540,7 +540,7 @@ public class GameStart {
 	}
 	private static void checkcollideObstacle(Node pt) {
 		if (obstacle.contains(pt) && !isDamage) {
-			((Player)player).setHp(((Player)player).getHp() - 10);
+			((Player)player).setHp(((Player)player).getHp() - 25);
             editUi(0);
             editUi(2);
         	isDamage = true;

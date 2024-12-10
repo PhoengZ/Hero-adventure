@@ -40,9 +40,7 @@ public class TurnBase {
         mediabackground.play();
     }
 
-    public boolean isPlayerTurn() {
-        return isPlayerTurn;
-    }
+
 
     public void startTurn() {
         if (player.isAlive() && enemies.stream().anyMatch(Enemy::isAlive)) { 
@@ -243,7 +241,9 @@ public class TurnBase {
 	public void setExtraDefense(int extraDefense) {
 		this.extraDefense = extraDefense;
 	}
-	
+    public boolean isPlayerTurn() {
+        return isPlayerTurn;
+    }
 	
     
 }
