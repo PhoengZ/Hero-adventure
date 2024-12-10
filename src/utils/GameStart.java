@@ -46,7 +46,7 @@ import obstacle.Dragon;
 import obstacle.Monster;
 
 public class GameStart {
-	public static HashMap<KeyCode,Boolean> keys = new HashMap<KeyCode,Boolean>();
+	private static HashMap<KeyCode,Boolean> keys = new HashMap<KeyCode,Boolean>();
 	private static StartPane appRoot;
 	private static Pane gameRoot = new Pane();
 	private static Pane uiRoot = new Pane();
