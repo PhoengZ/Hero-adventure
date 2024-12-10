@@ -17,7 +17,6 @@ import javafx.scene.Scene;
 
 public class Main extends Application{
 	public void start(Stage primaryStage)  throws Exception {
-	/*
 		StartPane.setStage(primaryStage);
 		StartPane startPane = (StartPane) StartPane.getPane();
         Scene startScene = new Scene(startPane, 1280, 720);
@@ -28,8 +27,8 @@ public class Main extends Application{
         primaryStage.show();
 
         startPane.requestFocus();
-        */
-		
+        
+		/*
 		Player player = new Knight();
 		List<Enemy> enemies = new ArrayList<Enemy>();
 		Enemy BeastMaster = new BeastMaster();
@@ -45,7 +44,7 @@ public class Main extends Application{
         primaryStage.setScene(turnbaseScene);
         primaryStage.show();
         turnbasePane.requestFocus();
-        
+        */
 		/*
 		GameOverPane gameoverPane = new GameOverPane();
 		Scene gameoverscene = new Scene (gameoverPane , 1280 ,720);

@@ -11,7 +11,7 @@ import javafx.scene.text.Text;
 import utils.GameStart;
 
 public class GameWinPane extends Pane{
-	private static String FontString;
+	private static String fontString;
 	public GameWinPane() {
 		Image Background = null;
 	    try {
@@ -47,9 +47,10 @@ public class GameWinPane extends Pane{
 	    }
 	    /*
 	    FontString = "";
+>>>>>>> 8e52be5b648175d6f8ce6a944047bf78cad8a903
 		 try {
 	        String classLoaderPath = ClassLoader.getSystemResource("Pixeboy.ttf").toString();
-	        FontString = classLoaderPath;
+	        fontString = classLoaderPath;
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        System.out.println("Not fount: "+ "Pixeboy.ttf");
@@ -58,7 +59,7 @@ public class GameWinPane extends Pane{
 	    Text youwin = new Text("You Win");
 	    youwin.setStroke(Color.WHITE);
 	    youwin.setStrokeWidth(2);
-	    youwin.setFont(Font.loadFont(FontString, 80));
+	    youwin.setFont(Font.loadFont(fontString, 80));
 	    youwin.setTranslateX(530);
 	    youwin.setTranslateY(100);
 	    this.getChildren().add(youwin);

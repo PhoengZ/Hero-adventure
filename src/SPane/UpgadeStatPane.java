@@ -22,7 +22,7 @@ import player.Player;
 import utils.GameStart;
 
 public class UpgadeStatPane extends Pane{
-	private Font Price;
+	private Font fPrice;
 	private int price[] = {15,10,20,18};
 	private ArrayList<ImageView> Describetion;
 	public UpgadeStatPane(Player player) {
@@ -46,7 +46,7 @@ public class UpgadeStatPane extends Pane{
             e.printStackTrace();
             System.out.println("Not fount: "+ "PixelGame.otf");
         }
-		this.Price = Font.loadFont(pt, 24);
+		this.fPrice = Font.loadFont(pt, 24);
 		int price[] = {15,10,20,18};
 		ImageView Background = new ImageView(SetImage("Buy_item.png"));
 		Background.setFitHeight(600);
@@ -66,7 +66,7 @@ public class UpgadeStatPane extends Pane{
 		Text score = new Text("Coin: "+Integer.toString(GameStart.getScore()));
 		score.setStroke(Color.BLUE);
 		score.setStrokeDashOffset(5);
-		score.setFont(Price);
+		score.setFont(fPrice);
 		score.setFill(Color.BLACK);
 		score.prefHeight(60);
 		score.prefWidth(60);

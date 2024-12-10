@@ -26,8 +26,8 @@ public class Player extends Unit{
 	private int maxhp;
 	private int maxdefense;
 	private boolean alive;
-	private Image Right;
-	private Image Left;
+	private Image rightStay;
+	private Image leftStay;
 	private Image imageFight;
 	private Image imageStay;
 	private ImageView imageView;
@@ -64,12 +64,12 @@ public class Player extends Unit{
             Image left2 = new Image(classLoaderPath3);
             walkRight.add(right1);
             if (!(this instanceof Magician)) {
-            	walkRight.add(this.Right);
+            	walkRight.add(this.rightStay);
             }
             walkRight.add(right2);
             walkLeft.add(left1);
             if (!(this instanceof Magician)) {
-            	walkLeft.add(this.Left);
+            	walkLeft.add(this.leftStay);
             }
             walkLeft.add(left2);
             System.out.println("found all image");
@@ -134,13 +134,13 @@ public class Player extends Unit{
 	}
 
 	public Image getImageRight() {
-		return Right;
+		return rightStay;
 	}
 	public void setImageRightByPath(String imagePath) {
     	try {
             String classLoaderPath = ClassLoader.getSystemResource(imagePath).toString();
-            this.Right =new Image(classLoaderPath);
-            setImageView(new ImageView(Right));
+            this.rightStay =new Image(classLoaderPath);
+            setImageView(new ImageView(rightStay));
             this.getChildren().clear();
             this.getChildren().add(this.imageView);
         } catch (Exception e) {
@@ -148,13 +148,13 @@ public class Player extends Unit{
         }
     }
 	public Image getImageLeft() {
-		return Left;
+		return leftStay;
 	}
 
 	public void setImageLeftByPath(String imagePath) {
     	try {
             String classLoaderPath = ClassLoader.getSystemResource(imagePath).toString();
-            this.Left =new Image(classLoaderPath);
+            this.leftStay =new Image(classLoaderPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -227,11 +227,11 @@ public class Player extends Unit{
     public void stopWalking() {
     	if (this.isWalkRight) {
     		walkRightAnimation.stop();
-    		imageView.setImage(Right);
+    		imageView.setImage(rightStay);
     		isWalkRight = false;
     	}else if (this.isWalkLeft){
     		walkLeftAnimation.stop();
-    		imageView.setImage(Left);
+    		imageView.setImage(leftStay);
     		isWalkLeft = false;
     	}
     }

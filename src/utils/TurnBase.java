@@ -96,7 +96,10 @@ public class TurnBase {
                 gamePane.performAttack(enemyImageView, gamePane.getPlayerImage(), attackingEnemy, () -> {
                     // โจมตีผู้เล่น
                     int damage = Math.max(0,attackingEnemy.getAtk()-player.getDefense());
-                    if (Math.random() < this.chanceToMiss(attackingEnemy)) {
+                    double s = Math.random();
+                    System.out.println(s);
+                    System.out.println(this.chanceToMiss(attackingEnemy));
+                    if (s < this.chanceToMiss(attackingEnemy)) {
                         gamePane.showMissText(gamePane.getPlayerImage());
                         if (getExtraDefense() > 0) {
                         	player.setDefense(player.getDefense()-getExtraDefense());
@@ -198,10 +201,10 @@ public class TurnBase {
     public double chanceToMiss(Unit chractor) {
     	if(chractor instanceof Player) {
     		Player player = (Player) chractor;
-    		return 1 - (player.getSpeed() / 100);   
+    		return 1 - ((double)(player.getSpeed()) / 100);
     	}
     	Enemy enemy = (Enemy) chractor;
-    	return 1 - (enemy.getSpeed() / 100);
+    	return 1 - ((double)(enemy.getSpeed()) / 100);
     }
     private Media SetMediaBackground(String mediaPath) {
 		Media bg = null;
