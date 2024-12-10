@@ -1,17 +1,12 @@
+/SPane/
+/application/
 /base/
 /enemy/
 /obstacle/
 /player/
 /utils/
-/application/
-/SPane/
-/GameWin.png
-/Htpbutton.png
-/nextbutton.png
-/prevbutton.png
-/Gameover.mp3
-/Gamewin.mp3
-/Buy_speed.png
-/cantBuy_speed.png
-/18greenspeed.png
-/18speed_red.png
+/sound/
+/ColossiumTurnBaseBackground2.png
+/MountainTurnBaseBackGround2.png
+/warp potal.mp3
+/warp_potal.mp3

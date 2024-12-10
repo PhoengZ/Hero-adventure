@@ -45,7 +45,9 @@ public class GameWinPane extends Pane{
 	        e.printStackTrace();
 	        System.out.println("Not found RestartButton");
 	    }
-	    fontString = "";
+	    /*
+	    FontString = "";
+>>>>>>> 8e52be5b648175d6f8ce6a944047bf78cad8a903
 		 try {
 	        String classLoaderPath = ClassLoader.getSystemResource("Pixeboy.ttf").toString();
 	        fontString = classLoaderPath;
@@ -53,6 +55,7 @@ public class GameWinPane extends Pane{
 	        e.printStackTrace();
 	        System.out.println("Not fount: "+ "Pixeboy.ttf");
 	    }   
+	    */
 	    Text youwin = new Text("You Win");
 	    youwin.setStroke(Color.WHITE);
 	    youwin.setStrokeWidth(2);

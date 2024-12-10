@@ -16,8 +16,12 @@ import SPane.HowToPlayPane;
 import SPane.StartPane;
 import SPane.UpgadeStatPane;
 import javafx.animation.AnimationTimer;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.ParallelTransition;
+import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
@@ -84,15 +88,15 @@ public class GameStart {
 		setEsc(false);
 		setEscHeld(false);
 		setPaused(false);
-		Media md = SetMedia("Music_mainPage.mp3");
+		Media md = setMedia("Music_mainPage.mp3");
 		media = new MediaPlayer(md);
 		media.setCycleCount(MediaPlayer.INDEFINITE);
 		media.setVolume(0.1);
 		media.play();
-		hitSoundPlayer = new MediaPlayer(SetMedia("hit.mp3"));
+		hitSoundPlayer = new MediaPlayer(setMedia("hit.mp3"));
 		hitSoundPlayer.setVolume(0.2);
-		walk = new MediaPlayer(SetMedia("Walk_SoundEffect.mp3"));
-		jump = new MediaPlayer(SetMedia("Jump_SoundEffect.mp3"));
+		walk = new MediaPlayer(setMedia("Walk_SoundEffect.mp3"));
+		jump = new MediaPlayer(setMedia("Jump_SoundEffect.mp3"));
 		walk.setVolume(0.05);
 		walk.setCycleCount(MediaPlayer.INDEFINITE);
 		jump.setVolume(0.05);
@@ -505,15 +509,34 @@ public class GameStart {
 	}
 	private static void checkcollidedoor() {
 		if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
-			clear();
-			setRound(getRound() + 1);
+			((Player)player).stopWalking();
 			time.stop();
-			appRoot.getChildren().add(Background);
-			GaussianBlur blur = new GaussianBlur();
-	        blur.setRadius(10);
-			Background.setEffect(blur);
-			UpgadeStatPane up = new UpgadeStatPane((Player)player);
-			appRoot.getChildren().add(up);
+			ParallelTransition enemiesFadeIn = new ParallelTransition();
+	        FadeTransition fade = new FadeTransition(Duration.seconds(0.5),((Player)player).getImageView());
+	        fade.setFromValue(0);
+	        fade.setToValue(1);
+	        fade.setCycleCount(5);
+	        fade.setAutoReverse(true);
+	        MediaPlayer warp = new MediaPlayer(setMedia("warp_potal.mp3"));
+	        warp.setVolume(0.2);
+	        
+	        enemiesFadeIn.getChildren().add(fade);
+	        SequentialTransition startSequence = new SequentialTransition(
+	                enemiesFadeIn, // ศัตรูกระพริบ
+	                new PauseTransition(Duration.seconds(0.5)) // หยุดก่อนเริ่มเกม
+	        );
+	        startSequence.setOnFinished(e -> {
+				clear();
+				setRound(getRound() + 1);
+				appRoot.getChildren().add(Background);
+				GaussianBlur blur = new GaussianBlur();
+		        blur.setRadius(10);
+				Background.setEffect(blur);
+				UpgadeStatPane up = new UpgadeStatPane((Player)player);
+				appRoot.getChildren().add(up);
+	        });
+	        warp.play();
+	        startSequence.play();
 		}
 	}
 	private static void checkcollideObstacle(Node pt) {
@@ -654,7 +677,7 @@ public class GameStart {
 		uiRoot.getChildren().add(score_on_screne);
 	}
 	private static void initMusic() {
-		media = new MediaPlayer(SetMedia("Level"+Integer.toString(getRound())+".mp3"));
+		media = new MediaPlayer(setMedia("Level"+Integer.toString(getRound())+".mp3"));
 		media.setCycleCount(MediaPlayer.INDEFINITE);
 		media.setVolume(0.1);
 		if (isMusic)media.play();
@@ -768,7 +791,7 @@ public class GameStart {
         }
 		return bg;
 	}
-	private static Media SetMedia(String mediaPath) {
+	private static Media setMedia(String mediaPath) {
 		Media bg = null;
 		try {
             String classLoaderPath = ClassLoader.getSystemResource(mediaPath).toString();

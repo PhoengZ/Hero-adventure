@@ -19,13 +19,13 @@ import java.util.Random;
 import SPane.GameOverPane;
 import SPane.GameWinPane;
 import SPane.TurnBasePane;
+import base.Unit;
 
 public class TurnBase {
     private Player player;
     private List<Enemy> enemies;
     private TurnBasePane gamePane;
     private boolean isPlayerTurn;
-    private static double chanceToMiss;
     private int extraDamage = 0;        
     private int extraDefense = 0;
 	private static MediaPlayer mediabackground;
@@ -36,8 +36,7 @@ public class TurnBase {
         this.enemies = enemies;
         this.gamePane = gamePane;
         this.isPlayerTurn = true; 
-        this.chanceToMiss = 0.4;
-        Media md = SetMedia("sound/TurnBase_Soundbackground.mp3");
+        Media md = SetMediaBackground("sound/TurnBase_Soundbackground.mp3");
         mediabackground = new MediaPlayer(md);
         mediabackground.setCycleCount(MediaPlayer.INDEFINITE);
         mediabackground.setVolume(0.1);
@@ -96,8 +95,8 @@ public class TurnBase {
             if (enemyImageView != null) {
                 gamePane.performAttack(enemyImageView, gamePane.getPlayerImage(), attackingEnemy, () -> {
                     // โจมตีผู้เล่น
-                    int damage = attackingEnemy.getAtk();
-                    if (Math.random() < TurnBase.getChanceToMiss()) {
+                    int damage = Math.max(0,attackingEnemy.getAtk()-player.getDefense());
+                    if (Math.random() < this.chanceToMiss(attackingEnemy)) {
                         gamePane.showMissText(gamePane.getPlayerImage());
                         if (getExtraDefense() > 0) {
                         	player.setDefense(player.getDefense()-getExtraDefense());
@@ -134,7 +133,9 @@ public class TurnBase {
             PauseTransition pause = new PauseTransition(Duration.seconds(2));
             pause.setOnFinished(e -> {
             	endPlayerTurn();
+            	gamePane.setAnimationRunning(false);
             });
+            gamePane.setAnimationRunning(true);
             pause.play();
         }
     }
@@ -149,7 +150,9 @@ public class TurnBase {
             PauseTransition pause = new PauseTransition(Duration.seconds(2));
             pause.setOnFinished(e -> {
             	endPlayerTurn();
+            	gamePane.setAnimationRunning(false);
             });
+            gamePane.setAnimationRunning(true);
             pause.play();
         }
     }
@@ -163,6 +166,11 @@ public class TurnBase {
     }
     private void endGame() {
         if (player.isAlive()) {
+            System.out.println("Player Wins!");
+            gamePane.getTurnStatusLabelPlayer().setText("Player Wins!");
+            this.playSound("sound/YouWin2_SoundEffect.mp3", 0.5);
+            gamePane.getClickEnemyToAttackLabel().setVisible(false);
+            this.mediabackground.stop();
         	if (GameStart.getRound() == 3) {
         		GameStart.clear();
         		GameWinPane wingame = new GameWinPane();
@@ -178,7 +186,7 @@ public class TurnBase {
         	}
         } else {
             System.out.println("Enemies Win!");
-            gamePane.getTurnStatusLabel().setText("Enemies Wins!");
+            gamePane.getTurnStatusLabelEnemy().setText("Enemies Wins!");
             gamePane.getClickEnemyToAttackLabel().setVisible(false);
             this.mediabackground.stop();
             GameStart.clear();
@@ -187,7 +195,15 @@ public class TurnBase {
             //go to GameoverPane
         }
     }
-    private Media SetMedia(String mediaPath) {
+    public double chanceToMiss(Unit chractor) {
+    	if(chractor instanceof Player) {
+    		Player player = (Player) chractor;
+    		return 1 - (player.getSpeed() / 100);   
+    	}
+    	Enemy enemy = (Enemy) chractor;
+    	return 1 - (enemy.getSpeed() / 100);
+    }
+    private Media SetMediaBackground(String mediaPath) {
 		Media bg = null;
 		try {
             String classLoaderPath = ClassLoader.getSystemResource(mediaPath).toString();
@@ -217,12 +233,6 @@ public class TurnBase {
             System.out.println("Error loading or playing sound: " + mediaPath);
         }
     }
-	public static double getChanceToMiss() {
-		return chanceToMiss;
-	}
-	public static void setChanceToMiss(double chanceToMiss) {
-		TurnBase.chanceToMiss = chanceToMiss;
-	}
 
 	public void setPlayerTurn(boolean isPlayerTurn) {
 		this.isPlayerTurn = isPlayerTurn;
