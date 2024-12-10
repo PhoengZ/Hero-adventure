@@ -601,7 +601,7 @@ public class GameStart {
 					platform.add(pt);
 				}
 				else if (line.charAt(j) == '2') {
-					Image block =  setImage(getRound() == 2 ? "Rome_door.png":"Portal.png");
+					Image block =  setImage(getRound() == 2 ? "rome_portal.png":"Portal.png");
 					Node door = CreateEntity(j*60-300, i*60-200, 300,300,gameRoot,block);
 					setdoor(door);
 				}else if (line.charAt(j) == '3') {

@@ -334,7 +334,7 @@ public class TurnBasePane extends Pane {
  	//Initialize Defense Button
        Image BuffAttackButtonImage = null;
 	    try {
-	        String classLoaderPath = ClassLoader.getSystemResource("AttackBuff_button.png").toString();
+	        String classLoaderPath = ClassLoader.getSystemResource("Attack_Button.png").toString();
 	        BuffAttackButtonImage = new Image(classLoaderPath);
 	    } catch (Exception e) {
 	        e.printStackTrace();
